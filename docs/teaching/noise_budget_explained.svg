@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 900" font-family="Helvetica, Arial, sans-serif">
+  <rect width="980" height="900" fill="#ffffff"/>
+
+  <!-- ================= TITLE ================= -->
+  <text x="490" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#1a1a2e">The Noise Budget, Visually</text>
+  <text x="490" y="56" text-anchor="middle" font-size="13" fill="#555">Same visual language as your BFV/CKKS slides — message at the top (MSB), noise at the bottom (LSB)</text>
+
+  <!-- ================= PANEL 1: BUDGET SHRINKING WITH OPERATIONS ================= -->
+  <text x="40" y="92" font-size="16" font-weight="700" fill="#1a1a2e">1) What happens to ONE ciphertext as you compute on it</text>
+
+  <!-- Bar template function replicated manually for 4 stages -->
+  <!-- Stage geometry: bar x, width=120, top y=130, total height=220 -->
+  <!-- Stage 1: Fresh ciphertext -->
+  <g transform="translate(60,130)">
+    <rect x="0" y="0" width="120" height="220" fill="none" stroke="#333" stroke-width="1.5"/>
+    <rect x="0" y="0" width="120" height="16" fill="#3b6fd6"/>
+    <rect x="0" y="16" width="120" height="169" fill="#4caf50"/>
+    <rect x="0" y="185" width="120" height="35" fill="#e0453c"/>
+    <text x="60" y="-8" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a2e">Fresh ciphertext</text>
+    <text x="128" y="10" font-size="10" fill="#3b6fd6">message (µ), MSB</text>
+    <text x="128" y="100" font-size="10" fill="#2e7d32">noise budget: 100 bits ✓</text>
+    <text x="128" y="205" font-size="10" fill="#e0453c">noise (e), LSB</text>
+  </g>
+
+  <!-- Stage 2: After 1 multiplication -->
+  <g transform="translate(290,130)">
+    <rect x="0" y="0" width="120" height="220" fill="none" stroke="#333" stroke-width="1.5"/>
+    <rect x="0" y="0" width="120" height="16" fill="#3b6fd6"/>
+    <rect x="0" y="16" width="120" height="101" fill="#4caf50"/>
+    <rect x="0" y="117" width="120" height="103" fill="#e0453c"/>
+    <text x="60" y="-8" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a2e">After 1 multiply</text>
+    <text x="128" y="65" font-size="10" fill="#2e7d32">budget: 60 bits ✓</text>
+    <text x="128" y="175" font-size="10" fill="#e0453c">noise grew a lot</text>
+  </g>
+
+  <!-- Stage 3: After 2 multiplications -->
+  <g transform="translate(520,130)">
+    <rect x="0" y="0" width="120" height="220" fill="none" stroke="#333" stroke-width="1.5"/>
+    <rect x="0" y="0" width="120" height="16" fill="#3b6fd6"/>
+    <rect x="0" y="16" width="120" height="34" fill="#4caf50"/>
+    <rect x="0" y="50" width="120" height="170" fill="#e0453c"/>
+    <text x="60" y="-8" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a2e">After 2 multiplies</text>
+    <text x="128" y="35" font-size="10" fill="#b8860b">budget: 20 bits ⚠</text>
+    <text x="128" y="140" font-size="10" fill="#e0453c">noise almost fills it</text>
+  </g>
+
+  <!-- Stage 4: After 3 multiplications - FAIL -->
+  <g transform="translate(750,130)">
+    <rect x="0" y="0" width="120" height="220" fill="none" stroke="#333" stroke-width="1.5"/>
+    <rect x="0" y="0" width="120" height="220" fill="#e0453c"/>
+    <rect x="0" y="0" width="120" height="16" fill="#3b6fd6" opacity="0.35"/>
+    <line x1="10" y1="10" x2="110" y2="30" stroke="#7a0000" stroke-width="3"/>
+    <line x1="110" y1="10" x2="10" y2="30" stroke="#7a0000" stroke-width="3"/>
+    <text x="60" y="-8" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a2e">After 3 multiplies</text>
+    <text x="60" y="245" text-anchor="middle" font-size="12" font-weight="700" fill="#7a0000">FAIL — budget: 0</text>
+    <text x="60" y="260" text-anchor="middle" font-size="9" fill="#7a0000">noise swallowed the message</text>
+  </g>
+
+  <!-- Arrows between stages -->
+  <path d="M 185 240 L 285 240" stroke="#888" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 415 240 L 515 240" stroke="#888" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 645 240 L 745 240" stroke="#888" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <text x="490" y="400" text-anchor="middle" font-size="12" fill="#555" font-style="italic">
+    Addition barely touches the green zone. Multiplication is what eats it — roughly halving the budget each time.
+  </text>
+  <text x="490" y="420" text-anchor="middle" font-size="12" fill="#555" font-style="italic">
+    This is exactly why "depth" in your param_grid.csv means: how many green-zone halvings this chain can survive.
+  </text>
+
+  <!-- ================= DIVIDER ================= -->
+  <line x1="40" y1="450" x2="940" y2="450" stroke="#ddd" stroke-width="1"/>
+
+  <!-- ================= PANEL 2: SECURITY VS BUDGET, SAME N ================= -->
+  <text x="40" y="490" font-size="16" font-weight="700" fill="#1a1a2e">2) Why a harder lock shrinks the budget — even at the SAME box size (N = 8192)</text>
+  <text x="40" y="510" font-size="12" fill="#555">These are your own real param_grid.csv values, not illustrative numbers.</text>
+
+  <!-- three bars, height proportional to log2(q): 200, 152, 118 -->
+  <!-- scale: 200 bits -> 220px tall -->
+  <g transform="translate(160,540)">
+    <rect x="0" y="220" width="140" height="0" />
+    <rect x="0" y="0" width="140" height="220" fill="#4caf50" transform="translate(0,0)"/>
+    <text x="70" y="-14" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a2e">Category 1 — 128-bit</text>
+    <text x="70" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">log₂(q) = 200</text>
+    <text x="70" y="240" text-anchor="middle" font-size="11" fill="#2e7d32">→ depth 2 (usable)</text>
+  </g>
+
+  <g transform="translate(420,540)">
+    <rect x="0" y="53" width="140" height="167" fill="#66bb6a"/>
+    <text x="70" y="39" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a2e">Category 3 — 192-bit</text>
+    <text x="70" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">log₂(q) = 152</text>
+    <text x="70" y="240" text-anchor="middle" font-size="11" fill="#b8860b">→ depth 1</text>
+  </g>
+
+  <g transform="translate(680,540)">
+    <rect x="0" y="102" width="140" height="118" fill="#a5d6a7"/>
+    <text x="70" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a2e">Category 5 — 256-bit</text>
+    <text x="70" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a2e">log₂(q) = 118</text>
+    <text x="70" y="240" text-anchor="middle" font-size="11" fill="#c0392b">→ depth 0 (no multiply)</text>
+  </g>
+
+  <!-- baseline -->
+  <line x1="140" y1="760" x2="840" y2="760" stroke="#333" stroke-width="2"/>
+  <text x="490" y="782" text-anchor="middle" font-size="12" fill="#555">Same N = 8192 the entire time — only the security requirement changes</text>
+
+  <!-- big arrow showing the trend -->
+  <path d="M 160 810 L 800 810" stroke="#1a1a2e" stroke-width="2" marker-end="url(#arrow2)"/>
+  <text x="490" y="805" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a2e">harder lock required →</text>
+
+  <!-- ================= WHY, callout box ================= -->
+  <rect x="60" y="835" width="860" height="55" rx="8" fill="#f4f6fb" stroke="#c9d3e8"/>
+  <text x="490" y="857" text-anchor="middle" font-size="12" fill="#1a1a2e" font-weight="700">The "why," in one line:</text>
+  <text x="490" y="875" text-anchor="middle" font-size="12" fill="#333">Security depends on the RATIO between N and q. Box size (N) stays fixed here, so the only way to make the lock harder is to shrink q — and shrinking q is exactly what shrinks the noise budget.</text>
+
+  <!-- ================= arrow marker defs ================= -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#888"/>
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#1a1a2e"/>
+    </marker>
+  </defs>
+</svg>
