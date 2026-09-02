@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BGV,4096,1,encrypt,100,0,117.831,warmup
+SEAL,BGV,4096,1,encrypt,100,1,118.225,warmup
+SEAL,BGV,4096,1,encrypt,100,2,117.51,measured
+SEAL,BGV,4096,1,encrypt,100,3,117.423,measured
+SEAL,BGV,4096,1,encrypt,100,4,117.557,measured
+SEAL,BGV,4096,1,encrypt,100,5,118.311,measured
+SEAL,BGV,4096,1,encrypt,100,6,117.672,measured
+SEAL,BGV,4096,1,encrypt,100,7,117.446,measured
+SEAL,BGV,4096,1,encrypt,100,8,117.358,measured
+SEAL,BGV,4096,1,encrypt,100,9,117.43,measured
+SEAL,BGV,4096,1,encrypt,100,10,117.241,measured
+SEAL,BGV,4096,1,encrypt,100,11,117.223,measured

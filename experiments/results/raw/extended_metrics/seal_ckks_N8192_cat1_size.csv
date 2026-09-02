@@ -1,0 +1,5 @@
+library,scheme,N,category,artifact,size_bytes,status
+SEAL,CKKS,8192,1,ciphertext,393329,measured
+SEAL,CKKS,8192,1,public_key,524401,measured
+SEAL,CKKS,8192,1,secret_key,262232,measured
+SEAL,CKKS,8192,1,relin_keys,1573267,measured

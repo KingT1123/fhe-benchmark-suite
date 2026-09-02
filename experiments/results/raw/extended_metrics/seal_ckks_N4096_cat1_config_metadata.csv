@@ -1,0 +1,2 @@
+library,scheme,N,category,poly_modulus_degree,coeff_modulus_chain,secret_distribution,error_distribution,batching_enabled,slots_used,plain_modulus,initial_scale,rescaling_policy,precision_criterion,status
+SEAL,CKKS,4096,1,4096,"36+37+36",uniform_ternary,centered_binomial_sigma_3.2,true,2048,,2147483648.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured

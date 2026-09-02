@@ -1,0 +1,2 @@
+library,scheme,N,category,grid_depth,effective_depth,trial,step_index,step_name,noise_budget_bits,status
+SEAL,CKKS,8192,1,2,,,,,,"skipped_not_applicable_ckks"

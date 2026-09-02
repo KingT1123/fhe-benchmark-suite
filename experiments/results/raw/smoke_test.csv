@@ -1,0 +1,8 @@
+library,scheme,N,category,operation,vec_len,slot_count,iteration,latency_ms,noise_budget_bits,status
+SEAL,BFV,8192,1,dot_product,8192,8192,0,37.7114,68,warmup
+SEAL,BFV,8192,1,dot_product,8192,8192,1,37.5287,69,warmup
+SEAL,BFV,8192,1,dot_product,8192,8192,2,37.5678,70,measured
+SEAL,BFV,8192,1,dot_product,8192,8192,3,36.559,69,measured
+SEAL,BFV,8192,1,dot_product,8192,8192,4,37.1084,71,measured
+SEAL,BFV,8192,1,dot_product,8192,8192,5,35.7678,68,measured
+SEAL,BFV,8192,1,dot_product,8192,8192,6,37.6978,69,measured

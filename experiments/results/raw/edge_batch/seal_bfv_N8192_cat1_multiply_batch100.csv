@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BFV,8192,1,multiply,100,0,783.134,warmup
+SEAL,BFV,8192,1,multiply,100,1,789.44,warmup
+SEAL,BFV,8192,1,multiply,100,2,780.721,measured
+SEAL,BFV,8192,1,multiply,100,3,779.284,measured
+SEAL,BFV,8192,1,multiply,100,4,782.097,measured
+SEAL,BFV,8192,1,multiply,100,5,778.95,measured
+SEAL,BFV,8192,1,multiply,100,6,780.4,measured
+SEAL,BFV,8192,1,multiply,100,7,778.498,measured
+SEAL,BFV,8192,1,multiply,100,8,778.598,measured
+SEAL,BFV,8192,1,multiply,100,9,778.528,measured
+SEAL,BFV,8192,1,multiply,100,10,777.536,measured
+SEAL,BFV,8192,1,multiply,100,11,780.267,measured

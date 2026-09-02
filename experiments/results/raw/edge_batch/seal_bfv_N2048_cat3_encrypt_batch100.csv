@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BFV,2048,3,encrypt,100,0,32.2488,warmup
+SEAL,BFV,2048,3,encrypt,100,1,33.2209,warmup
+SEAL,BFV,2048,3,encrypt,100,2,32.7538,measured
+SEAL,BFV,2048,3,encrypt,100,3,32.8294,measured
+SEAL,BFV,2048,3,encrypt,100,4,32.7863,measured
+SEAL,BFV,2048,3,encrypt,100,5,32.755,measured
+SEAL,BFV,2048,3,encrypt,100,6,32.6979,measured
+SEAL,BFV,2048,3,encrypt,100,7,32.6273,measured
+SEAL,BFV,2048,3,encrypt,100,8,32.6623,measured
+SEAL,BFV,2048,3,encrypt,100,9,32.584,measured
+SEAL,BFV,2048,3,encrypt,100,10,32.5753,measured
+SEAL,BFV,2048,3,encrypt,100,11,32.495,measured

@@ -1,0 +1,5 @@
+library,scheme,N,category,artifact,size_bytes,status
+SEAL,BFV,2048,1,ciphertext,32881,measured
+SEAL,BFV,2048,1,public_key,65649,measured
+SEAL,BFV,2048,1,secret_key,32856,measured
+SEAL,BFV,2048,1,relin_keys,0,skipped_depth0

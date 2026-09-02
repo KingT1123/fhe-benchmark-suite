@@ -1,0 +1,25 @@
+library,scheme,N,category,poly_modulus_degree,coeff_modulus_chain,secret_distribution,error_distribution,batching_enabled,slots_used,plain_modulus,initial_scale,rescaling_policy,precision_criterion,status
+SEAL,BFV,2048,1,2048,"27+27",uniform_ternary,centered_binomial_sigma_3.2,true,2048,1032193,,"","",measured
+SEAL,BFV,2048,3,2048,"18+19",uniform_ternary,centered_binomial_sigma_3.2,true,2048,1032193,,"","",measured
+SEAL,BFV,4096,1,4096,"36+37+36",uniform_ternary,centered_binomial_sigma_3.2,true,4096,1032193,,"","",measured
+SEAL,BFV,4096,3,4096,"37+38",uniform_ternary,centered_binomial_sigma_3.2,true,4096,1032193,,"","",measured
+SEAL,BFV,4096,5,4096,"29+29",uniform_ternary,centered_binomial_sigma_3.2,true,4096,1032193,,"","",measured
+SEAL,BFV,8192,1,8192,"60+40+40+60",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,BFV,8192,3,8192,"50+52+50",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,BFV,8192,5,8192,"59+59",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,BGV,2048,1,2048,"27+27",uniform_ternary,centered_binomial_sigma_3.2,true,2048,1032193,,"","",measured
+SEAL,BGV,2048,3,2048,"18+19",uniform_ternary,centered_binomial_sigma_3.2,true,2048,1032193,,"","",measured
+SEAL,BGV,4096,1,4096,"36+37+36",uniform_ternary,centered_binomial_sigma_3.2,true,4096,1032193,,"","",measured
+SEAL,BGV,4096,3,4096,"37+38",uniform_ternary,centered_binomial_sigma_3.2,true,4096,1032193,,"","",measured
+SEAL,BGV,4096,5,4096,"29+29",uniform_ternary,centered_binomial_sigma_3.2,true,4096,1032193,,"","",measured
+SEAL,BGV,8192,1,8192,"60+40+40+60",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,BGV,8192,3,8192,"50+52+50",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,BGV,8192,5,8192,"59+59",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,CKKS,2048,1,2048,"27+27",uniform_ternary,centered_binomial_sigma_3.2,true,1024,,256.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,2048,3,2048,"18+19",uniform_ternary,centered_binomial_sigma_3.2,true,1024,,16.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,4096,1,4096,"36+37+36",uniform_ternary,centered_binomial_sigma_3.2,true,2048,,2147483648.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,4096,3,4096,"37+38",uniform_ternary,centered_binomial_sigma_3.2,true,2048,,8192.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,4096,5,4096,"29+29",uniform_ternary,centered_binomial_sigma_3.2,true,2048,,512.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,8192,1,8192,"60+40+40+60",uniform_ternary,centered_binomial_sigma_3.2,true,4096,,1099511627776.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,8192,3,8192,"50+52+50",uniform_ternary,centered_binomial_sigma_3.2,true,4096,,1099511627776.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured
+SEAL,CKKS,8192,5,8192,"59+59",uniform_ternary,centered_binomial_sigma_3.2,true,4096,,16777216.000000,"manual, after every multiply -- applies to the ckks_error trace ONLY; the six timed CKKS operations never rescale, to isolate raw per-op cost","none fixed; raw max_abs_error/mean_abs_error reported per step (see --operation=ckks_error)",measured

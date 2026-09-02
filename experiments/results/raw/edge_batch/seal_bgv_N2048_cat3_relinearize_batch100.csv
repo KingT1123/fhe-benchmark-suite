@@ -1,0 +1,2 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BGV,2048,3,relinearize,100,,,"skipped_depth0"

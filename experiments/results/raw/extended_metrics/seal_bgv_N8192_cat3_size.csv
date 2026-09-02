@@ -1,0 +1,5 @@
+library,scheme,N,category,artifact,size_bytes,status
+SEAL,BGV,8192,3,ciphertext,262257,measured
+SEAL,BGV,8192,3,public_key,393329,measured
+SEAL,BGV,8192,3,secret_key,196696,measured
+SEAL,BGV,8192,3,relin_keys,786722,measured
