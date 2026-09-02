@@ -155,7 +155,7 @@ name — the `perf` counter path doesn't work here. **Fix: read
 `/sys/class/powercap/intel-rapl:0/energy_uj` directly, bypassing `perf`
 entirely.** This works despite the CPU being AMD — the kernel reports AMD's
 RAPL-compatible registers through the same `intel-rapl` driver name (see
-`CLAUDE.md` env quirks). Needs `sudo` to read. Confirmed working on real
+project notes on environment quirks). Needs `sudo` to read. Confirmed working on real
 hardware: all 112 successfully-measured configs in `seal_standard.csv` carry
 a non-empty `energy_pkg_j_per_op` value. Scenario A's energy column is
 trustworthy.
@@ -475,7 +475,7 @@ into `results/final/`.
 ## Next steps
 1. ~~Decide the N=2048/category 5 question above (a/b/c).~~ **Resolved** —
    see decision above and `docs/findings/N2048_CAT5_LIMITATION.md`.
-2. ~~Get RAPL working (see diagnostic commands from Claude) or accept
+2. ~~Get RAPL working (see earlier diagnostic notes above) or accept
    Scenario A's energy column stays empty for now.~~ **Resolved** — direct
    `/sys/class/powercap/` read, see above.
 3. ~~Re-run `run_standard_docker.sh` with the fixed binary — the 22

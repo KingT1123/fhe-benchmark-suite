@@ -10,9 +10,6 @@ __pycache__/
 .venv/
 venv/
 
-# Local Claude Code settings (machine-specific)
-.claude/settings.local.json
-
 # Build artifacts (SEAL harness binary/object files) — keep dir via .gitkeep
 experiments/seal/build/*
 !experiments/seal/build/.gitkeep
@@ -23,5 +20,3 @@ experiments/results/raw_pre_phase4_backup/
 
 # Per-run logs — fully recreated by run_*_docker.sh via mkdir -p, no .gitkeep needed
 experiments/results/logs/
-CLAUDE.md
-.claude/

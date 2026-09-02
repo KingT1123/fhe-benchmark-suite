@@ -42,7 +42,7 @@ echo
 
 if [ -z "$SEAL_H" ] || [ -z "$LIBSEAL" ] || [ -z "$GSL_SPAN" ] || [ -z "$CONFIG_H" ]; then
     echo "STOP: could not auto-locate SEAL inside this image."
-    echo "Paste this whole output back to Claude and we will fix the paths by hand."
+    echo "Copy this whole output and fix the paths by hand below."
     exit 1
 fi
 
