@@ -1,0 +1,7 @@
+timestamp,scenario,run_order_seed,num_cells
+2026-09-13T10:49:34+01:00,standard,235204083,unknown
+2026-09-17T14:31:50+01:00,constrained,2567917969,unknown
+2026-09-18T23:39:01+01:00,edge_batch,3156721224,unknown
+2026-09-19T11:27:01+01:00,extended_metrics,83624369,unknown
+2026-09-19T12:07:39+01:00,composite,313786178,unknown
+2026-09-19T16:47:11+01:00,packing,2265030339,unknown

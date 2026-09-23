@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+
+% ---------- Page geometry ----------
+\usepackage[a4paper, margin=2.7cm]{geometry}
+
+% ---------- Core packages ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[colorlinks=true, linkcolor=seaBlue, urlcolor=seaBlue, citecolor=seaBlue]{hyperref}
+
+% ---------- Colors (consistent with the presentation) ----------
+\definecolor{seaBlue}{RGB}{20,80,120}
+\definecolor{seaTeal}{RGB}{30,140,140}
+\definecolor{softGray}{RGB}{90,90,90}
+\definecolor{noiseRed}{RGB}{200,60,50}
+\definecolor{budgetGreen}{RGB}{60,150,80}
+
+% ---------- Section heading style ----------
+\titleformat{\section}{\normalfont\Large\bfseries\color{seaBlue}}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{seaTeal}}{\thesubsection}{0.5em}{}
+
+% ---------- Header/footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{softGray}{Benchmarking FHE Libraries -- SEAL Results Report}}
+\fancyhead[R]{\small\textcolor{softGray}{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Code listing style ----------
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{black!4},
+  frame=single,
+  rulecolor=\color{black!20},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+}
+
+% ---------- Helper commands ----------
+\newcommand{\good}[1]{\textcolor{seaTeal}{\textbf{#1}}}
+
+\begin{document}
+
+% =====================================================================
+% TITLE PAGE
+% =====================================================================
+\begin{titlepage}
+  \centering
+  \vspace*{0.8cm}
+
+  % ---- Institution header (bilingual, matching reference structure exactly) ----
+  \noindent
+  \begin{minipage}[t]{0.46\textwidth}
+  \centering\small\bfseries
+  Universit\'e de Yaound\'e I\\[2pt]
+  ********\\[2pt]
+  \'Ecole Nationale Sup\'erieure Polytechnique\\[2pt]
+  ********\\[2pt]
+  D\'epartement de G\'enie informatique
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.46\textwidth}
+  \centering\small\bfseries
+  University of Yaounde I\\[2pt]
+  ********\\[2pt]
+  National Advanced School of Engineering of Yaounde\\[2pt]
+  ********\\[2pt]
+  Department of Computer Science
+  \end{minipage}
+
+  \vspace{0.7cm}
+
+  % ---- Logos ----
+  \includegraphics[height=2.3cm]{logos/logo_uy1.jpeg}
+  \hspace{1.4cm}
+  \includegraphics[height=2.3cm]{logos/logo_enspy.jpeg}
+
+  \vspace{1.3cm}
+
+  {\color{seaBlue}\rule{\linewidth}{1pt}}
+  \vspace{0.5cm}
+
+  {\huge\bfseries Benchmarking Fully Homomorphic\\[0.2cm] Encryption Libraries\par}
+  \vspace{0.4cm}
+  {\Large Results Report: Microsoft SEAL\par}
+
+  \vspace{0.5cm}
+  {\color{seaBlue}\rule{\linewidth}{1pt}}
+  \vspace{1.6cm}
+
+  \begin{minipage}{0.45\textwidth}
+    \raggedright
+    \textbf{Author}\\
+    Boungo Tresor
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.45\textwidth}
+    \raggedleft
+    \textbf{Supervisor}\\
+    Dr.\ Herv\'e Tal\'e Kalachi
+  \end{minipage}
+
+  \vfill
+
+  {\large \today\par}
+  \vspace{0.5cm}
+  {\small\textcolor{softGray}{Master's Thesis -- Progress Report}\par}
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =====================================================================
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+
+This report presents the results obtained to date in a Master's thesis benchmarking Fully Homomorphic Encryption (FHE) libraries. The thesis compares library implementations of the BFV, BGV, and CKKS schemes across four libraries (Microsoft SEAL, OpenFHE, HElib, Lattigo) under a single, consistent evaluation framework. This report covers the first of these four libraries: \textbf{Microsoft SEAL}, evaluated across all three schemes, six metrics, and applicable scenarios, with documented scope limits at the largest ring dimension (Section~\ref{sec:limitations}).
+
+Six metrics were measured -- latency, memory, energy, storage, noise-budget evolution, and CKKS error accumulation -- across three deployment scenarios (a full-resource baseline, a resource-constrained profile simulating a small edge device, and a batch/streaming profile) and a twelve-point parameter grid spanning four ring dimensions and three NIST-aligned security categories. This work's contribution is a unified, security-stratified evaluation that brings performance, energy-per-operation, memory/storage, and correctness/precision together under one consistent framework across FHE libraries.
+
+Headline findings: SEAL's measured costs scale with ring dimension and security level as the underlying parameter tables predict; the Resource-Constrained x86 profile (4 cores / 4\,GB RAM cap) does not measurably affect performance at this workload scale; batching amortizes one-time key-generation cost but does not reduce the recurring cost of individual cryptographic operations; and noise-budget and CKKS-error tracking -- two independently implemented measurements -- agree on every parameter set tested, including the one configuration in the grid with no usable noise budget.
+
+Section~\ref{sec:reproducibility} provides the complete information needed to reproduce every result in this report, including exact software versions, hardware specification, and a public code repository.
+
+\vspace{0.3cm}
+\noindent\textit{Remaining work: the same evaluation framework applied to OpenFHE, HElib, and Lattigo, followed by a cross-library comparison.}
+
+\newpage
+
+\input{sec_intro.tex}
+\input{sec_methodology.tex}
+\input{sec_results.tex}
+\input{sec_limitations.tex}
+\input{sec_reproducibility.tex}
+\input{sec_nextsteps.tex}
+\input{sec_references.tex}
+
+\end{document}

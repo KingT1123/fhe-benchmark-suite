@@ -1,0 +1,227 @@
+\section{Results}
+\label{sec:results}
+
+This section presents the results obtained for SEAL. Latency figures are drawn from the Standard scenario; storage, noise budget, and CKKS error are properties of the parameters themselves and were measured once across the full grid (Section~\ref{sec:methodology}).
+
+\subsection{Latency}
+
+Table~\ref{tab:latency} gives the range of each operation's cost across every tested parameter combination. 83 of 112 latency measurements were flagged \texttt{HIGH\_VARIANCE} -- expected for fast operations, where ordinary background noise is large relative to the operation itself.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Operation} & \textbf{Min (ms)} & \textbf{Max (ms)} & \textbf{Comment} \\
+\midrule
+add & 0.005 & 0.52 & negligible cost \\
+decrypt & 0.01 & 4.22 & fast \\
+encrypt & 0.35 & 12.90 & moderate \\
+relinearize & 0.58 & 18.93 & moderate \\
+multiply & 0.16 & 49.18 & slowest single operation \\
+keygen & 14.48 & 277.89 & slowest overall -- but runs once \\
+\bottomrule
+\end{tabular}
+\caption{Latency range across the full parameter grid, Standard scenario.}
+\label{tab:latency}
+\end{table}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+      width=12cm, height=5.5cm,
+      xmode=log,
+      xlabel={Latency (ms, log scale)},
+      symbolic y coords={add,relinearize,decrypt,encrypt,multiply,keygen},
+      ytick=data, y dir=reverse,
+      xmin=0.003, xmax=400,
+      axis lines*=left,
+      xmajorgrids, grid style={gray!20},
+      tick label style={font=\small},
+    ]
+    \addplot[only marks, mark=none, forget plot] coordinates
+      {(0.005,add) (0.58,relinearize) (0.01,decrypt) (0.35,encrypt) (0.16,multiply) (14.5,keygen)};
+    \draw[very thick, seaTeal] (axis cs:0.005,add) -- (axis cs:0.52,add);
+    \draw[very thick, seaTeal] (axis cs:0.58,relinearize) -- (axis cs:19,relinearize);
+    \draw[very thick, seaTeal] (axis cs:0.01,decrypt) -- (axis cs:4.2,decrypt);
+    \draw[very thick, seaTeal] (axis cs:0.35,encrypt) -- (axis cs:12.9,encrypt);
+    \draw[very thick, seaTeal] (axis cs:0.16,multiply) -- (axis cs:49,multiply);
+    \draw[very thick, seaTeal] (axis cs:14.5,keygen) -- (axis cs:278,keygen);
+  \end{axis}
+\end{tikzpicture}
+\caption{Latency range per operation, Standard scenario, log scale. Each bar spans every tested parameter combination.}
+\label{fig:latency}
+\end{figure}
+
+Every operation is fast in absolute terms; the real difference is relative -- multiply and keygen cost 10--100$\times$ more than add or decrypt.
+
+\clearpage
+\subsection{Storage, noise budget, and CKKS error}
+
+\subsubsection*{Storage}
+
+Table~\ref{tab:storage} and Figure~\ref{fig:storage} give serialized sizes for all four artifact types at two ring dimensions.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& \textbf{Ciphertext} & \textbf{Public key} & \textbf{Secret key} & \textbf{Relin.\ keys} \\
+\midrule
+$N{=}8192$ (MB) & 0.39 & 0.52 & 0.26 & 1.57 \\
+$N{=}16384$ (MB) & 2.10 & 2.36 & 1.18 & 18.88 \\
+\bottomrule
+\end{tabular}
+\caption{Serialized artifact sizes, category 1 (128-bit).}
+\label{tab:storage}
+\end{table}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+      width=11cm, height=5cm,
+      ybar, bar width=0.6cm,
+      ymode=log,
+      symbolic x coords={ciphertext, public key, secret key, relin keys},
+      xtick=data, x tick label style={font=\small},
+      ylabel={Size (MB, log scale)},
+      legend style={font=\scriptsize, at={(0.02,0.98)}, anchor=north west},
+      axis lines*=left,
+      ymajorgrids, grid style={gray!20},
+    ]
+    \addplot[fill=seaTeal!70] coordinates {(ciphertext,0.393) (public key,0.524) (secret key,0.262) (relin keys,1.573)};
+    \addplot[fill=seaBlue!70] coordinates {(ciphertext,2.097) (public key,2.359) (secret key,1.180) (relin keys,18.875)};
+    \legend{$N{=}8192$, $N{=}16384$}
+  \end{axis}
+\end{tikzpicture}
+\caption{Serialized storage by artifact type and ring dimension (log scale).}
+\label{fig:storage}
+\end{figure}
+
+The relinearization key is consistently the largest artifact -- roughly $12\times$ the ciphertext size at $N{=}16384$.
+
+The Composite scenario's Galois (rotation) keys are a more extreme case, and one this harness got wrong until an extra-rigor correctness pass caught it: SEAL's \texttt{create\_galois\_keys()} generates a key for every power-of-two rotation step the scheme supports by default, not just the step(s) a given operation actually rotates by. A single rotate-by-1 measurement ($N{=}8192$, category~1) originally generated a 36.07\,MB key this way; requesting only the specific step actually used (via the explicit-steps overload) reduces this to 1.56\,MB -- a 23$\times$ reduction, with no change to correctness (verified by direct measurement, not assumed).
+
+\subsubsection*{Noise budget}
+
+Figure~\ref{fig:noisebudget} plots two complete, real traces: the shallowest usable depth (depth 2) and the deepest tested (depth 7, $N{=}16384$). Both stay well above zero through their full documented chain.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+      width=11cm, height=5.2cm,
+      xlabel={Step (0=fresh, 1=+add, then multiply/relinearize pairs)},
+      ylabel={Budget (bits)},
+      xmin=0, xmax=15, ymin=0, ymax=330,
+      axis lines*=left,
+      ymajorgrids, grid style={gray!20},
+      legend style={font=\scriptsize, at={(0.98,0.98)}, anchor=north east},
+    ]
+    \addplot[very thick, mark=*, mark size=1.3pt, seaBlue] coordinates
+      {(0,112)(1,112)(2,80)(3,80)(4,48)(5,48)};
+    \addplot[very thick, mark=*, mark size=1.3pt, budgetGreen] coordinates
+      {(0,312)(1,311.3)(2,279)(3,279)(4,247)(5,247)(6,214.2)(7,214.2)(8,181.8)(9,181.8)
+       (10,149)(11,149)(12,116.5)(13,116.5)(14,83.8)(15,83.8)};
+    \legend{{$N{=}8192$, depth 2}, {$N{=}16384$, depth 7}}
+  \end{axis}
+\end{tikzpicture}
+\caption{Noise-budget evolution, both real, complete traces.}
+\label{fig:noisebudget}
+\end{figure}
+
+The one exception in the whole grid: $N{=}2048$, category~1 -- budget is \textbf{0} already on the fresh ciphertext, before any operation runs (Table~\ref{tab:zerobudget}).
+
+Three configurations in this grid -- $N{=}2048$/category~1, $N{=}2048$/category~5, and $N{=}4096$/category~5 -- use a smaller plaintext modulus than the rest (Section~\ref{sec:security-validation}, Table~\ref{tab:configmeta-bfvbgv}), so their noise-budget numbers are not directly comparable to the other nine configurations' on that basis alone.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{Fresh} & \textbf{After +add} \\
+\midrule
+$N{=}2048$, category 1 & 0 bits & 0 bits \\
+$N{=}2048$, category 3 & 6 bits & 5.9 bits \\
+\bottomrule
+\end{tabular}
+\caption{Noise budget at the smallest ring dimension.}
+\label{tab:zerobudget}
+\end{table}
+
+\subsubsection*{CKKS error}
+
+Figure~\ref{fig:ckkserror} compares the grid's two thinnest-budget configurations -- $N{=}2048$/category~1 (zero budget, Table~\ref{tab:zerobudget}) and $N{=}2048$/category~3 (6 bits, non-zero but thin) -- against two comfortably-budgeted configurations, all measured at the same step (after the first addition) for a fair comparison.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+      width=11cm, height=4.8cm,
+      ybar, bar width=1.1cm,
+      symbolic x coords={A, B, C, D},
+      xtick={A, B, C, D},
+      x tick label style={font=\scriptsize, align=center},
+      xticklabels={2048/cat1, 2048/cat3, 8192/cat1, 16384/cat1},
+      ymode=log,
+      ylabel={Max.\ error, +add (log)},
+      axis lines*=left,
+      ymajorgrids, grid style={gray!20},
+    ]
+    \addplot[fill=noiseRed!60] coordinates {(A,9.34) (B,176.2)};
+    \addplot[fill=budgetGreen!70] coordinates {(C,1.31e-8) (D,2.30e-8)};
+  \end{axis}
+\end{tikzpicture}
+\caption{CKKS error: zero- and thin-budget configurations vs.\ comfortably-budgeted ones (log scale).}
+\label{fig:ckkserror}
+\end{figure}
+
+Both the zero-budget and the thin-budget configuration show error of order 1--100 -- unusable; notably, even a non-zero 6-bit budget is not enough to keep CKKS error under control. The two comfortably-budgeted configurations stay near $10^{-8}$, even at depth $>0$. Two independently implemented measurements -- noise-budget tracking (BFV, counts bits) and CKKS error tracking (diffs decrypted output against exact arithmetic) -- agree at every parameter set tested, including the one configuration with truly zero budget. This agreement is strong evidence the finding reflects the underlying parameters, not a measurement artifact.
+
+\clearpage
+\subsection{Behavior under different conditions}
+
+\subsubsection*{Resource constraints}
+
+SEAL's peak memory use (118.66\,MB, Standard; 118.77\,MB, Constrained) stays under 3\% of the 4\,GB Constrained-scenario cap. Standard and Constrained produced the same 112 succeeded / 24 skipped / 8 failed pattern, and latency ranges were statistically indistinguishable between the two (Table~\ref{tab:constrained}).
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{Standard} & \textbf{Constrained} \\
+\midrule
+Peak memory (max, MB) & 118.66 & 118.77 \\
+Energy per op (max, J) & 7.42 & 5.39 \\
+\texttt{HIGH\_VARIANCE} count & 83/112 & 63/112 \\
+\bottomrule
+\end{tabular}
+\caption{Standard vs.\ Constrained, full grid.}
+\label{tab:constrained}
+\end{table}
+
+The lower variance count under Constrained is consistent with core-pinning reducing scheduling noise, on top of the resource cap itself never binding at this workload scale.
+
+\subsubsection*{Batching}
+
+Figure~\ref{fig:batching} shows key-generation cost amortizing cleanly with batch size; every other operation showed no consistent change (ratios 0.82$\times$--1.49$\times$, no direction) -- each item was already at its most SIMD-efficient shape from the first ciphertext.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+      width=10cm, height=4.4cm,
+      xmode=log, ymode=log,
+      xlabel={Batch size}, ylabel={Keygen cost per item (ms)},
+      xtick={1,10,100}, xticklabels={1,10,100},
+      axis lines*=left,
+      ymajorgrids, grid style={gray!20},
+    ]
+    \addplot[very thick, mark=*, seaBlue] coordinates {(1,67.10) (10,6.71) (100,0.67)};
+  \end{axis}
+\end{tikzpicture}
+\caption{Key-generation cost per item vs.\ batch size, $N{=}8192$/category~1 (log--log).}
+\label{fig:batching}
+\end{figure}
+
+\textbf{Practical implication:} generate keys once and reuse them across every future operation; batching requests together does not reduce the cost of the underlying cryptographic operations.

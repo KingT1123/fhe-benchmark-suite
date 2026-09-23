@@ -1,0 +1,174 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Parameter space}
+
+Every test is defined by four parameters, fixed before any measurement: ring dimension $N$, a modulus chain (built from several primes, chosen deterministically for fast arithmetic -- not random), the resulting multiplicative depth, and a security category mapped to NIST-aligned tiers (128/192/256-bit)~\cite{nist-pqc}. Table~\ref{tab:paramgrid} gives the full grid, verified against the Homomorphic Encryption Standard~\cite{hestandard2021,bossuat2024}.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$N$ & Category & Max $\log q$ & Chain (bits) & $\log q$ used & Depth \\
+\midrule
+2048  & 1 (128-bit) & 54  & \{26,26\}             & 52  & 0 \\
+2048  & 3 (192-bit) & 37  & \{17,17\}             & 34  & 0 \\
+2048  & 5 (256-bit) & 29  & \{26\}                & 26  & 0 \\
+4096  & 1 (128-bit) & 109 & \{33,33,34\}          & 100 & 1 \\
+4096  & 3 (192-bit) & 75  & \{34,34\}             & 68  & 0 \\
+4096  & 5 (256-bit) & 58  & \{27,28\}             & 55  & 0 \\
+8192  & 1 (128-bit) & 218 & \{60,40,40,60\}       & 200 & 2 \\
+8192  & 3 (192-bit) & 152 & \{46,47,47\}          & 140 & 1 \\
+8192  & 5 (256-bit) & 118 & \{54,54\}             & 108 & 0 \\
+16384 & 1 (128-bit) & 438 & \{60,40$\times$7,60\} & 400 & 7 \\
+16384 & 3 (192-bit) & 305 & \{60,40$\times$4,60\} & 280 & 4 \\
+16384 & 5 (256-bit) & 237 & \{60,40$\times$2,60\} & 200 & 2 \\
+\bottomrule
+\end{tabular}
+\caption{Full parameter grid. Depth grows with $N$ and shrinks as the security requirement rises at fixed $N$ -- the same modulus that sets the noise budget also governs hardness, so a harder security target forces a smaller budget. Eight cells' chains were re-tuned from their original values (Section~\ref{sec:security-validation}) to meet the 2024/2025 guideline; $N{=}2048$/category~5's chain shrank to a single prime, the only cell in this grid with no dedicated key-switching modulus.}
+\label{tab:paramgrid}
+\end{table}
+
+Each configuration was tested for all three of SEAL's supported schemes: BFV (exact arithmetic), BGV (exact arithmetic, alternative encoding), and CKKS (approximate arithmetic).
+
+\subsection{Security-level validation}
+\label{sec:security-validation}
+
+The category labels in Table~\ref{tab:paramgrid} (128/192/256-bit) originate from the 2018 Homomorphic Encryption Standard's reference table. Since cryptanalysis has advanced since then, security was independently re-verified using the Lattice Estimator~\cite{albrecht2015estimator} (commit \texttt{3e48ef4}), against SEAL's actual distributions -- a uniform ternary secret and a Centered Binomial error distribution with $\sigma \approx 3.2$ (SEAL's compiled default; \texttt{SEAL\_USE\_GAUSSIAN\_NOISE} is not set in this build) -- rather than assumed generic parameters.
+
+The verification proceeded in two stages. First, every configuration's $\log q$ (Table~\ref{tab:paramgrid}) was compared against the threshold in Table~\ref{tab:guideline52} -- an excerpt of Table 5.2 from the 2024/2025 Security Guidelines~\cite{bossuat2024}, reproduced here for the ring dimensions used in this thesis, itself built from the same estimator. Second, this comparison was validated directly: nine of the twelve configurations -- every configuration at $N \le 8192$ -- were also run through the estimator's own full \texttt{LWE.estimate()} routine, which evaluates every supported attack (uSVP, BDD, dual, dual-hybrid, coded-BKW) and reports the cheapest, and the results agreed closely with the guideline-based prediction in every case. A full run at $N=16384$ is highly resource-intensive, however -- a single run at $N=8192$ already took over two hours even with 12-way parallelism, and the tool's own issue tracker documents impractical runtimes above $N=2^{13}$ as a known limitation -- so the three $N=16384$ configurations were assessed from the guideline comparison alone.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+$N$ & 128-bit & 192-bit & 256-bit \\
+\midrule
+2048  & 53  & 36  & 27 \\
+4096  & 106 & 73  & 56 \\
+8192  & 214 & 147 & 114 \\
+16384 & 430 & 297 & 230 \\
+\bottomrule
+\end{tabular}
+\caption{Maximum $\log q$ for each target level, uniform ternary secret, $\sigma{=}3.19$ Gaussian error -- excerpted from Table 5.2 of the 2024/2025 Security Guidelines~\cite{bossuat2024}, rows matching this thesis's ring dimensions only.}
+\label{tab:guideline52}
+\end{table}
+
+Table~\ref{tab:secvalidation} gives the result for every configuration.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}cccp{5.2cm}@{}}
+\toprule
+$N$ & Category & Estimated security & Method \\
+\midrule
+2048  & 1 & 131.3 bits & Lattice Estimator \\
+2048  & 3 & 205.3 bits & Lattice Estimator \\
+2048  & 5 & 272.0 bits & Lattice Estimator \\
+4096  & 1 & 137.2 bits & Lattice Estimator \\
+4096  & 3 & 208.6 bits & Lattice Estimator \\
+4096  & 5 & 263.3 bits & Lattice Estimator \\
+8192  & 1 & 137.7 bits & Lattice Estimator \\
+8192  & 3 & 204.1 bits & Lattice Estimator \\
+8192  & 5 & 272.8 bits & Lattice Estimator \\
+16384 & 1 & $\geq$128 bits ($\log q$ under threshold by 30 bits) & Guideline Table 5.2 \\
+16384 & 3 & $\geq$192 bits ($\log q$ under threshold by 17 bits) & Guideline Table 5.2 \\
+16384 & 5 & $\geq$256 bits ($\log q$ under threshold by 30 bits) & Guideline Table 5.2 \\
+\bottomrule
+\end{tabular}
+\caption{Estimated real security per configuration. Category numbers refer to the NIST-aligned tiers defined in Table~\ref{tab:paramgrid}. All values represent an infeasible amount of computation for an attacker regardless of method.}
+\label{tab:secvalidation}
+\end{table}
+
+Every configuration in Table~\ref{tab:secvalidation} requires well over $2^{120}$ operations to attack -- far beyond any practically exploitable threshold under any of the methods used. Estimated security is now tightest at $N{=}2048$, category~1 (131.3 bits, only 3.3 bits above its 128-bit target) -- the direct cost of the correctness-driven trade-off discussed below, where this cell's chain could not be shrunk much further below the guideline threshold without losing noise budget entirely. Category~5 configurations retain the widest margins across all three ring dimensions (16+ bits above their 256-bit target at $N{=}2048$ and $N{=}8192$), since their much smaller absolute $\log q$ budgets left more room to land comfortably under the 2024/2025 guideline ceiling once re-tuned.
+
+Shrinking three of these chains for security compliance left too little coefficient-modulus budget to survive even a single homomorphic operation under BFV/BGV's standard plaintext modulus (SEAL's 20-bit batching prime, $t=1032193$, used by every other cell in this grid): fresh ciphertexts at these three configurations decrypted with zero remaining noise budget regardless of the operation performed. Each was instead given the smallest batching-compatible plaintext modulus that restored a real, positive noise-budget margin after the cell's actual required operation (Table~\ref{tab:configmeta-bfvbgv}).
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}ccll@{}}
+\toprule
+$N$ & Category & Plaintext modulus $t$ & Noise budget margin after real op \\
+\midrule
+2048 & 1 & 12289 (14-bit) & 5 bits (after add) \\
+2048 & 5 & 12289 (14-bit) & 1 bit (after add) \\
+4096 & 5 & 40961 (16-bit) & 4 bits (after add) \\
+\bottomrule
+\end{tabular}
+\caption{The three cells using a plaintext modulus other than this grid's standard $t=1032193$ (20-bit SEAL batching prime), and the resulting noise-budget margin after the cell's real required operation (add, since all three are depth-0). Necessary because their reduced coeff-modulus chains (Table~\ref{tab:paramgrid}) leave zero noise budget under the standard $t$ -- fresh ciphertexts otherwise fail to decrypt correctly at all. Every other BFV/BGV cell in the grid is unaffected and keeps $t=1032193$.}
+\label{tab:configmeta-bfvbgv}
+\end{table}
+
+$N{=}2048$/category~5's 1-bit margin is the thinnest in the grid. Before being accepted into the main results, it was stability-tested separately with 50 independent trials -- fresh random data each trial, encrypt $\to$ add $\to$ decrypt $\to$ decode against the exact expected result -- and all 50 decoded correctly.
+
+The same reduced chains created an analogous problem for CKKS's initial scale. This project's default formula (min(40, $(\text{total\_bits}-10)/2$) bits, reserving headroom for one future multiply) gave unusably imprecise results at four of the affected depth-0 cells -- that reserved multiply headroom is precision they never spend, since they never multiply -- and left one comfortably-working cell more conservative than it needed to be. Each was given the empirically best scale found by direct round-trip testing against its new chain (Table~\ref{tab:configmeta-ckks}); the two affected depth-1 cells ($N{=}4096$/category~1 and $N{=}8192$/category~3) already worked well under the default formula and were left unchanged.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}cclp{4.5cm}@{}}
+\toprule
+$N$ & Category & Scale & Resulting error (max / mean) \\
+\midrule
+2048 & 1 & $2^{24}$ & $1.8{\times}10^{-4}$ / $2.0{\times}10^{-5}$ -- usable \\
+2048 & 3 & $2^{15}$ & $0.08$ / $0.01$ -- best achievable at this $N$/chain, not a clean fix (see note below) \\
+4096 & 3 & $2^{32}$ & $1.1{\times}10^{-6}$ / $1.7{\times}10^{-7}$ -- good \\
+4096 & 5 & $2^{24}$ & $2.9{\times}10^{-4}$ / $4.2{\times}10^{-5}$ -- good \\
+8192 & 5 & $2^{40}$ & $1.1{\times}10^{-8}$ / $1.3{\times}10^{-9}$ -- comfortable \\
+\bottomrule
+\end{tabular}
+\caption{The five CKKS cells using a scale other than the default formula's output. $N{=}8192$/category~5's default formula would have given $2^{24}$ (borderline, max error $7.3{\times}10^{-4}$); $2^{40}$ was adopted instead since it is strictly better and brings this cell in line with every other comfortably-precise cell, not because the default was broken. Every other CKKS cell in the grid is unaffected. Error figures are decoded-vs-exact absolute error over uniform-random $[-1,1]$ input, mirroring the ckks\_error trace's own methodology (fresh $\to$ add for depth-0 cells; fresh $\to$ add $\to$ multiply $\to$ relinearize $\to$ rescale for depth-1 cells).}
+\label{tab:configmeta-ckks}
+\end{table}
+
+$N{=}2048$/category~3 is a genuine structural limitation, not a tuning gap: at this chain's total coefficient-modulus budget of only 17 bits, $2^{15}$ is one bit below the point where SEAL itself refuses the scale as out of bounds, and even at that ceiling roughly 8\% max decode error remains. This mirrors $N{=}2048$/category~5's single-prime BFV chain (Section~\ref{sec:security-validation}) -- both are cases where the security fix leaves too little raw budget for this scheme to represent values comfortably, independent of how carefully the remaining parameter is tuned. Wherever this cell's CKKS results appear, they should carry that caveat and not be presented as directly comparable to the grid's other CKKS cells.
+
+\subsection{Metrics}
+
+Six metrics were measured (Table~\ref{tab:metrics}). Rather than resting on any single metric being unprecedented, this work's contribution is the combination: a unified, security-stratified evaluation bringing performance, energy-per-operation, memory/storage, and correctness/precision together under one consistent framework.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}llp{5.3cm}@{}}
+\toprule
+\textbf{Metric} & \textbf{Precedent} & \textbf{Description} \\
+\midrule
+Latency & standard in prior work & Time per operation \\
+Memory & standard in prior work & Peak RAM used \\
+Energy & none found in papers surveyed & Electrical energy per operation (RAPL) \\
+Storage & Pambudi et al.~\cite{pambudi2025} & Serialized ciphertext/key size \\
+Noise budget & Pambudi et al.~\cite{pambudi2025} & Remaining margin before decryption fails \\
+CKKS error & Takeshita et al.~\cite{takeshita2025} & Drift from the exact result \\
+\bottomrule
+\end{tabular}
+\caption{Metrics measured, with literature precedent.}
+\label{tab:metrics}
+\end{table}
+
+\subsection{Deployment scenarios}
+
+Latency, memory, and energy were measured under three scenarios (Table~\ref{tab:scenarios}). Storage, noise budget, and CKKS error depend only on the parameters, not on machine resources or request volume, so each was measured once across the full grid.
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Scenario} & \textbf{Configuration} & \textbf{Question answered} \\
+\midrule
+Standard & Full workstation resources & Baseline cost \\
+Constrained & 4 cores / 4\,GB RAM cap~\cite{rahman2024} & Sensitivity to limited resources \\
+Edge/Batch & Batch sizes 1/10/100~\cite{gouert2023} & Behavior under continuous load \\
+\bottomrule
+\end{tabular}
+\caption{Deployment scenarios.}
+\label{tab:scenarios}
+\end{table}
+
+Coverage differs by scenario at the largest ring dimension. The Standard scenario was run across the full grid at $N \in \{2048, 4096, 8192\}$ and extended to $N=16384$ for category~1; categories 3 and 5 at $N=16384$ for the Standard scenario, and $N=16384$ entirely for the Constrained and Edge/Batch scenarios and the parameter-only storage, noise-budget, and CKKS-error measurements, were excluded from this evaluation and run only up to $N=8192$. This is a deliberate scope decision made after sustained runs at $N=16384$ produced thermal instability on the development workstation (Section~\ref{sec:limitations}), not a gap left unacknowledged; any incomplete cells within the reported scope are flagged rather than omitted in the results tables of Section~\ref{sec:results}.
+
+\subsection{Statistical protocol}
+
+Each timed operation ran 105 times; the first 5 were discarded as cache warm-up, leaving 100 runs per reported value. Results are reported as mean, standard deviation, and 95\% confidence interval. Results with standard deviation exceeding 5\% of the mean are flagged \texttt{HIGH\_VARIANCE} rather than hidden.
+
+\subsection{Tool validation}
+
+Three different validation methods were used, matched to what each tool measures. Timing and correctness tools were checked by reproducing a prior published benchmark (HEProfiler) under identical parameters. The energy tool (Intel's RAPL hardware counters) has no prior FHE benchmark to reproduce against, so it instead relies on RAPL's own accuracy literature~\cite{khan2018}. Security-level mapping is validated against the published Homomorphic Encryption Standard and its 2024 update~\cite{hestandard2021,bossuat2024}, the same reference the parameter grid itself is built from.

@@ -7,6 +7,10 @@ SEAL,BFV,2048,3,ciphertext,65649,measured
 SEAL,BFV,2048,3,public_key,65649,measured
 SEAL,BFV,2048,3,secret_key,32856,measured
 SEAL,BFV,2048,3,relin_keys,0,skipped_depth0
+SEAL,BFV,2048,5,ciphertext,32881,measured
+SEAL,BFV,2048,5,public_key,32881,measured
+SEAL,BFV,2048,5,secret_key,16472,measured
+SEAL,BFV,2048,5,relin_keys,0,skipped_depth0
 SEAL,BFV,4096,1,ciphertext,131185,measured
 SEAL,BFV,4096,1,public_key,196721,measured
 SEAL,BFV,4096,1,secret_key,98392,measured
@@ -39,6 +43,10 @@ SEAL,BGV,2048,3,ciphertext,65649,measured
 SEAL,BGV,2048,3,public_key,65649,measured
 SEAL,BGV,2048,3,secret_key,32856,measured
 SEAL,BGV,2048,3,relin_keys,0,skipped_depth0
+SEAL,BGV,2048,5,ciphertext,32881,measured
+SEAL,BGV,2048,5,public_key,32881,measured
+SEAL,BGV,2048,5,secret_key,16472,measured
+SEAL,BGV,2048,5,relin_keys,0,skipped_depth0
 SEAL,BGV,4096,1,ciphertext,131185,measured
 SEAL,BGV,4096,1,public_key,196721,measured
 SEAL,BGV,4096,1,secret_key,98392,measured
@@ -71,6 +79,10 @@ SEAL,CKKS,2048,3,ciphertext,32881,measured
 SEAL,CKKS,2048,3,public_key,65649,measured
 SEAL,CKKS,2048,3,secret_key,32856,measured
 SEAL,CKKS,2048,3,relin_keys,0,skipped_depth0
+SEAL,CKKS,2048,5,ciphertext,32881,measured
+SEAL,CKKS,2048,5,public_key,32881,measured
+SEAL,CKKS,2048,5,secret_key,16472,measured
+SEAL,CKKS,2048,5,relin_keys,0,skipped_depth0
 SEAL,CKKS,4096,1,ciphertext,131185,measured
 SEAL,CKKS,4096,1,public_key,196721,measured
 SEAL,CKKS,4096,1,secret_key,98392,measured

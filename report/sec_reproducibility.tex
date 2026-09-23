@@ -1,0 +1,80 @@
+\section{Reproducibility}
+\label{sec:reproducibility}
+
+Everything needed to reproduce every result in this report is given below.
+
+\subsection{Environment}
+
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Component} & \textbf{Version / specification} \\
+\midrule
+CPU & AMD Ryzen 9 6900HX with Radeon Graphics \\
+RAM & 14\,GiB \\
+OS & Ubuntu 24.04.4 LTS (noble) \\
+Kernel & Linux 7.0.0-28-generic, x86\_64 \\
+Docker & 29.7.1 (build e9452d6) \\
+g++ & 13.3.0 (Ubuntu 13.3.0-6ubuntu2\textasciitilde24.04.1) \\
+CMake & 3.28.3 \\
+SEAL & 4.1.2, Release, ZLIB/ZSTD on, HEXL off, Blake2xb PRNG \\
+\bottomrule
+\end{tabular}
+\caption{Exact hardware and software environment.}
+\label{tab:env}
+\end{table}
+
+\noindent\textit{Note:} energy is read from \texttt{/sys/class/powercap/intel-rapl:0/energy\_uj} (the \texttt{package-0} domain), in microjoules. This path is served by the \texttt{intel\_rapl\_msr} and \texttt{intel\_rapl\_common} kernel drivers -- confirmed via \texttt{lsmod} and the kernel boot log -- not the separate \texttt{amd\_energy} hwmon driver; AMD's RAPL-compatible model-specific registers are read through the same driver Intel systems use, which is also why the sysfs path keeps the \texttt{intel-rapl} name on this AMD CPU. The underlying hardware resolution is $2^{-16}$\,J $\approx 15.26\,\mu$J per step (from the kernel boot log), and the counter updates continuously rather than on a fixed polling interval, confirmed by rapid back-to-back reads showing a fresh value almost every time. The counter wraps at \texttt{max\_energy\_range\_uj} $=$ 65{,}532{,}610{,}987\,$\mu$J ($\approx$65.5\,kJ, roughly 14--24 minutes of continuous runtime depending on load); \texttt{run\_standard\_docker.sh} already accounts for this, detecting \texttt{E\_AFTER} $<$ \texttt{E\_BEFORE} and adding the range back before computing the delta.
+
+\subsection{Code and data}
+
+Source code, build scripts, and configuration are version-controlled at:
+\begin{center}
+\url{https://github.com/KingT1123/fhe-benchmark-suite}
+\end{center}
+Result data is deliberately \emph{not} version-controlled -- it is regenerated output, not source. The full parameter grid (Table~\ref{tab:paramgrid}) is at \texttt{experiments/config/param\_grid.csv}. Random inputs use a fixed seed, so repeated runs are reproducible; small numeric variation between runs (captured by the confidence intervals reported throughout) is expected from ordinary system timing noise, not from the random inputs themselves.
+
+\subsection{Reproduction steps}
+
+\begin{lstlisting}
+git clone https://github.com/KingT1123/fhe-benchmark-suite.git
+cd fhe-benchmark-suite/experiments/seal
+
+# 1. Build the SEAL Docker image and compile the harness
+bash docker_build_and_run.sh
+
+# 2. Run each scenario (from experiments/scripts/)
+cd ../scripts
+bash run_standard_docker.sh
+bash run_constrained_docker.sh
+bash run_edge_batch_docker.sh
+# storage, noise budget, CKKS error:
+bash run_extended_metrics_docker.sh
+
+# 3. Aggregate raw output into final results
+python3 aggregate.py --scenario=standard
+python3 aggregate.py --scenario=constrained
+python3 aggregate.py --scenario=edge_batch
+python3 aggregate.py --scenario=size
+python3 aggregate.py --scenario=noise_trace
+python3 aggregate.py --scenario=ckks_error
+\end{lstlisting}
+
+Energy measurement requires \texttt{sudo} for RAPL access; the run scripts prompt for this where needed.
+
+\subsection{Output layout}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lp{8.5cm}@{}}
+\toprule
+\textbf{Path} & \textbf{Contents} \\
+\midrule
+\texttt{experiments/results/raw/} & Per-configuration raw output, Standard/Constrained \\
+\texttt{experiments/results/raw/edge\_batch/} & Raw output, Edge/Batch scenario \\
+\texttt{experiments/results/raw/extended\_metrics/} & Raw storage/noise/CKKS-error output \\
+\texttt{experiments/results/final/} & Aggregated CSVs -- the source for every table and figure in this report \\
+\bottomrule
+\end{tabular}
+\end{center}

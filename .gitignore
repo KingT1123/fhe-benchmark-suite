@@ -14,9 +14,14 @@ venv/
 experiments/seal/build/*
 !experiments/seal/build/.gitkeep
 
-# Local-only results archives — not for the public repo
+# Local-only results archives — not for the public repo. These are
+# timestamped safety copies made before overwriting/clearing raw result
+# dirs during reruns; historical, not needed for reproducibility (the
+# corrected raw/final CSVs they were copies of are tracked normally).
 experiments/results/UPLOAD_THESE/
 experiments/results/raw_pre_phase4_backup/
+experiments/results/raw_backup_*/
+experiments/results/raw_composite_offscope_backup_*/
 
 # Per-run logs — fully recreated by run_*_docker.sh via mkdir -p, no .gitkeep needed
 experiments/results/logs/

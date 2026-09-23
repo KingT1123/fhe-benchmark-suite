@@ -1,0 +1,13 @@
+\section{Limitations}
+\label{sec:limitations}
+
+Stated plainly rather than left implicit:
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{$N{=}2048$, category 5} fails to build entirely -- SEAL's prime search cannot find enough NTT-friendly primes at this combination of ring size and security level. This is a genuine library limitation, not a bug; it is documented, not patched around.
+  \item \textbf{Energy is not isolated to the benchmark process.} RAPL measures total package power draw during the measurement window, not one process's share of it. Background load was minimized but not eliminated.
+  \item \textbf{No DRAM-domain energy is available on this hardware.} Only \texttt{package-0} and a \texttt{core} subzone are exposed under \texttt{/sys/class/powercap/}; package energy is the value reported throughout this report.
+  \item \textbf{Apparent per-item energy improvement at larger batch sizes} (Section~\ref{sec:results}) is attributed to fixed Docker invocation overhead amortizing over more work, not a genuine drop in per-operation energy cost -- consistent with the flat per-item latency result.
+  \item \textbf{The Constrained (``Resource-Constrained x86'') scenario reproduces a resource ceiling, not an architecture.} No physical ARM device was available; the 4-core/4\,GB cap was applied to the same x86-64 workstation via Docker, with the specific cap values drawn from Rahman et al.~\cite{rahman2024}'s Raspberry Pi 4 profile. This tests sensitivity to limited resources, not genuine cross-architecture behavior.
+  \item \textbf{Testing at $N=16384$ was limited to category~1 of the Standard scenario.} This is the largest and most resource-intensive configuration in the grid; sustained multi-hour runs at this size produced thermal instability on the development workstation, including an unrelated display fault that required investigation before testing could safely resume. On these safety grounds, categories 3 and 5 at $N=16384$ for the Standard scenario, and $N=16384$ entirely for the Constrained, Edge/Batch, and parameter-only (storage, noise budget, CKKS error) measurements, were excluded from this evaluation and instead run only up to $N=8192$.
+\end{itemize}

@@ -1,0 +1,8 @@
+\section{Introduction and Scope}
+\label{sec:intro}
+
+This report covers progress on a Master's thesis benchmarking Fully Homomorphic Encryption (FHE) libraries -- Microsoft SEAL, OpenFHE, HElib, and Lattigo -- under one consistent methodology, so that results are directly comparable across libraries.
+
+\textbf{Scope:} this report covers \textbf{Microsoft SEAL} (v4.1.2), the first of the four libraries: all six metrics (latency, memory, energy, storage, noise-budget evolution, CKKS error), across all applicable scenarios, over the full parameter grid at $N \le 8192$, extended to category~1 at $N=16384$. The remaining $N=16384$ cells were excluded on hardware-safety grounds (Section~\ref{sec:limitations}). OpenFHE, HElib, and Lattigo are ongoing work (Section~\ref{sec:nextsteps}).
+
+Section~\ref{sec:reproducibility} gives everything needed to reproduce every result here independently: exact hardware, software versions, commands, and a public repository.

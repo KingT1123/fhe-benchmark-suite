@@ -39,14 +39,95 @@ set -euo pipefail
 IMAGE="${IMAGE:-seal-env}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXPERIMENTS_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-GRID="$EXPERIMENTS_DIR/config/param_grid.csv"
+GRID="${GRID:-$EXPERIMENTS_DIR/config/param_grid.csv}"
 RAW_DIR="$EXPERIMENTS_DIR/results/raw/edge_batch"
 LOG_DIR="$EXPERIMENTS_DIR/results/logs/edge_batch"
+TASKSET_CORE="${TASKSET_CORE:-0}"
+# inner-loop pinned to 1 (bench_seal's default is 1000, see bench_seal.cpp's
+# --inner-loop header comment): Edge/Batch's own batch_size dimension already
+# repeats the core op B times per timed trial, and aggregate.py's per-
+# invocation RAPL/peak-memory accounting (n=1_invocation_not_repeated) assumes
+# exactly one B-item trial per process. Stacking a 1000x inner-loop on top
+# would both break that accounting and multiply an already-large sweep
+# (B=100 * inner-loop=1000 = 100,000 fresh ciphertexts per rep) for no benefit
+# this scenario needs (timing-noise reduction isn't Edge/Batch's problem).
+INNER_LOOP=1
 
 RAPL_ENERGY_FILE="/sys/class/powercap/intel-rapl:0/energy_uj"
 RAPL_MAX_FILE="/sys/class/powercap/intel-rapl:0/max_energy_range_uj"
 
 mkdir -p "$RAW_DIR" "$LOG_DIR"
+
+# Document host CPU governor/boost state per run -- see run_standard_docker.sh
+# for why and for the acpi-cpufreq/amd_pstate vs. intel_pstate fallback logic.
+GOVERNOR_FILE="/sys/devices/system/cpu/cpu${TASKSET_CORE}/cpufreq/scaling_governor"
+BOOST_FILE="/sys/devices/system/cpu/cpufreq/boost"
+INTEL_NOTURBO_FILE="/sys/devices/system/cpu/intel_pstate/no_turbo"
+CPU_STATE_LOG="$LOG_DIR/cpu_state.txt"
+
+# --- Extra-rigor item 5: ENFORCE the governor (same pattern as
+# run_standard_docker.sh).
+ORIGINAL_GOVERNOR="$(cat "$GOVERNOR_FILE" 2>/dev/null || echo "")"
+GOVERNOR_ENFORCED=0
+if [ -n "$ORIGINAL_GOVERNOR" ]; then
+    if echo performance > "$GOVERNOR_FILE" 2>/dev/null; then
+        GOVERNOR_ENFORCED=1
+    else
+        echo "WARNING: could not write $GOVERNOR_FILE (needs root) -- governor NOT enforced, only logged below." >&2
+    fi
+fi
+
+# --- Extra-rigor item 7: periodic CPU temperature logging (same pattern as
+# run_standard_docker.sh).
+TEMP_LOG="$LOG_DIR/temperature_log.csv"
+TEMP_SOURCE=""
+for zone in /sys/class/thermal/thermal_zone*/; do
+    if [ -r "${zone}type" ] && grep -qiE "x86_pkg_temp|cpu" "${zone}type" 2>/dev/null && [ -r "${zone}temp" ]; then
+        TEMP_SOURCE="${zone}temp"; break
+    fi
+done
+if [ -z "$TEMP_SOURCE" ]; then
+    for zone in /sys/class/thermal/thermal_zone*/temp; do
+        [ -r "$zone" ] && TEMP_SOURCE="$zone" && break
+    done
+fi
+TEMP_LOGGER_PID=""
+if [ -n "$TEMP_SOURCE" ]; then
+    echo "timestamp,temp_millic,source" > "$TEMP_LOG"
+    ( while true; do
+          echo "$(date -Iseconds),$(cat "$TEMP_SOURCE" 2>/dev/null || echo ''),$TEMP_SOURCE" >> "$TEMP_LOG"
+          sleep 5
+      done ) &
+    TEMP_LOGGER_PID=$!
+    echo "Temperature logging started (PID $TEMP_LOGGER_PID, source=$TEMP_SOURCE) -> $TEMP_LOG"
+else
+    echo "WARNING: no readable /sys/class/thermal/thermal_zone*/temp found -- temperature logging skipped." >&2
+fi
+
+cleanup() {
+    if [ "$GOVERNOR_ENFORCED" -eq 1 ] && [ -n "$ORIGINAL_GOVERNOR" ]; then
+        echo "$ORIGINAL_GOVERNOR" > "$GOVERNOR_FILE" 2>/dev/null || true
+    fi
+    if [ -n "$TEMP_LOGGER_PID" ]; then
+        kill "$TEMP_LOGGER_PID" 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT
+
+{
+    echo "scaling_governor (as found): $ORIGINAL_GOVERNOR"
+    echo "scaling_governor (enforced to 'performance' for this run): $([ "$GOVERNOR_ENFORCED" -eq 1 ] && echo yes || echo "NO -- see warning above")"
+    if [ -r "$BOOST_FILE" ]; then
+        echo "boost (acpi-cpufreq/amd_pstate generic toggle, 1=enabled): $(cat "$BOOST_FILE")"
+    elif [ -r "$INTEL_NOTURBO_FILE" ]; then
+        echo "no_turbo (intel_pstate, 1=turbo disabled): $(cat "$INTEL_NOTURBO_FILE")"
+    else
+        echo "boost/turbo state: not readable on this machine (checked acpi-cpufreq/amd_pstate boost and intel_pstate no_turbo)"
+    fi
+    echo "taskset_core: $TASKSET_CORE (enforced -- see _inner_measure.sh's taskset -c call)"
+    echo "inner_loop: $INNER_LOOP"
+} > "$CPU_STATE_LOG"
+echo "CPU state (governor/boost/pinned core) logged to $CPU_STATE_LOG"
 
 if [ ! -x "$EXPERIMENTS_DIR/seal/build/bench_seal" ]; then
     echo "ERROR: bench_seal not built yet (or stale -- rebuild after the" >&2
@@ -66,7 +147,27 @@ else
     echo "RAPL OK: reading energy from $RAPL_ENERGY_FILE ($(cat /sys/class/powercap/intel-rapl:0/name 2>/dev/null))"
 fi
 
-SCHEMES=("BFV" "CKKS")
+# --- Extra-rigor item 2: idle-power baseline (same pattern as
+# run_standard_docker.sh).
+IDLE_SECONDS=5
+measure_idle_power() {
+    local label="$1"
+    if [ "$HAVE_RAPL" -ne 1 ]; then
+        echo "idle_power_watts_${label}: unavailable (no RAPL)" >> "$CPU_STATE_LOG"
+        return
+    fi
+    local before after delta_uj watts
+    before=$(cat "$RAPL_ENERGY_FILE")
+    sleep "$IDLE_SECONDS"
+    after=$(cat "$RAPL_ENERGY_FILE")
+    if [ "$after" -ge "$before" ]; then delta_uj=$((after - before)); else delta_uj=$((after + MAX_ENERGY_UJ - before)); fi
+    watts=$(awk "BEGIN{printf \"%.4f\", $delta_uj/1000000/$IDLE_SECONDS}")
+    echo "idle_power_watts_${label}: $watts (over ${IDLE_SECONDS}s, nothing scheduled on core $TASKSET_CORE)" >> "$CPU_STATE_LOG"
+    echo "Idle power ($label): ${watts} W"
+}
+measure_idle_power "before"
+
+SCHEMES=("BFV" "CKKS" "BGV")
 BATCH_OPERATIONS=("encrypt" "decrypt" "add" "multiply" "relinearize")
 BATCH_SIZES=(1 10 100)
 
@@ -77,15 +178,29 @@ declare -A WARMUP_FOR_BATCH=([1]=5   [10]=3  [100]=2  )
 
 run_one() {
     local TAG="$1"; shift
+    local EXPECTED_ROWS="$1"; shift  # resume support -- see run_standard_docker.sh.
+                                      # Edge/Batch's reps+warmup varies by batch
+                                      # size (REPS_FOR_BATCH/WARMUP_FOR_BATCH), so
+                                      # unlike Standard/Constrained this can't be a
+                                      # single script-wide constant -- callers pass
+                                      # the count that matches their own --reps/
+                                      # --warmup.
+    local OUT_CSV_HOST="$RAW_DIR/${TAG}.csv"
     local OUT_CSV="/work/results/raw/edge_batch/${TAG}.csv"
     local MEM_LOG="/work/results/logs/edge_batch/${TAG}_mem.log"
     local ENERGY_LOG="$LOG_DIR/${TAG}_energy.log"
 
+    if [ -f "$OUT_CSV_HOST" ] && [ "$(tail -n +2 "$OUT_CSV_HOST" | wc -l)" -ge "$EXPECTED_ROWS" ]; then
+        echo "SKIPPED (already complete): ${TAG}.csv"
+        return
+    fi
+
     echo ">> $TAG"
 
-    local DOCKER_CMD=(docker run --rm -v "$EXPERIMENTS_DIR":/work "$IMAGE" \
+    local DOCKER_CMD=(docker run --rm -e TASKSET_CORE="$TASKSET_CORE" \
+        -v "$EXPERIMENTS_DIR":/work "$IMAGE" \
         bash /work/scripts/_inner_measure.sh /work/seal/build/bench_seal "$MEM_LOG" \
-        "$@" --out="$OUT_CSV" --grid=/work/config/param_grid.csv)
+        "$@" --inner-loop="$INNER_LOOP" --out="$OUT_CSV" --grid=/work/config/param_grid.csv)
 
     if [ "$HAVE_RAPL" -eq 1 ]; then
         local E_BEFORE E_AFTER DELTA_UJ DELTA_J
@@ -104,23 +219,61 @@ run_one() {
     fi
 }
 
-tail -n +2 "$GRID" | while IFS=, read -r N CATEGORY SEC CHAIN LOGQ DEPTH; do
-    for SCHEME in "${SCHEMES[@]}"; do
-        # (d) keygen: once per cell, batch-size-invariant.
-        run_one "seal_${SCHEME,,}_N${N}_cat${CATEGORY}_keygen_batch1" \
-            --scheme="$SCHEME" --N="$N" --category="$CATEGORY" --operation=keygen \
-            --reps=100 --warmup=5 --batch-size=1
-
-        for OP in "${BATCH_OPERATIONS[@]}"; do
-            for B in "${BATCH_SIZES[@]}"; do
-                run_one "seal_${SCHEME,,}_N${N}_cat${CATEGORY}_${OP}_batch${B}" \
-                    --scheme="$SCHEME" --N="$N" --category="$CATEGORY" --operation="$OP" \
-                    --reps="${REPS_FOR_BATCH[$B]}" --warmup="${WARMUP_FOR_BATCH[$B]}" \
-                    --batch-size="$B"
+# --- Extra-rigor item 6: randomize run order, seeded and logged. Adapted
+# from run_standard_docker.sh's simpler 4-tuple flatten: this scenario has
+# TWO different kinds of work unit -- one batch-invariant keygen call per
+# (scheme,N,category), and a separate (operation x batch_size) grid -- so
+# each flattened entry is tagged with its KIND ("keygen" or "op") and the
+# dispatch loop below branches on that tag. This lets keygen's position
+# relative to the batch operations be randomized too, not just the batch
+# operations among themselves.
+RUN_ORDER_SEED="${RUN_ORDER_SEED:-$RANDOM$RANDOM}"
+echo "run_order_seed: $RUN_ORDER_SEED" >> "$CPU_STATE_LOG"
+mapfile -t ALL_CELLS < <(
+    tail -n +2 "$GRID" | while IFS=, read -r N CATEGORY SEC CHAIN LOGQ DEPTH; do
+        for SCHEME in "${SCHEMES[@]}"; do
+            echo "keygen,$N,$CATEGORY,$SCHEME,,"
+            for OP in "${BATCH_OPERATIONS[@]}"; do
+                for B in "${BATCH_SIZES[@]}"; do
+                    echo "op,$N,$CATEGORY,$SCHEME,$OP,$B"
+                done
             done
         done
     done
+)
+mapfile -t SHUFFLED_CELLS < <(
+    printf '%s\n' "${ALL_CELLS[@]}" | \
+        shuf --random-source=<(openssl enc -aes-256-ctr -pass pass:"$RUN_ORDER_SEED" -nosalt </dev/zero 2>/dev/null)
+)
+echo "Run order randomized (seed=$RUN_ORDER_SEED, ${#SHUFFLED_CELLS[@]} cells) -- reproducible via RUN_ORDER_SEED=$RUN_ORDER_SEED"
+
+# Durable record of the run-order seed: cpu_state.txt above lives under
+# results/logs/, which is gitignored, so until now the seed actually used
+# for any given run wasn't recoverable from anything that gets committed.
+# Append one row per invocation to a small, git-tracked CSV instead.
+RUN_METADATA_CSV="$EXPERIMENTS_DIR/results/run_metadata.csv"
+if [ ! -f "$RUN_METADATA_CSV" ]; then
+    echo "timestamp,scenario,run_order_seed,num_cells" > "$RUN_METADATA_CSV"
+fi
+echo "$(date -Iseconds),edge_batch,$RUN_ORDER_SEED,${#SHUFFLED_CELLS[@]}" >> "$RUN_METADATA_CSV"
+
+for CELL in "${SHUFFLED_CELLS[@]}"; do
+    IFS=, read -r KIND N CATEGORY SCHEME OP B <<< "$CELL"
+    if [ "$KIND" = "keygen" ]; then
+        # (d) keygen: once per cell, batch-size-invariant.
+        run_one "seal_${SCHEME,,}_N${N}_cat${CATEGORY}_keygen_batch1" 105 \
+            --scheme="$SCHEME" --N="$N" --category="$CATEGORY" --operation=keygen \
+            --reps=100 --warmup=5 --batch-size=1
+    else
+        run_one "seal_${SCHEME,,}_N${N}_cat${CATEGORY}_${OP}_batch${B}" \
+            "$((REPS_FOR_BATCH[$B] + WARMUP_FOR_BATCH[$B]))" \
+            --scheme="$SCHEME" --N="$N" --category="$CATEGORY" --operation="$OP" \
+            --reps="${REPS_FOR_BATCH[$B]}" --warmup="${WARMUP_FOR_BATCH[$B]}" \
+            --batch-size="$B"
+    fi
 done
+
+measure_idle_power "after"
 
 echo "Edge/Batch sweep complete. Raw CSVs in $RAW_DIR, logs in $LOG_DIR."
 echo "aggregate.py does not yet support --scenario=edge_batch -- that's the next step, not run here."

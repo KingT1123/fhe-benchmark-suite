@@ -472,6 +472,53 @@ All three of Chapter 3's previously-deferred metrics are now fully closed:
 implemented, Docker-verified, swept across the full grid, and aggregated
 into `results/final/`.
 
+## Update — Reproducibility audit fixes: Dockerfile, run-order-seed durability
+
+An audit of the repo's reproducibility/accessibility surfaced three gaps,
+all closed:
+
+1. **No Dockerfile existed** for `seal-env` — it had only ever been built
+   ad hoc, and `docker history` showed `COPY` steps from local source
+   directories (`seal-src`, `gsl-include`, `gsl-cmake`) that no longer
+   exist on disk, so the image couldn't be genuinely rebuilt, only
+   described. Added `experiments/seal/Dockerfile`, pinned throughout: base
+   image by digest, SEAL and Microsoft GSL built from their official
+   tagged releases (`v4.1.2`, `v4.2.0`) instead of the missing local
+   copies, and every apt package pinned to the exact version `dpkg -l`
+   reported inside the actual running `seal-env` container. Plain
+   version-pinned `apt-get install` against the live Ubuntu archive turned
+   out not to be enough on its own — the exact old build of `libssl-dev`
+   and `zlib1g-dev` had already rolled off the default archive by the time
+   this was tested (2026-09-23), which is a real, general limitation of
+   Debian/Ubuntu-style archives, not a mistake in the pin. Fixed by
+   pointing apt at a dated snapshot of the Ubuntu archive
+   (`snapshot.ubuntu.com`) instead of the rolling one: searched by date
+   until finding one serial (`20260501T000000Z`) that serves all seven
+   pinned versions simultaneously — strong evidence it's close to the
+   actual archive state the original image was built against — and that
+   snapshot stays servable indefinitely, so the build no longer depends on
+   what the live archive looks like whenever someone runs it. Verified by
+   actually building the image end-to-end from this Dockerfile (not just
+   reading it).
+2. **`RUN_ORDER_SEED` was only logged to `cpu_state.txt`**, which lives
+   under the gitignored `results/logs/`, so no committed file could ever
+   show what order a given scenario's cells actually ran in. All six
+   `run_*_docker.sh` scripts now also append a row (timestamp, scenario,
+   seed, cell count) to `results/run_metadata.csv`, which is tracked.
+   Backfilled the six rows for scenarios already run, by reading the seed
+   back out of each scenario's existing `cpu_state.txt` — real seeds, not
+   placeholders. Cell count for those six backfilled rows is recorded as
+   `unknown` rather than a guessed number: the exact count was only ever
+   printed to that run's own terminal output, never written to a
+   persisted file, so it isn't recoverable after the fact. New rows
+   written by the scripts going forward carry the real count.
+3. **Historical backup folders** (`raw_backup_*`, timestamped safety
+   copies made before overwriting `results/raw/` between scenario runs)
+   were untracked and un-ignored — added to `.gitignore`. They're
+   superseded by the corrected data that's actually committed, so keeping
+   them out of the public repo doesn't lose anything reproducibility
+   needs.
+
 ## Next steps
 1. ~~Decide the N=2048/category 5 question above (a/b/c).~~ **Resolved** —
    see decision above and `docs/findings/N2048_CAT5_LIMITATION.md`.
