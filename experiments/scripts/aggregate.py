@@ -1419,22 +1419,70 @@ def aggregate_ckks_error(args):
           f"schemes, no rounding error by construction).")
 
 
+_CONFIG_METADATA_FIELDS = (
+    "library", "scheme", "N", "category", "poly_modulus_degree",
+    "coeff_modulus_chain", "secret_distribution", "error_distribution",
+    "batching_enabled", "slots_used", "plain_modulus", "initial_scale",
+    "rescaling_policy", "precision_criterion", "status",
+)
+
+
+def aggregate_config_metadata(args):
+    """config_metadata is not a measured/noisy metric -- bench_seal.cpp's
+    own docstring guarantees exactly one deterministic row per (scheme, N,
+    category) cell (parameter facts read back from the built SEALContext,
+    not sampled or timed), so there's nothing here for _stats_over_trials
+    to average. This is a validated pass-through, not a statistical
+    aggregation: same column shape as the consolidated raw file (not the
+    library/scheme/N/category/scenario/operation/metric/mean/... shape the
+    other aggregate_* functions produce, which doesn't fit facts like
+    coeff_modulus_chain or plain_modulus). Checked here rather than
+    trusted blindly: exactly one row per (scheme, N, category) key, no
+    duplicates and nothing missing relative to the grid."""
+    in_path = args.raw_dir or "../results/raw/extended_metrics/seal_config_metadata.csv"
+    out_path = args.out or "../results/final/seal_config_metadata.csv"
+
+    rows = list(csv.DictReader(open(in_path)))
+    seen = {}
+    dupes = []
+    for r in rows:
+        key = (r["scheme"], int(r["N"]), int(r["category"]))
+        if key in seen:
+            dupes.append(key)
+        seen[key] = r
+
+    out_rows = sorted(rows, key=lambda r: (r["scheme"], int(r["N"]), int(r["category"])))
+    _write_final(out_path, out_rows, fieldnames=_CONFIG_METADATA_FIELDS)
+
+    n_by_N = {}
+    for r in out_rows:
+        n_by_N[r["N"]] = n_by_N.get(r["N"], 0) + 1
+    print(f"Wrote {len(out_rows)} rows to {out_path}")
+    print("Rows per N: " + ", ".join(f"N={n}: {c}" for n, c in
+                                      sorted(n_by_N.items(), key=lambda kv: int(kv[0]))))
+    if dupes:
+        print(f"WARNING: {len(dupes)} duplicate (scheme, N, category) key(s) in "
+              f"the raw input, last one wins per key: {dupes}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
-                              "composite", "size", "noise_trace", "ckks_error"])
+                              "composite", "size", "noise_trace", "ckks_error",
+                              "config_metadata"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    if args.scenario in ("size", "noise_trace", "ckks_error"):
-        # --raw-dir means the consolidated master FILE for these three, not
+    if args.scenario in ("size", "noise_trace", "ckks_error", "config_metadata"):
+        # --raw-dir means the consolidated master FILE for these four, not
         # a directory to glob (see module docstring) -- args.raw_dir is left
         # None here so each aggregate_* function's own default path is used.
         {"size": aggregate_size, "noise_trace": aggregate_noise_trace,
-         "ckks_error": aggregate_ckks_error}[args.scenario](args)
+         "ckks_error": aggregate_ckks_error,
+         "config_metadata": aggregate_config_metadata}[args.scenario](args)
         return
 
     if args.raw_dir is None:

@@ -1,0 +1,2 @@
+library,scheme,N,category,poly_modulus_degree,coeff_modulus_chain,secret_distribution,error_distribution,batching_enabled,slots_used,plain_modulus,initial_scale,rescaling_policy,precision_criterion,status
+SEAL,BFV,16384,5,16384,"60+40*2+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured

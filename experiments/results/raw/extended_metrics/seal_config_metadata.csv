@@ -1,4 +1,7 @@
 library,scheme,N,category,poly_modulus_degree,coeff_modulus_chain,secret_distribution,error_distribution,batching_enabled,slots_used,plain_modulus,initial_scale,rescaling_policy,precision_criterion,status
+SEAL,BFV,16384,1,16384,"60+40*7+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured
+SEAL,BFV,16384,3,16384,"60+40*4+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured
+SEAL,BFV,16384,5,16384,"60+40*2+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured
 SEAL,BFV,2048,1,2048,"26+26",uniform_ternary,centered_binomial_sigma_3.2,true,2048,12289,,"","",measured
 SEAL,BFV,2048,3,2048,"17+17",uniform_ternary,centered_binomial_sigma_3.2,true,2048,1032193,,"","",measured
 SEAL,BFV,2048,5,2048,"26",uniform_ternary,centered_binomial_sigma_3.2,true,2048,12289,,"","",measured
@@ -8,6 +11,9 @@ SEAL,BFV,4096,5,4096,"27+28",uniform_ternary,centered_binomial_sigma_3.2,true,40
 SEAL,BFV,8192,1,8192,"60+40+40+60",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
 SEAL,BFV,8192,3,8192,"46+47+47",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
 SEAL,BFV,8192,5,8192,"54+54",uniform_ternary,centered_binomial_sigma_3.2,true,8192,1032193,,"","",measured
+SEAL,BGV,16384,1,16384,"60+40*7+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured
+SEAL,BGV,16384,3,16384,"60+40*4+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured
+SEAL,BGV,16384,5,16384,"60+40*2+60",uniform_ternary,centered_binomial_sigma_3.2,true,16384,786433,,"","",measured
 SEAL,BGV,2048,1,2048,"26+26",uniform_ternary,centered_binomial_sigma_3.2,true,2048,12289,,"","",measured
 SEAL,BGV,2048,3,2048,"17+17",uniform_ternary,centered_binomial_sigma_3.2,true,2048,1032193,,"","",measured
 SEAL,BGV,2048,5,2048,"26",uniform_ternary,centered_binomial_sigma_3.2,true,2048,12289,,"","",measured

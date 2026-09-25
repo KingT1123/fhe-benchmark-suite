@@ -422,19 +422,30 @@ struct Ctx {
 };
 
 // Plaintext modulus for BFV/BGV cells. Every cell uses SEAL's standard
-// 20-bit batching prime (1032193, same value for every N in this grid)
-// EXCEPT three cells whose coeff-modulus chain was shrunk to meet the
-// 2024/2025 security-guideline re-verification (Chapter 3, security-level
+// 20-bit batching prime -- NOT one fixed constant across the whole grid:
+// PlainModulus::Batching(N, 20) is a real search for a prime t of at most
+// 20 bits with t = 1 (mod 2N), and that congruence depends on N, so the
+// prime it lands on depends on N too. Confirmed directly (--operation=
+// config_metadata, reading the value back from the built SEALContext, not
+// just assumed from the call site): N in {2048, 4096, 8192} all land on
+// t=1032193; N=16384 lands on a different prime, t=786433 (786433 mod
+// 32768 = 1, so it's a genuine, correctly-congruent 20-bit batching prime
+// for that N, not a mistake or a fallback). Separately from that, three
+// cells' coeff-modulus chains were shrunk to meet the 2024/2025
+// security-guideline re-verification (Chapter 3, security-level
 // validation): at the standard 20-bit t, those three specific chains leave
 // zero real noise budget (fresh ciphertexts already fail to decrypt
 // correctly), so they use a smaller batching-compatible prime instead --
 // the smallest that restores a real, positive margin (see
 // sec_methodology.tex's Table~\ref{tab:configmeta-bfvbgv} note). Every
-// other cell, including every other N=2048/4096 category, is unaffected.
+// other cell, including every other N=2048/4096 category and all of
+// N=16384, is unaffected by that second exception.
 Modulus bfv_bgv_plain_modulus(int N, int category) {
     if (N == 2048 && (category == 1 || category == 5)) return PlainModulus::Batching(N, 14);  // 12289
     if (N == 4096 && category == 5) return PlainModulus::Batching(N, 16);  // 40961
-    return PlainModulus::Batching(N, 20);  // 1032193 -- every other cell
+    // N in {2048,4096,8192} -> 1032193; N=16384 -> 786433 (both confirmed
+    // via config_metadata, see comment above -- same call, N-dependent result).
+    return PlainModulus::Batching(N, 20);
 }
 
 // CKKS initial scale (bits). Every cell uses the shared formula computed
