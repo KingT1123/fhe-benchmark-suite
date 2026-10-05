@@ -6,3 +6,5 @@ timestamp,scenario,run_order_seed,num_cells
 2026-09-19T12:07:39+01:00,composite,313786178,unknown
 2026-09-19T16:47:11+01:00,packing,2265030339,unknown
 2026-10-05T02:14:22+01:00,extended_metrics,302226786,12
+2026-10-05T03:16:18+01:00,standard_energy_memory,157411531,144
+2026-10-05T06:03:50+01:00,constrained_energy_memory,82866171,126

@@ -1364,7 +1364,27 @@ def aggregate_noise_trace(args):
           f"noise-budget API -- see bench_seal.cpp).")
 
 
-def energy_memory_rows(em_dir, tag):
+def pooled_idle_baseline(em_root="../results/raw/energy_memory"):
+    """One idle-power baseline for the machine: the median of every per-cell
+    idle reading in the round-3 energy/memory runs, pooled over Standard and
+    Constrained. Why not each cell's own reading: on this laptop a single
+    4 s idle window is unreliable -- readings taken while the package is
+    still hot (>80 C) come out at 20-33 W, sometimes above the power drawn
+    while the operation itself runs (~21 W median), which made 10 of 270
+    cells' corrected energy negative. 90% of readings sit at 12-19 W
+    (median 13.5 W). A single pooled median is robust to those readings and
+    also keeps Standard vs Constrained comparable (same machine, same
+    baseline). Per-cell readings are still reported (idle_power_w)."""
+    vals = []
+    for f in glob.glob(os.path.join(em_root, "*", "seal_*_energy.csv")):
+        for r in csv.DictReader(open(f)):
+            if r.get("status") == "measured" and r.get("idle_power_w"):
+                vals.append(float(r["idle_power_w"]))
+                break
+    return statistics.median(vals) if vals else None
+
+
+def energy_memory_rows(em_dir, tag, idle_baseline_w):
     """Round-3 energy/memory protocol (run_energy_memory_docker.sh) for one
     Standard/Constrained cell. Returns a list of (metric, stats-dict, flag).
 
@@ -1375,9 +1395,11 @@ def energy_memory_rows(em_dir, tag):
         window_s  = latency_ms * inner_loop / 1000
         gross/op  = energy_uj / 1e6 / inner_loop
         net/op    = (energy_uj / 1e6 - idle_power_w * window_s) / inner_loop
-    then real mean/std/CI over the reps. net (idle-corrected) is the energy
-    the operation itself adds above the idle machine; gross is the package
-    total over the same window, kept for transparency.
+    then real mean/std/CI over the reps, with idle_power_w = the pooled
+    machine baseline (pooled_idle_baseline), not the cell's own reading.
+    net (idle-corrected) is the energy the operation adds above the idle
+    machine; gross is the package total over the same window, which needs
+    no idle assumption.
     Memory: VmHWM of MEM_RUNS separate inner_loop=1 invocations
     (<tag>_mem<k>.log), stats over invocations."""
     rows = []
@@ -1391,11 +1413,12 @@ def energy_memory_rows(em_dir, tag):
                 e_j = int(r["energy_uj"]) / 1e6
                 window_s = float(r["latency_ms"]) * k / 1000.0
                 gross.append(e_j / k)
-                net.append((e_j - float(r["idle_power_w"]) * window_s) / k)
+                net.append((e_j - idle_baseline_w * window_s) / k)
             idle = [float(r["idle_power_w"]) for r in measured][:1]
-            rows.append(("energy_net_j_per_op", _stats_over_trials(net), ""))
+            rows.append(("energy_net_j_per_op", _stats_over_trials(net),
+                         f"idle_baseline_{idle_baseline_w:.2f}W_pooled_median"))
             rows.append(("energy_pkg_j_per_op", _stats_over_trials(gross), ""))
-            rows.append(("idle_power_w", (idle[0],) + ("",) * 6 + ("single_idle_window_before_reps",), None))
+            rows.append(("idle_power_w", (idle[0],) + ("",) * 6 + ("cell_reading_not_used_for_correction",), None))
     mem = []
     for m_path in sorted(glob.glob(os.path.join(em_dir, f"{tag}_mem[0-9]*.log"))):
         v = parse_mem_log(m_path)
@@ -1620,7 +1643,9 @@ def main():
     em_dir = f"../results/raw/energy_memory/{args.scenario}"
     use_em = bool(glob.glob(os.path.join(em_dir, "seal_*")))
     if use_em:
-        print(f"Energy/memory: round-3 protocol data from {em_dir}")
+        idle_baseline_w = pooled_idle_baseline()
+        print(f"Energy/memory: round-3 protocol data from {em_dir}; "
+              f"idle baseline {idle_baseline_w:.2f} W (pooled median)")
 
     out_rows = []
     for f in files:
@@ -1657,7 +1682,7 @@ def main():
             base = {"library": summary["library"], "scheme": summary["scheme"],
                     "N": summary["N"], "category": summary["category"],
                     "scenario": args.scenario, "operation": summary["operation"]}
-            em = energy_memory_rows(em_dir, tag)
+            em = energy_memory_rows(em_dir, tag, idle_baseline_w)
             if not em:
                 out_rows.append({**base, "metric": "energy_net_j_per_op",
                                  "flag": "not_measured_in_energy_memory_run"})
