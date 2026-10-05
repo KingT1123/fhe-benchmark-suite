@@ -105,78 +105,41 @@ The Composite scenario's Galois (rotation) keys are a more extreme case, and one
 
 \subsubsection*{Noise budget}
 
-Figure~\ref{fig:noisebudget} plots two complete, real traces: the shallowest usable depth (depth 2) and the deepest tested (depth 7, $N{=}16384$). Both stay well above zero through their full documented chain.
-
-\begin{figure}[h!]
-\centering
-\begin{tikzpicture}
-  \begin{axis}[
-      width=11cm, height=5.2cm,
-      xlabel={Step (0=fresh, 1=+add, then multiply/relinearize pairs)},
-      ylabel={Budget (bits)},
-      xmin=0, xmax=15, ymin=0, ymax=330,
-      axis lines*=left,
-      ymajorgrids, grid style={gray!20},
-      legend style={font=\scriptsize, at={(0.98,0.98)}, anchor=north east},
-    ]
-    \addplot[very thick, mark=*, mark size=1.3pt, seaBlue] coordinates
-      {(0,112)(1,112)(2,80)(3,80)(4,48)(5,48)};
-    \addplot[very thick, mark=*, mark size=1.3pt, budgetGreen] coordinates
-      {(0,312)(1,311.3)(2,279)(3,279)(4,247)(5,247)(6,214.2)(7,214.2)(8,181.8)(9,181.8)
-       (10,149)(11,149)(12,116.5)(13,116.5)(14,83.8)(15,83.8)};
-    \legend{{$N{=}8192$, depth 2}, {$N{=}16384$, depth 7}}
-  \end{axis}
-\end{tikzpicture}
-\caption{Noise-budget evolution, both real, complete traces.}
-\label{fig:noisebudget}
-\end{figure}
-
-The one exception in the whole grid: $N{=}2048$, category~1 -- budget is \textbf{0} already on the fresh ciphertext, before any operation runs (Table~\ref{tab:zerobudget}).
-
-Three configurations in this grid -- $N{=}2048$/category~1, $N{=}2048$/category~5, and $N{=}4096$/category~5 -- use a smaller plaintext modulus than the rest (Section~\ref{sec:security-validation}, Table~\ref{tab:configmeta-bfvbgv}), so their noise-budget numbers are not directly comparable to the other nine configurations' on that basis alone.
+Table~\ref{tab:noisebudget} gives the measured noise budget of every BFV and BGV cell (mean over 10 trials, from \texttt{seal\_noise\_budget.csv}), and Figure~\ref{fig:noisebudget} plots the complete traces of the two $N{=}8192$ cells that support multiplication. Every cell starts with a positive budget; the thinnest are at $N{=}2048$, where all three cells are depth 0 and keep between 1 and 5 bits after an addition.
 
 \begin{table}[h!]
 \centering\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-& \textbf{Fresh} & \textbf{After +add} \\
-\midrule
-$N{=}2048$, category 1 & 0 bits & 0 bits \\
-$N{=}2048$, category 3 & 6 bits & 5.9 bits \\
-\bottomrule
-\end{tabular}
-\caption{Noise budget at the smallest ring dimension.}
-\label{tab:zerobudget}
+\input{generated/noise_budget_table.tex}
+\caption{Noise budget (bits) per cell and scheme. ``After last mult.'' is the budget after the last multiply--relinearize round performed in the trace (the deepest round the cell supports), with the number of rounds in parentheses; ``--'' marks depth-0 cells.}
+\label{tab:noisebudget}
 \end{table}
-
-\subsubsection*{CKKS error}
-
-Figure~\ref{fig:ckkserror} compares the grid's two thinnest-budget configurations -- $N{=}2048$/category~1 (zero budget, Table~\ref{tab:zerobudget}) and $N{=}2048$/category~3 (6 bits, non-zero but thin) -- against two comfortably-budgeted configurations, all measured at the same step (after the first addition) for a fair comparison.
 
 \begin{figure}[h!]
 \centering
-\begin{tikzpicture}
-  \begin{axis}[
-      width=11cm, height=4.8cm,
-      ybar, bar width=1.1cm,
-      symbolic x coords={A, B, C, D},
-      xtick={A, B, C, D},
-      x tick label style={font=\scriptsize, align=center},
-      xticklabels={2048/cat1, 2048/cat3, 8192/cat1, 16384/cat1},
-      ymode=log,
-      ylabel={Max.\ error, +add (log)},
-      axis lines*=left,
-      ymajorgrids, grid style={gray!20},
-    ]
-    \addplot[fill=noiseRed!60] coordinates {(A,9.34) (B,176.2)};
-    \addplot[fill=budgetGreen!70] coordinates {(C,1.31e-8) (D,2.30e-8)};
-  \end{axis}
-\end{tikzpicture}
-\caption{CKKS error: zero- and thin-budget configurations vs.\ comfortably-budgeted ones (log scale).}
+\input{generated/noise_budget_figure.tex}
+\caption{Noise-budget evolution for the $N{=}8192$ cells that support multiplication, BFV and BGV.}
+\label{fig:noisebudget}
+\end{figure}
+
+Three observations follow from the data:
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{BGV spends more budget per multiplication than BFV} at the same parameters: about 37--38 bits per round against 30--32 for BFV. As a result BFV supports one more multiplication than the chain length suggests at $N{=}8192$ (three rounds at category~1, two at category~3), while BGV supports exactly the chain's depth.
+  \item \textbf{BGV at $N{=}4096$/category~1 sits at the edge of depth 1.} After its single multiplication the reported budget is 0 bits in the main run (SEAL rounds down, so this means less than one bit), yet every decryption was correct. Because SEAL draws fresh random keys in every run, this value depends on the key: 16 further independent runs (400 decryptions after the multiplication) left between 2 and 6 bits, and every decryption was correct. BFV at the same cell stays at 7--8 bits regardless of the key.
+  \item \textbf{Three cells use a smaller plaintext modulus} ($N{=}2048$ categories 1 and 5, and $N{=}4096$ category~5; see Table~\ref{tab:configmeta-bfvbgv}), so their budgets are not directly comparable to the other cells' on that basis alone.
+\end{itemize}
+
+\subsubsection*{CKKS error}
+
+Figure~\ref{fig:ckkserror} gives the maximum absolute error after one addition for every CKKS cell (Table~\ref{tab:configmeta-ckks} gives the full values, including after the multiply chain).
+
+\begin{figure}[h!]
+\centering
+\input{generated/ckks_error_figure.tex}
+\caption{CKKS maximum absolute error after one addition, every cell (log scale; inputs in $[-1,1]$).}
 \label{fig:ckkserror}
 \end{figure}
 
-Both the zero-budget and the thin-budget configuration show error of order 1--100 -- unusable; notably, even a non-zero 6-bit budget is not enough to keep CKKS error under control. The two comfortably-budgeted configurations stay near $10^{-8}$, even at depth $>0$. Two independently implemented measurements -- noise-budget tracking (BFV, counts bits) and CKKS error tracking (diffs decrypted output against exact arithmetic) -- agree at every parameter set tested, including the one configuration with truly zero budget. This agreement is strong evidence the finding reflects the underlying parameters, not a measurement artifact.
+Error is lowest at $N{=}8192$ ($\approx 10^{-8}$ for all three categories, at most $1.1{\times}10^{-6}$ through the full multiply chain) and grows as the coefficient-modulus budget shrinks. At $N{=}2048$, category~1 is usable ($1.5{\times}10^{-4}$) after its scale was tuned; the problematic cells are category~3, whose 17-bit budget limits the error to about 8\% (a structural limit, Section~\ref{sec:security-validation}), and category~5, whose single 26-bit prime gives $2.1{\times}10^{-3}$ even at the largest scale SEAL accepts. Both of these should be read with that caveat rather than compared directly with the other cells.
 
 \clearpage
 \subsection{Behavior under different conditions}
