@@ -13,15 +13,15 @@ Everything needed to reproduce every result in this report is given below.
 \midrule
 CPU & AMD Ryzen 9 6900HX with Radeon Graphics \\
 RAM & 14\,GiB \\
-OS & Ubuntu 24.04.4 LTS (noble) \\
-Kernel & Linux 7.0.0-28-generic, x86\_64 \\
-Docker & 29.7.1 (build e9452d6) \\
+OS & Ubuntu 24.04.4 LTS (noble); 24.04.5 for the energy/memory runs \\
+Kernel & Linux 7.0.0-28-generic, x86\_64; 7.0.0-34-generic for the energy/memory runs \\
+Docker & 29.7.1 (build e9452d6); 29.8.1 (build 4a63305) for the energy/memory runs \\
 g++ & 13.3.0 (Ubuntu 13.3.0-6ubuntu2\textasciitilde24.04.1) \\
 CMake & 3.28.3 \\
 SEAL & 4.1.2, Release, ZLIB/ZSTD on, HEXL off, Blake2xb PRNG \\
 \bottomrule
 \end{tabular}
-\caption{Exact hardware and software environment.}
+\caption{Exact hardware and software environment. The host system was updated between the main campaign (September 2026) and the dedicated energy/memory runs (October 2026); SEAL, the compiler and all libraries are inside the pinned Docker image and are identical in both.}
 \label{tab:env}
 \end{table}
 
@@ -40,7 +40,7 @@ All SEAL results in this report were produced from commit \sealcommit, tagged \t
 \texttt{git checkout seal-final-v1}
 \end{center}
 
-The full parameter grid (Table~\ref{tab:paramgrid}) is at \texttt{experiments/config/param\_grid.csv}. Random inputs use a fixed seed, so repeated runs are reproducible; small numeric variation between runs (captured by the confidence intervals reported throughout) is expected from ordinary system timing noise, not from the random inputs themselves.
+The full parameter grid (Table~\ref{tab:paramgrid}) is at \texttt{experiments/config/param\_grid.csv}. The benchmark's input values use a fixed seed, but SEAL generates its keys and encryption randomness afresh in every run, as it must. Repeated runs therefore reproduce timings and sizes up to ordinary system noise (captured by the confidence intervals reported throughout), while noise-budget values can differ by a few bits from run to run (Section~\ref{sec:results}, BGV at $N{=}4096$/category~1).
 
 \subsection{Reproduction steps}
 

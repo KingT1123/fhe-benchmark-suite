@@ -1,5 +1,12 @@
 # Finding: SEAL prime-search failure at N=2048, NIST category 5
 
+> **Superseded (round 1 of the supervisor's review).** This failure applied to
+> the ORIGINAL N=2048/cat5 chain. After the security-grid rebuild the cell uses a
+> single 26-bit prime with plaintext modulus t=12289 (BFV/BGV) and, for CKKS,
+> scale 2^24; it now builds and is measured in every scenario (see
+> `experiments/config/param_grid.csv` and the report's Limitations section).
+> Kept for the record of how the grid evolved.
+
 ## Summary
 At the smallest tested ring dimension (N=2048) combined with NIST category 5
 (256-bit security), SEAL's automatic prime search fails outright —
