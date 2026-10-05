@@ -9,7 +9,7 @@ Every test is defined by four parameters, fixed before any measurement: ring dim
 \centering\small
 \begin{tabular}{@{}cccccc@{}}
 \toprule
-$N$ & Category & Max $\log q$ & Chain (bits) & $\log q$ used & Depth \\
+$N$ & Category & Max $\log q$ (2018) & Chain (bits) & $\log q$ used & Depth \\
 \midrule
 2048  & 1 (128-bit) & 54  & \{26,26\}             & 52  & 0 \\
 2048  & 3 (192-bit) & 37  & \{17,17\}             & 34  & 0 \\
@@ -25,7 +25,7 @@ $N$ & Category & Max $\log q$ & Chain (bits) & $\log q$ used & Depth \\
 16384 & 5 (256-bit) & 237 & \{60,40$\times$2,60\} & 200 & 2 \\
 \bottomrule
 \end{tabular}
-\caption{Full parameter grid. Depth grows with $N$ and shrinks as the security requirement rises at fixed $N$ -- the same modulus that sets the noise budget also governs hardness, so a harder security target forces a smaller budget. Eight cells' chains were re-tuned from their original values (Section~\ref{sec:security-validation}) to meet the 2024/2025 guideline; $N{=}2048$/category~5's chain shrank to a single prime, the only cell in this grid with no dedicated key-switching modulus.}
+\caption{Full parameter grid. ``Max $\log q$ (2018)'' is the limit from the 2018 Homomorphic Encryption Standard~\cite{hestandard2021}, the source of the category labels; the stricter 2024/2025 limits actually used for validation are in Table~\ref{tab:guideline52}. Depth grows with $N$ and shrinks as the security requirement rises at fixed $N$ -- the same modulus that sets the noise budget also governs hardness, so a harder security target forces a smaller budget. Eight cells' chains were re-tuned from their original values (Section~\ref{sec:security-validation}) to meet the 2024/2025 guideline; $N{=}2048$/category~5's chain shrank to a single prime, the only cell in this grid with no dedicated key-switching modulus.}
 \label{tab:paramgrid}
 \end{table}
 
@@ -144,13 +144,14 @@ Standard & Full workstation resources & Baseline cost \\
 Constrained & 4 cores / 4\,GB RAM cap~\cite{rahman2024} & Sensitivity to limited resources \\
 Edge/Batch & Batch sizes 1/10/100~\cite{gouert2023} & Behavior under continuous load \\
 Composite & Chained workloads, $N{=}8192$/cat.~1 & Does single-op cost predict a chain? \\
+Packing & Slot fill 0--100\%, $N{=}8192$/cat.~1 & Do partly filled ciphertexts cost less? \\
 \bottomrule
 \end{tabular}
 \caption{Deployment scenarios. Edge/Batch and Composite energy values come from an earlier protocol that measures a whole program run (Section~\ref{sec:limitations}).}
 \label{tab:scenarios}
 \end{table}
 
-Coverage differs by scenario at the largest ring dimension. The Standard scenario was run across the full grid at $N \in \{2048, 4096, 8192\}$ and extended to $N=16384$ for category~1; categories 3 and 5 at $N=16384$ for the Standard scenario, and $N=16384$ entirely for the Constrained and Edge/Batch scenarios and the parameter-only storage, noise-budget, and CKKS-error measurements, were excluded from this evaluation and run only up to $N=8192$. This is a deliberate scope decision made after sustained runs at $N=16384$ produced thermal instability on the development workstation (Section~\ref{sec:limitations}), not a gap left unacknowledged; any incomplete cells within the reported scope are flagged rather than omitted in the results tables of Section~\ref{sec:results}.
+Coverage differs by scenario at the largest ring dimension. The Standard scenario was run across the full grid at $N \in \{2048, 4096, 8192\}$ and extended to $N=16384$ for category~1; categories 3 and 5 at $N=16384$ for the Standard scenario, and $N=16384$ entirely for the Constrained and Edge/Batch scenarios and the noise-budget and CKKS-error measurements, were excluded from this evaluation and run only up to $N=8192$. Storage, being deterministic and cheap, was also measured at $N=16384$/category~1. This is a deliberate scope decision made after sustained runs at $N=16384$ produced thermal instability on the development workstation (Section~\ref{sec:limitations}), not a gap left unacknowledged; any incomplete cells within the reported scope are flagged rather than omitted in the results tables of Section~\ref{sec:results}.
 
 \subsection{Statistical protocol}
 

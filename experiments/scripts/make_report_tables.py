@@ -284,8 +284,131 @@ def energy_memory():
     write("std_vs_constrained_table.tex", "\n".join(lines) + "\n")
 
 
+# ------------------------------------------------- latency / storage / batching
+def latency():
+    lat = defaultdict(list)
+    for r in load("seal_standard.csv"):
+        if r["metric"] == "latency_ms" and r["mean"]:
+            lat[r["operation"]].append(float(r["mean"]))
+    order = ["add", "decrypt", "encrypt", "relinearize", "multiply", "keygen"]
+    order.sort(key=lambda op: min(lat[op]))
+    f = lambda x: f"{x:.3g}"
+    lines = [r"\begin{tabular}{@{}lcc@{}}", r"\toprule",
+             r"\textbf{Operation} & \textbf{Min (ms)} & \textbf{Max (ms)} \\", r"\midrule"]
+    lines += [f"{op} & {f(min(lat[op]))} & {f(max(lat[op]))} \\\\" for op in order]
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("latency_table.tex", "\n".join(lines) + "\n")
+
+    draws = "\n".join(f"    \\draw[very thick, seaTeal] (axis cs:{min(lat[op]):.4g},{op}) -- (axis cs:{max(lat[op]):.4g},{op});"
+                      for op in order)
+    marks = " ".join(f"({min(lat[op]):.4g},{op})" for op in order)
+    fig = "\n".join([
+        r"\begin{tikzpicture}",
+        r"  \begin{axis}[",
+        r"      width=12cm, height=5.5cm, xmode=log,",
+        r"      xlabel={Latency (ms, log scale)},",
+        f"      symbolic y coords={{{','.join(order)}}},",
+        r"      ytick=data, y dir=reverse, xmin=0.003, xmax=500,",
+        r"      axis lines*=left, xmajorgrids, grid style={gray!20}, tick label style={font=\small},",
+        r"    ]",
+        f"    \\addplot[only marks, mark=none, forget plot] coordinates {{{marks}}};",
+        draws,
+        r"  \end{axis}",
+        r"\end{tikzpicture}"])
+    write("latency_figure.tex", fig + "\n")
+
+
+def storage():
+    sz = {}
+    for r in load("seal_sizes.csv"):
+        if r["scheme"] == "BFV" and r["category"] == "1" and r["mean"]:
+            sz[(int(r["N"]), r["operation"])] = float(r["mean"]) / 1e6
+    arts = [("ciphertext", "Ciphertext"), ("public_key", "Public key"),
+            ("secret_key", "Secret key"), ("relin_keys", "Relin.\\ keys")]
+    Ns = [n for n in (2048, 4096, 8192, 16384) if (n, "ciphertext") in sz]
+    lines = [r"\begin{tabular}{@{}l" + "c" * len(arts) + "@{}}", r"\toprule",
+             " & " + " & ".join(f"\\textbf{{{a}}}" for _, a in arts) + r" \\", r"\midrule"]
+    for n in Ns:
+        lines.append(f"$N{{=}}{n}$ (MB) & " + " & ".join(
+            f"{sz[(n, k)]:.2f}" if (n, k) in sz else "--" for k, _ in arts) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("storage_table.tex", "\n".join(lines) + "\n")
+
+    fill = {8192: "seaTeal!70", 16384: "seaBlue!70"}
+    plots = [f"    \\addplot[fill={fill[n]}] coordinates {{" +
+             " ".join(f"({a.replace('_', ' ')},{sz[(n, a)]:.4g})" for a, _ in arts) + "};"
+             for n in (8192, 16384)]
+    fig = "\n".join([
+        r"\begin{tikzpicture}",
+        r"  \begin{axis}[",
+        r"      width=11cm, height=5cm, ybar, bar width=0.6cm, ymode=log, log origin=infty,",
+        r"      symbolic x coords={ciphertext, public key, secret key, relin keys},",
+        r"      xtick=data, x tick label style={font=\small}, ylabel={Size (MB, log scale)},",
+        r"      legend style={font=\scriptsize, at={(0.02,0.98)}, anchor=north west},",
+        r"      axis lines*=left, ymajorgrids, grid style={gray!20},",
+        r"    ]", *plots,
+        r"    \legend{$N{=}8192$, $N{=}16384$}",
+        r"  \end{axis}",
+        r"\end{tikzpicture}"])
+    write("storage_figure.tex", fig + "\n")
+    return sz
+
+
+def batching():
+    eb = load("seal_edge_batch.csv")
+    kg = {r["scheme"]: float(r["mean"]) for r in eb if r["operation"] == "keygen"
+          and r["metric"] == "latency_ms" and r["N"] == "8192" and r["category"] == "1"}
+    style = {"BFV": "seaBlue", "BGV": "seaTeal", "CKKS": "noiseRed"}
+    plots = [f"    \\addplot[very thick, mark=*, {style[s]}] coordinates {{" +
+             " ".join(f"({b},{kg[s] / b:.4g})" for b in (1, 10, 100)) + "};" for s in ("BFV", "BGV", "CKKS")]
+    fig = "\n".join([
+        r"\begin{tikzpicture}",
+        r"  \begin{axis}[",
+        r"      width=10cm, height=4.6cm, xmode=log, ymode=log,",
+        r"      xlabel={Batch size}, ylabel={Keygen cost per item (ms)},",
+        r"      xtick={1,10,100}, xticklabels={1,10,100},",
+        r"      legend style={font=\scriptsize, at={(0.98,0.98)}, anchor=north east},",
+        r"      axis lines*=left, ymajorgrids, grid style={gray!20},",
+        r"    ]", *plots,
+        r"    \legend{BFV, BGV, CKKS}",
+        r"  \end{axis}",
+        r"\end{tikzpicture}"])
+    write("batching_figure.tex", fig + "\n")
+
+    eq = load("seal_edge_batch_equivalence.csv")
+    rat = sorted(float(r["batch100_per_item_ms"]) / float(r["batch1_per_item_ms"]) for r in eq)
+    n_eq = sum(r["verdict"] == "equivalent_within_margin" for r in eq)
+    n_diff = sum(r["real_difference_outside_margin"] == "True" for r in eq)
+    macros = [f"\\newcommand{{\\batchN}}{{{len(eq)}}}",
+              f"\\newcommand{{\\batchEquiv}}{{{n_eq}}}",
+              f"\\newcommand{{\\batchNotEstablished}}{{{len(eq) - n_eq}}}",
+              f"\\newcommand{{\\batchRealDiff}}{{{n_diff}}}",
+              f"\\newcommand{{\\batchRatioMin}}{{{rat[0]:.2f}}}",
+              f"\\newcommand{{\\batchRatioMax}}{{{rat[-1]:.2f}}}",
+              f"\\newcommand{{\\batchRatioMedian}}{{{rat[len(rat) // 2]:.2f}}}",
+              f"\\newcommand{{\\keygenBFV}}{{{kg['BFV']:.1f}}}"]
+    write("batching_numbers.tex", "\n".join(macros) + "\n")
+
+
+def packing():
+    eq = load("seal_packing_equivalence.csv")
+    lines = [r"\begin{tabular}{@{}llrrrl@{}}", r"\toprule",
+             r"Scheme & Operation & Full (ms) & One value (ms) & Diff. & TOST ($\pm$10\%) \\", r"\midrule"]
+    for r in eq:
+        full, one = float(r["fill1.00_latency_ms"]), float(r["fill1_latency_ms"])
+        v = "equivalent" if r["verdict"] == "equivalent_within_margin" else "not established"
+        lines.append(f"{r['scheme']} & {r['operation']} & {full:.3g} & {one:.3g} & "
+                     f"{100 * (one - full) / full:+.1f}\\% & {v} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("packing_table.tex", "\n".join(lines) + "\n")
+
+
 if __name__ == "__main__":
     noise_budget()
     ckks()
     composite()
     energy_memory()
+    latency()
+    storage()
+    batching()
+    packing()
