@@ -228,7 +228,64 @@ def composite():
     write("composite_noise_table.tex", "\n".join(lines) + "\n")
 
 
+# ------------------------------------------------------------- energy/memory
+OPS = ["keygen", "encrypt", "decrypt", "add", "multiply", "relinearize"]
+
+
+def energy_memory():
+    D = {}
+    for sc in ("standard", "constrained"):
+        for r in load(f"seal_{sc}.csv"):
+            if r["mean"]:
+                D[(sc, r["metric"], r["scheme"], int(r["N"]), int(r["category"]), r["operation"])] = float(r["mean"])
+
+    def rng(sc, metric, op, scale=1.0, fmt=sci):
+        v = [x for k, x in D.items() if k[0] == sc and k[1] == metric and k[5] == op]
+        return f"{fmt(min(v) * scale)} -- {fmt(max(v) * scale)}"
+
+    mib = lambda x: f"{x:.1f}"
+    lines = [r"\begin{tabular}{@{}lccc@{}}", r"\toprule",
+             r"Operation & Net energy (J/op) & Gross energy (J/op) & Peak memory (MiB) \\",
+             r"\midrule"]
+    for op in OPS:
+        lines.append(f"{op} & {rng('standard', 'energy_net_j_per_op', op)} & "
+                     f"{rng('standard', 'energy_pkg_j_per_op', op)} & "
+                     f"{rng('standard', 'peak_memory_mb', op, fmt=mib)} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("energy_memory_table.tex", "\n".join(lines) + "\n")
+
+    # Standard vs Constrained on the common N<=8192 cells: ratio distribution.
+    def ratios(metric):
+        r = sorted(D[("constrained",) + k[1:]] / x for k, x in D.items()
+                   if k[0] == "standard" and k[1] == metric and ("constrained",) + k[1:] in D)
+        q = lambda p: r[int(p * (len(r) - 1))]
+        return len(r), q(0.5), q(0.1), q(0.9)
+
+    hv = {sc: sum(1 for r in load(f"seal_{sc}.csv") if r["metric"] == "latency_ms"
+                  and r["flag"] == "HIGH_VARIANCE" and int(r["N"]) <= 8192) for sc in ("standard", "constrained")}
+    meas = {sc: sum(1 for r in load(f"seal_{sc}.csv") if r["metric"] == "latency_ms"
+                    and r["mean"] and int(r["N"]) <= 8192) for sc in ("standard", "constrained")}
+    mx = {sc: max(x for k, x in D.items() if k[0] == sc and k[1] == "peak_memory_mb" and k[3] <= 8192)
+          for sc in ("standard", "constrained")}
+    lines = [r"\begin{tabular}{@{}lccc@{}}", r"\toprule",
+             r"Metric & Constrained / Standard (median) & 10th--90th percentile & Cells \\",
+             r"\midrule"]
+    for label, metric in (("Latency", "latency_ms"), ("Peak memory", "peak_memory_mb"),
+                          ("Gross energy per op", "energy_pkg_j_per_op"),
+                          ("Net energy per op", "energy_net_j_per_op")):
+        n, med, lo, hi = ratios(metric)
+        lines.append(f"{label} & {med:.2f} & {lo:.2f} -- {hi:.2f} & {n} \\\\")
+    lines += [r"\midrule",
+              f"Max.\\ peak memory (MiB) & \\multicolumn{{3}}{{l}}{{Standard {mx['standard']:.1f}, "
+              f"Constrained {mx['constrained']:.1f}}} \\\\",
+              f"\\texttt{{HIGH\\_VARIANCE}} latency & \\multicolumn{{3}}{{l}}{{Standard {hv['standard']}/{meas['standard']}, "
+              f"Constrained {hv['constrained']}/{meas['constrained']}}} \\\\",
+              r"\bottomrule", r"\end{tabular}"]
+    write("std_vs_constrained_table.tex", "\n".join(lines) + "\n")
+
+
 if __name__ == "__main__":
     noise_budget()
     ckks()
     composite()
+    energy_memory()

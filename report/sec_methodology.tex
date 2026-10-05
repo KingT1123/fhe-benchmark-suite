@@ -146,7 +146,7 @@ Edge/Batch & Batch sizes 1/10/100~\cite{gouert2023} & Behavior under continuous 
 Composite & Chained workloads, $N{=}8192$/cat.~1 & Does single-op cost predict a chain? \\
 \bottomrule
 \end{tabular}
-\caption{Deployment scenarios.}
+\caption{Deployment scenarios. Edge/Batch and Composite energy values come from an earlier protocol that measures a whole program run (Section~\ref{sec:limitations}).}
 \label{tab:scenarios}
 \end{table}
 
@@ -154,7 +154,18 @@ Coverage differs by scenario at the largest ring dimension. The Standard scenari
 
 \subsection{Statistical protocol}
 
-Each timed operation ran 105 times; the first 5 were discarded as cache warm-up, leaving 100 runs per reported value. Results are reported as mean, standard deviation, and 95\% confidence interval. Results with standard deviation exceeding 5\% of the mean are flagged \texttt{HIGH\_VARIANCE} rather than hidden.
+Each timed operation ran 105 times; the first 5 were discarded as cache warm-up, leaving 100 runs per reported value. For fast operations a single call is too short to time reliably, so each of these runs times a block of calls on distinct freshly encrypted inputs and divides by their number: 1000 calls per run in the Standard scenario and 100 in Constrained (fewer, so the pre-built inputs fit in its 4\,GB cap); key generation is always timed one call at a time. Results are reported as mean, standard deviation, and 95\% confidence interval. Results with standard deviation exceeding 5\% of the mean are flagged \texttt{HIGH\_VARIANCE} rather than hidden.
+
+\subsection{Energy and memory measurement}
+\label{sec:energy-protocol}
+
+Energy and memory were measured in dedicated runs, separate from the timing runs and with one protocol for both the Standard and Constrained scenarios, so that neither is distorted by how the timing runs are built.
+
+\paragraph{Energy.} The processor package's energy counter (RAPL, read through the Linux \texttt{powercap} interface) is read immediately before and after each timed block of operations, so the measurement covers only the operations themselves -- not program start-up, key generation, or the preparation of fresh inputs. Each block is sized to last about 50\,ms, long enough for the counter's resolution, using the Standard latencies; each cell runs 2 warm-up and 30 measured blocks. Before the blocks, the program waits 6\,s, measures idle power for 4\,s, then keeps the core busy for 2\,s: on this laptop, package power takes about 4\,s to fall back to idle after heavy work and about 0.5\,s to reach its loaded level from idle, both measured directly. Two values are reported per operation: \emph{gross} energy (the counter difference divided by the number of operations) and \emph{net} energy (gross minus idle power times the block's duration).
+
+The idle baseline is a single value for the machine: the median of all 270 per-cell idle readings, 13.5\,W. Each cell's own 4-second reading turned out to be unreliable on this laptop. Readings follow the processor temperature, and those taken while it was still hot read 20--33\,W, sometimes more than the power drawn while an operation ran, which would make the corrected energy negative (10 of 270 cells). Using the median avoids this; the per-cell readings are kept in the data. Net energy is sensitive to this choice: a baseline of 12.9\,W (25th percentile of the readings) would raise net values by about 6--8\%, and one of 17.2\,W (75th percentile) would lower them by about 37--48\% (median over cells, Constrained and Standard respectively). Gross energy does not depend on it.
+
+\paragraph{Memory.} Peak memory is the process's peak resident set size (Linux \texttt{VmHWM}), read by the program itself at the end of a run in which each repetition performs exactly one operation on fresh inputs. This measures what one operation needs -- context, keys, operands and result -- rather than the timing runs' blocks of hundreds of pre-built inputs. Each cell was run three times; the spread between runs is below 4\%.
 
 \subsection{Tool validation}
 

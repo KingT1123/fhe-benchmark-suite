@@ -25,7 +25,7 @@ SEAL & 4.1.2, Release, ZLIB/ZSTD on, HEXL off, Blake2xb PRNG \\
 \label{tab:env}
 \end{table}
 
-\noindent\textit{Note:} energy is read from \texttt{/sys/class/powercap/intel-rapl:0/energy\_uj} (the \texttt{package-0} domain), in microjoules. This path is served by the \texttt{intel\_rapl\_msr} and \texttt{intel\_rapl\_common} kernel drivers -- confirmed via \texttt{lsmod} and the kernel boot log -- not the separate \texttt{amd\_energy} hwmon driver; AMD's RAPL-compatible model-specific registers are read through the same driver Intel systems use, which is also why the sysfs path keeps the \texttt{intel-rapl} name on this AMD CPU. The underlying hardware resolution is $2^{-16}$\,J $\approx 15.26\,\mu$J per step (from the kernel boot log), and the counter updates continuously rather than on a fixed polling interval, confirmed by rapid back-to-back reads showing a fresh value almost every time. The counter wraps at \texttt{max\_energy\_range\_uj} $=$ 65{,}532{,}610{,}987\,$\mu$J ($\approx$65.5\,kJ, roughly 14--24 minutes of continuous runtime depending on load); \texttt{run\_standard\_docker.sh} already accounts for this, detecting \texttt{E\_AFTER} $<$ \texttt{E\_BEFORE} and adding the range back before computing the delta.
+\noindent\textit{Note:} energy is read from \texttt{/sys/class/powercap/intel-rapl:0/energy\_uj} (the \texttt{package-0} domain), in microjoules. This path is served by the \texttt{intel\_rapl\_msr} and \texttt{intel\_rapl\_common} kernel drivers -- confirmed via \texttt{lsmod} and the kernel boot log -- not the separate \texttt{amd\_energy} hwmon driver; AMD's RAPL-compatible model-specific registers are read through the same driver Intel systems use, which is also why the sysfs path keeps the \texttt{intel-rapl} name on this AMD CPU. The underlying hardware resolution is $2^{-16}$\,J $\approx 15.26\,\mu$J per step (from the kernel boot log), and the counter updates continuously rather than on a fixed polling interval, confirmed by rapid back-to-back reads showing a fresh value almost every time. The counter wraps at \texttt{max\_energy\_range\_uj} $=$ 65{,}532{,}610{,}987\,$\mu$J ($\approx$65.5\,kJ, roughly 14--24 minutes of continuous runtime depending on load); the run scripts and the benchmark program account for this, adding the range back whenever a reading is lower than the previous one. Inside Docker the \texttt{powercap} directory is hidden, so the energy/memory runs mount the host's \texttt{intel-rapl:0} directory read-only into the container.
 
 \subsection{Code and data}
 
@@ -58,6 +58,10 @@ bash run_constrained_docker.sh
 bash run_edge_batch_docker.sh
 # storage, noise budget, CKKS error:
 bash run_extended_metrics_docker.sh
+# dedicated energy/memory runs (see Methodology), need sudo:
+python3 make_energy_plan.py
+sudo bash run_energy_memory_docker.sh standard
+sudo bash run_energy_memory_docker.sh constrained
 # composite and packing (single-row grids, N=8192/category 1):
 bash run_composite_docker.sh
 bash run_packing_docker.sh
@@ -89,6 +93,7 @@ Energy measurement requires \texttt{sudo} for RAPL access; the run scripts promp
 \texttt{experiments/results/raw/extended\_metrics/} & Raw storage/noise/CKKS-error output \\
 \texttt{experiments/results/raw/composite/} & Raw output, Composite scenario \\
 \texttt{experiments/results/raw/packing/} & Raw output, Packing scenario \\
+\texttt{experiments/results/raw/energy\_memory/} & Raw output, dedicated energy/memory runs \\
 \texttt{experiments/results/run\_metadata.csv} & Run-order seed of each sweep \\
 \texttt{experiments/results/final/} & Aggregated CSVs -- the source for every table and figure in this report \\
 \bottomrule

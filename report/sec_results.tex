@@ -55,6 +55,22 @@ keygen & 14.48 & 277.89 & slowest overall -- but runs once \\
 
 Every operation is fast in absolute terms; the real difference is relative -- multiply and keygen cost 10--100$\times$ more than add or decrypt.
 
+\subsection{Energy and memory}
+\label{sec:energy-memory}
+
+Table~\ref{tab:energy-memory} gives the range of energy per operation and peak memory across the Standard-scenario grid, measured with the dedicated protocol of Section~\ref{sec:energy-protocol}. \emph{Gross} energy is the processor package's total energy during the timed operations, divided by the number of operations; it needs no assumption. \emph{Net} energy subtracts the machine's idle power over the same time, estimating what the operation itself adds; it depends on the idle baseline (13.5\,W, see Section~\ref{sec:energy-protocol}).
+
+\begin{table}[h!]
+\centering\small
+\input{generated/energy_memory_table.tex}
+\caption{Energy per operation and peak memory, Standard scenario, range over every measured parameter combination ($N \le 8192$ plus $N{=}16384$/category~1). Energy: mean of 30 repetitions per cell. Memory: mean of three separate runs per cell, each performing one operation at a time.}
+\label{tab:energy-memory}
+\end{table}
+
+Energy follows latency closely: the operation adds about 7.5\,W above idle (median over cells; 4.6--15.4\,W), so net energy is roughly latency times a near-constant power, and the ordering of operations is the same as in Table~\ref{tab:latency}. A key generation at $N{=}16384$ costs about 2\,J net (5.8\,J gross), while an addition at $N{=}2048$ costs about $5{\times}10^{-5}$\,J.
+
+Peak memory is the whole process's peak resident memory while performing one operation at a time: SEAL context, keys, the operands, and the result. It is small -- at most 22.4\,MiB at $N \le 8192$ and 121\,MiB at $N{=}16384$/category~1 -- and is dominated by the keys and ciphertexts, so multiply and relinearize (which need the relinearization keys and a three-component ciphertext) use the most.
+
 \clearpage
 \subsection{Storage, noise budget, and CKKS error}
 
@@ -190,24 +206,21 @@ The CKKS dot product and the polynomial evaluation (all schemes) were timed with
 
 \subsubsection*{Resource constraints}
 
-SEAL's peak memory use (118.66\,MB, Standard; 118.77\,MB, Constrained) stays under 3\% of the 4\,GB Constrained-scenario cap. On the common $N \le 8192$ grid, Standard and Constrained produced the same pattern -- 126 configurations measured, 36 skipped (depth 0), none failed -- and latency ranges were close between the two (Table~\ref{tab:constrained}). No formal equivalence test was applied to this comparison, so it is a descriptive observation, not a statistical claim.
+The Constrained scenario caps the container at 4 cores and 4\,GB of memory. On the common $N \le 8192$ grid, both scenarios produced the same pattern -- 126 configurations measured, 36 skipped (depth 0), none failed. Table~\ref{tab:constrained} compares them cell by cell, as the ratio Constrained/Standard.
 
 \begin{table}[h!]
 \centering\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-& \textbf{Standard} & \textbf{Constrained} \\
-\midrule
-Peak memory (max, MB) & 118.66 & 118.77 \\
-Energy per op (max, J) & 7.42 & 5.39 \\
-\texttt{HIGH\_VARIANCE} count ($N \le 8192$) & 30/126 & 32/126 \\
-\bottomrule
-\end{tabular}
-\caption{Standard vs.\ Constrained, full grid.}
+\input{generated/std_vs_constrained_table.tex}
+\caption{Constrained vs.\ Standard on the 126 common cells ($N \le 8192$). Latency comes from the main timing runs; energy and memory from the dedicated energy/memory runs, with the same protocol in both scenarios.}
 \label{tab:constrained}
 \end{table}
 
-The \texttt{HIGH\_VARIANCE} counts are nearly identical on the common grid, so core-pinning did not measurably reduce timing variance in this campaign. (The Standard total including the 18 $N{=}16384$ cells is 38/144.)
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Memory is unaffected.} Peak memory differs by at most 6\% in any cell (2\% lower under Constrained in median), and at most 22.4\,MiB -- about 0.5\% of the 4\,GB cap, which therefore never binds at this workload scale.
+  \item \textbf{Latency is close.} Constrained was 5\% faster in median in the main timing runs, but about 5\% slower in the energy runs; differences of this size change direction between runs, so they reflect run-to-run variation on this machine rather than an effect of the cap. No formal equivalence test was applied, so this is a descriptive observation.
+  \item \textbf{Energy was higher under Constrained} by 14\% in median (gross; 27\% net), from about 5\% longer operations and 8\% higher package power. The two runs were made one after the other on the same day (Standard 03:16--05:55, Constrained 06:03--08:35, mean processor temperature 88.5 vs.\ 89.7\,$^\circ$C), so this difference cannot be attributed to the resource cap alone; it should be read as indicative.
+  \item \textbf{Timing variance is the same:} \texttt{HIGH\_VARIANCE} counts are nearly identical (30 vs.\ 32 of 126), so pinning to fixed cores did not measurably reduce timing variance in this campaign.
+\end{itemize}
 
 \subsubsection*{Batching}
 
