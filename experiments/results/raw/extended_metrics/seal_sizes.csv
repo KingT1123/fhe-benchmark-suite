@@ -1,4 +1,8 @@
 library,scheme,N,category,artifact,size_bytes,status
+SEAL,BFV,16384,1,ciphertext,2097265,measured
+SEAL,BFV,16384,1,public_key,2359409,measured
+SEAL,BFV,16384,1,secret_key,1179736,measured
+SEAL,BFV,16384,1,relin_keys,18875336,measured
 SEAL,BFV,2048,1,ciphertext,32881,measured
 SEAL,BFV,2048,1,public_key,65649,measured
 SEAL,BFV,2048,1,secret_key,32856,measured
@@ -35,6 +39,10 @@ SEAL,BFV,8192,5,ciphertext,131185,measured
 SEAL,BFV,8192,5,public_key,262257,measured
 SEAL,BFV,8192,5,secret_key,131160,measured
 SEAL,BFV,8192,5,relin_keys,0,skipped_depth0
+SEAL,BGV,16384,1,ciphertext,2097265,measured
+SEAL,BGV,16384,1,public_key,2359409,measured
+SEAL,BGV,16384,1,secret_key,1179736,measured
+SEAL,BGV,16384,1,relin_keys,18875336,measured
 SEAL,BGV,2048,1,ciphertext,32881,measured
 SEAL,BGV,2048,1,public_key,65649,measured
 SEAL,BGV,2048,1,secret_key,32856,measured
@@ -71,6 +79,10 @@ SEAL,BGV,8192,5,ciphertext,131185,measured
 SEAL,BGV,8192,5,public_key,262257,measured
 SEAL,BGV,8192,5,secret_key,131160,measured
 SEAL,BGV,8192,5,relin_keys,0,skipped_depth0
+SEAL,CKKS,16384,1,ciphertext,2097265,measured
+SEAL,CKKS,16384,1,public_key,2359409,measured
+SEAL,CKKS,16384,1,secret_key,1179736,measured
+SEAL,CKKS,16384,1,relin_keys,18875336,measured
 SEAL,CKKS,2048,1,ciphertext,32881,measured
 SEAL,CKKS,2048,1,public_key,65649,measured
 SEAL,CKKS,2048,1,secret_key,32856,measured

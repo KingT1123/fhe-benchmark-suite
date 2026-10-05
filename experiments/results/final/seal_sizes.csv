@@ -1,4 +1,8 @@
 library,scheme,N,category,scenario,operation,metric,mean,std,ci_low,ci_high,median,iqr_low,iqr_high,flag
+SEAL,BFV,16384,1,size,ciphertext,size_bytes,2097265,,,,,,,deterministic_single_measurement
+SEAL,BFV,16384,1,size,public_key,size_bytes,2359409,,,,,,,deterministic_single_measurement
+SEAL,BFV,16384,1,size,secret_key,size_bytes,1179736,,,,,,,deterministic_single_measurement
+SEAL,BFV,16384,1,size,relin_keys,size_bytes,18875336,,,,,,,deterministic_single_measurement
 SEAL,BFV,2048,1,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_measurement
 SEAL,BFV,2048,1,size,public_key,size_bytes,65649,,,,,,,deterministic_single_measurement
 SEAL,BFV,2048,1,size,secret_key,size_bytes,32856,,,,,,,deterministic_single_measurement
@@ -35,6 +39,10 @@ SEAL,BFV,8192,5,size,ciphertext,size_bytes,131185,,,,,,,deterministic_single_mea
 SEAL,BFV,8192,5,size,public_key,size_bytes,262257,,,,,,,deterministic_single_measurement
 SEAL,BFV,8192,5,size,secret_key,size_bytes,131160,,,,,,,deterministic_single_measurement
 SEAL,BFV,8192,5,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
+SEAL,BGV,16384,1,size,ciphertext,size_bytes,2097265,,,,,,,deterministic_single_measurement
+SEAL,BGV,16384,1,size,public_key,size_bytes,2359409,,,,,,,deterministic_single_measurement
+SEAL,BGV,16384,1,size,secret_key,size_bytes,1179736,,,,,,,deterministic_single_measurement
+SEAL,BGV,16384,1,size,relin_keys,size_bytes,18875336,,,,,,,deterministic_single_measurement
 SEAL,BGV,2048,1,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_measurement
 SEAL,BGV,2048,1,size,public_key,size_bytes,65649,,,,,,,deterministic_single_measurement
 SEAL,BGV,2048,1,size,secret_key,size_bytes,32856,,,,,,,deterministic_single_measurement
@@ -71,6 +79,10 @@ SEAL,BGV,8192,5,size,ciphertext,size_bytes,131185,,,,,,,deterministic_single_mea
 SEAL,BGV,8192,5,size,public_key,size_bytes,262257,,,,,,,deterministic_single_measurement
 SEAL,BGV,8192,5,size,secret_key,size_bytes,131160,,,,,,,deterministic_single_measurement
 SEAL,BGV,8192,5,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
+SEAL,CKKS,16384,1,size,ciphertext,size_bytes,2097265,,,,,,,deterministic_single_measurement
+SEAL,CKKS,16384,1,size,public_key,size_bytes,2359409,,,,,,,deterministic_single_measurement
+SEAL,CKKS,16384,1,size,secret_key,size_bytes,1179736,,,,,,,deterministic_single_measurement
+SEAL,CKKS,16384,1,size,relin_keys,size_bytes,18875336,,,,,,,deterministic_single_measurement
 SEAL,CKKS,2048,1,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_measurement
 SEAL,CKKS,2048,1,size,public_key,size_bytes,65649,,,,,,,deterministic_single_measurement
 SEAL,CKKS,2048,1,size,secret_key,size_bytes,32856,,,,,,,deterministic_single_measurement
