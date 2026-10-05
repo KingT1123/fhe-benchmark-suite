@@ -171,6 +171,64 @@ def ckks():
     write("ckks_error_figure.tex", fig + "\n")
 
 
+# ------------------------------------------------------------------ composite
+def composite():
+    comp = load("seal_composite.csv")
+    get = lambda s, op, m, vl="": next(float(r["mean"]) for r in comp if r["scheme"] == s
+                                      and r["operation"] == op and r["metric"] == m
+                                      and r["vec_len"] == vl)
+
+    # Single-operation building blocks: rotation, Galois keys, poly_eval.
+    lines = [r"\begin{tabular}{@{}lcccc@{}}", r"\toprule",
+             r"Scheme & Rotate (ms) & Galois keygen (ms) & Galois key, 1 step (MB) & Poly.\ eval.\ (ms) \\",
+             r"\midrule"]
+    for s in ("BFV", "BGV", "CKKS"):
+        lines.append(f"{s} & {get(s, 'rotate', 'latency_ms'):.2f} & "
+                     f"{get(s, 'rotate', 'galois_keygen_ms'):.2f} & "
+                     f"{get(s, 'rotate', 'galois_keys_size_bytes') / 1e6:.2f} & "
+                     f"{get(s, 'poly_eval', 'latency_ms'):.2f} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("composite_ops_table.tex", "\n".join(lines) + "\n")
+
+    # Predicted vs measured dot product (TOST), plus end-of-chain budget.
+    ctrl = defaultdict(dict)
+    for r in load("seal_composite_controls.csv"):
+        ctrl[(r["scheme"], r["operation"], int(r["vec_len"]))][r["step"]] = float(r["mean"])
+
+    def ctrl_drop(s, op, vl):
+        st = ctrl[(s, op, vl)]
+        last = max((k for k in st if k != "fresh"), key=lambda k: int(k.rsplit("_", 1)[1]))
+        return st["fresh"] - st[last]
+
+    lines = [r"\begin{tabular}{@{}lrrrrrll@{}}", r"\toprule",
+             r"Scheme & Length & $k$ & Predicted (ms) & Measured (ms) & Diff. & 90\% CI of diff.\ (ms) & TOST ($\pm$10\%) \\",
+             r"\midrule"]
+    pred = load("seal_composite_prediction.csv")
+    for r in pred:
+        p_, a_ = float(r["predicted_ms"]), float(r["actual_ms"])
+        verdict = "equivalent" if r["verdict"] == "equivalent_within_margin" else "not established"
+        lines.append(f"{r['scheme']} & {r['vec_len']} & {r['rotate_steps']} & {p_:.2f} & {a_:.2f} & "
+                     f"{100 * (a_ - p_) / p_:+.1f}\\% & [{float(r['ci_low']):+.2f}, {float(r['ci_high']):+.2f}] & "
+                     f"{verdict} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("composite_prediction_table.tex", "\n".join(lines) + "\n")
+
+    lines = [r"\begin{tabular}{@{}lrrccc@{}}", r"\toprule",
+             r"Scheme & Length & $k$ & Budget after dot product & Rotate-only cost & Add-only cost \\",
+             r"\midrule"]
+    for r in pred:
+        s, vl = r["scheme"], int(r["vec_len"])
+        if s == "CKKS":
+            continue
+        lines.append(f"{s} & {vl} & {r['rotate_steps']} & "
+                     f"{bits(get(s, 'dot_product', 'noise_budget_bits', str(vl)))} bits & "
+                     f"{bits(ctrl_drop(s, 'rotate_only', vl))} bits & "
+                     f"{bits(ctrl_drop(s, 'add_only', vl))} bits \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("composite_noise_table.tex", "\n".join(lines) + "\n")
+
+
 if __name__ == "__main__":
     noise_budget()
     ckks()
+    composite()

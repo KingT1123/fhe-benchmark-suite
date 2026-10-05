@@ -101,8 +101,6 @@ $N{=}16384$ (MB) & 2.10 & 2.36 & 1.18 & 18.88 \\
 
 The relinearization key is consistently the largest artifact -- $9\times$ the ciphertext size at $N{=}16384$ (18.88\,MB vs.\ 2.10\,MB), up from $4\times$ at $N{=}8192$ (1.57\,MB vs.\ 0.39\,MB).
 
-The Composite scenario's Galois (rotation) keys are a more extreme case, and one this harness got wrong until an extra-rigor correctness pass caught it: SEAL's \texttt{create\_galois\_keys()} generates a key for every power-of-two rotation step the scheme supports by default, not just the step(s) a given operation actually rotates by. A single rotate-by-1 measurement ($N{=}8192$, category~1) originally generated a 36.07\,MB key this way; requesting only the specific step actually used (via the explicit-steps overload) reduces this to 1.56\,MB -- a 23$\times$ reduction, with no change to correctness (verified by direct measurement, not assumed).
-
 \subsubsection*{Noise budget}
 
 Table~\ref{tab:noisebudget} gives the measured noise budget of every BFV and BGV cell (mean over 10 trials, from \texttt{seal\_noise\_budget.csv}), and Figure~\ref{fig:noisebudget} plots the complete traces of the two $N{=}8192$ cells that support multiplication. Every cell starts with a positive budget; the thinnest are at $N{=}2048$, where all three cells are depth 0 and keep between 1 and 5 bits after an addition.
@@ -140,6 +138,52 @@ Figure~\ref{fig:ckkserror} gives the maximum absolute error after one addition f
 \end{figure}
 
 Error is lowest at $N{=}8192$ ($\approx 10^{-8}$ for all three categories, at most $1.1{\times}10^{-6}$ through the full multiply chain) and grows as the coefficient-modulus budget shrinks. At $N{=}2048$, category~1 is usable ($1.5{\times}10^{-4}$) after its scale was tuned; the problematic cells are category~3, whose 17-bit budget limits the error to about 8\% (a structural limit, Section~\ref{sec:security-validation}), and category~5, whose single 26-bit prime gives $2.1{\times}10^{-3}$ even at the largest scale SEAL accepts. Both of these should be read with that caveat rather than compared directly with the other cells.
+
+\subsection{Composite workloads}
+\label{sec:composite}
+
+The previous results time each operation in isolation. Real applications chain operations, so the Composite scenario measures three chained workloads at $N{=}8192$, category~1 (the scope of this scenario), for all three schemes, with the same 100-repetition protocol: a \textbf{dot product}, a \textbf{polynomial evaluation}, and the \textbf{rotation} it relies on. Matrix--vector multiplication was removed from the scope of this stage with the supervisor's agreement (Section~\ref{sec:limitations}).
+
+\paragraph{Building blocks.} Table~\ref{tab:composite-ops} gives the cost of one slot rotation, of generating the rotation (Galois) key it needs, and of evaluating the polynomial $2x^2 + 3x + 5$ element-wise (Horner's method, $(2x+3)x+5$: one plaintext multiplication, one ciphertext--ciphertext multiplication with relinearization, and two plaintext additions). BFV's polynomial evaluation is about $3$--$4\times$ slower than BGV's and CKKS's because of its ciphertext multiplication alone: 8.65\,ms for BFV against about 0.45\,ms for BGV and CKKS at this size (Standard scenario).
+
+\begin{table}[h!]
+\centering\small
+\input{generated/composite_ops_table.tex}
+\caption{Composite building blocks, $N{=}8192$/category~1 (mean of 100 repetitions). The Galois key covers only the single rotation step actually used.}
+\label{tab:composite-ops}
+\end{table}
+
+\paragraph{Rotation keys.} SEAL's default \texttt{create\_galois\_keys()} generates a key for every power-of-two rotation step -- 24 keys, 37.8\,MB at this size -- even when a computation uses only one. The harness instead requests only the steps it uses: 1.64\,MB for a single step, 23$\times$ smaller (both sizes measured directly, uncompressed). This was an error in an earlier version of the harness, caught by the correctness pass, and is why key size must be reported together with the set of steps it covers.
+
+\paragraph{Dot product and the prediction formula.} The dot product of two encrypted vectors of length $\ell$ is one multiplication, one relinearization, then $k = \lceil \log_2 \ell \rceil$ rounds of rotate-and-add that sum the products into one slot. If single-operation timings are enough to predict chained cost, then
+\[
+T_{\text{pred}} = T_{\text{mult}} + T_{\text{relin}} + k\,(T_{\text{rot}} + T_{\text{add}}),
+\]
+using the Standard-scenario multiply, relinearize and add latencies and the Composite rotate latency. Since the four measurements are independent, the uncertainty is propagated as
+\[
+\sigma^2_{\text{pred}} = \sigma^2_{\text{mult}} + \sigma^2_{\text{relin}} + k^2\,(\sigma^2_{\text{rot}} + \sigma^2_{\text{add}}).
+\]
+Prediction and measurement were compared with a two one-sided tests (TOST) equivalence test (Welch's $t$, $\alpha = 0.05$) with a margin of $\pm 10\%$ of the predicted value; the predicted side uses the multiply measurement's sample size ($n{=}100$) as a representative $n$, a documented approximation.
+
+\begin{table}[h!]
+\centering\small\setlength{\tabcolsep}{4pt}
+\input{generated/composite_prediction_table.tex}
+\caption{Predicted vs.\ measured dot-product latency, $N{=}8192$/category~1. ``Diff.'' is measured minus predicted; the 90\% CI is the interval the TOST procedure uses. CKKS stops at length 4096, its slot count.}
+\label{tab:composite-pred}
+\end{table}
+
+All twelve comparisons (Table~\ref{tab:composite-pred}) are equivalent within $\pm 10\%$, at every vector length and for all three schemes, so per-operation costs compose additively into the chain's cost. The formula slightly overestimates in 11 of the 12 cells (by 0.4--4.9\%; in most cells the confidence interval excludes zero); a plausible reason is that in a chain the operations run back-to-back on data already in cache, which isolated timings do not benefit from.
+
+\paragraph{Noise in the chain, and isolated controls.} Every BFV and BGV dot product decrypted correctly (840 of 840 repetitions checked against the exact result). To attribute the chain's noise-budget use to its parts, two control traces repeat only the $k$ rotations or only the $k$ additions of the chain, from a fresh ciphertext (10 trials each, all decrypting correctly). Table~\ref{tab:composite-noise} shows that rotations and additions are cheap -- at most about 5 and 3.4 bits over 13 steps -- so the multiplication at the start of the chain (about 32 bits for BFV and 37 for BGV at this size, Table~\ref{tab:noisebudget}) dominates the chain's noise cost.
+
+\begin{table}[h!]
+\centering\small
+\input{generated/composite_noise_table.tex}
+\caption{Noise budget left after the full dot product (from a fresh budget of about 112 bits), and the budget used by $k$ rotations alone and $k$ additions alone (rotate-only and add-only controls, from \texttt{seal\_composite\_controls.csv}).}
+\label{tab:composite-noise}
+\end{table}
+
+The CKKS dot product and the polynomial evaluation (all schemes) were timed without a decrypt-and-compare check, so their correctness is not independently verified in this campaign.
 
 \clearpage
 \subsection{Behavior under different conditions}

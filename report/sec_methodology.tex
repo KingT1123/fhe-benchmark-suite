@@ -132,7 +132,7 @@ CKKS error & Takeshita et al.~\cite{takeshita2025} & Drift from the exact result
 
 \subsection{Deployment scenarios}
 
-Latency, memory, and energy were measured under three scenarios (Table~\ref{tab:scenarios}). Storage, noise budget, and CKKS error depend only on the parameters, not on machine resources or request volume, so each was measured once across the full grid.
+Latency, memory, and energy were measured under the scenarios of Table~\ref{tab:scenarios}; the Composite scenario (Section~\ref{sec:composite}) applies the same protocol to chained workloads. Storage, noise budget, and CKKS error depend only on the parameters, not on machine resources or request volume, so each was measured once across the full grid.
 
 \begin{table}[h!]
 \centering\small
@@ -143,6 +143,7 @@ Latency, memory, and energy were measured under three scenarios (Table~\ref{tab:
 Standard & Full workstation resources & Baseline cost \\
 Constrained & 4 cores / 4\,GB RAM cap~\cite{rahman2024} & Sensitivity to limited resources \\
 Edge/Batch & Batch sizes 1/10/100~\cite{gouert2023} & Behavior under continuous load \\
+Composite & Chained workloads, $N{=}8192$/cat.~1 & Does single-op cost predict a chain? \\
 \bottomrule
 \end{tabular}
 \caption{Deployment scenarios.}

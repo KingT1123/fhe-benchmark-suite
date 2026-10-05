@@ -1364,6 +1364,49 @@ def aggregate_noise_trace(args):
           f"noise-budget API -- see bench_seal.cpp).")
 
 
+def aggregate_composite_controls(args):
+    """Composite rotate-only / add-only noise controls: groups by (scheme,
+    N, category, operation, vec_len, step_name) across the --trace-reps
+    trials and computes real mean/std/95% CI per step, exactly like
+    aggregate_noise_trace. One raw file per (scheme, operation, vec_len)
+    under results/raw/composite_controls/."""
+    raw_dir = args.raw_dir or "../results/raw/composite_controls"
+    out_path = args.out or "../results/final/seal_composite_controls.csv"
+
+    groups = {}
+    for f in sorted(glob.glob(os.path.join(raw_dir, "seal_*.csv"))):
+        for r in csv.DictReader(open(f)):
+            if r["status"] != "measured":
+                continue
+            key = (r["library"], r["scheme"], int(r["N"]), int(r["category"]),
+                   r["operation"], int(r["vec_len"]), int(r["step_index"]), r["step_name"])
+            groups.setdefault(key, []).append((int(r["noise_budget_bits"]), r["correctness"]))
+
+    out_rows = []
+    n_incorrect = 0
+    for (library, scheme, N, category, op, vec_len, _, step_name), vals in sorted(groups.items()):
+        bits = [v for v, _ in vals]
+        bad = sum(1 for _, c in vals if c != "correct")
+        n_incorrect += bad
+        mean, std, ci_low, ci_high, median, iqr_low, iqr_high, flag = _stats_over_trials(bits)
+        if bad:
+            flag = ";".join(x for x in (flag, f"{bad}_of_{len(vals)}_trials_incorrect") if x)
+        out_rows.append({
+            "library": library, "scheme": scheme, "N": N, "category": category,
+            "scenario": "composite_controls", "operation": op, "vec_len": vec_len,
+            "step": step_name, "metric": "noise_budget_bits", "mean": mean, "std": std,
+            "ci_low": ci_low, "ci_high": ci_high,
+            "median": median, "iqr_low": iqr_low, "iqr_high": iqr_high, "flag": flag,
+        })
+
+    _write_final(out_path, out_rows,
+                 fieldnames=("library", "scheme", "N", "category", "scenario", "operation",
+                             "vec_len", "step", "metric", "mean", "std", "ci_low", "ci_high",
+                             "median", "iqr_low", "iqr_high", "flag"))
+    print(f"Wrote {len(out_rows)} rows to {out_path}")
+    print(f"{n_incorrect} trial-step(s) failed the decrypt->decode correctness check.")
+
+
 def aggregate_ckks_error(args):
     """ckks_error mirrors aggregate_noise_trace, but each step carries two
     metrics (max_abs_error, mean_abs_error), each grouped and averaged
@@ -1469,12 +1512,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
-                              "composite", "size", "noise_trace", "ckks_error",
-                              "config_metadata"])
+                              "composite", "composite_controls", "size", "noise_trace",
+                              "ckks_error", "config_metadata"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
+
+    if args.scenario == "composite_controls":
+        aggregate_composite_controls(args)
+        return
 
     if args.scenario in ("size", "noise_trace", "ckks_error", "config_metadata"):
         # --raw-dir means the consolidated master FILE for these four, not
