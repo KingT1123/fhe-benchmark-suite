@@ -1559,11 +1559,14 @@ def main():
         if energy_pkg is not None:
             # n_total reps each ran inner_loop ops internally (see
             # parse_inner_loop) -- divide by the real op count, not just reps.
+            # Exception: keygen ignores --inner-loop in bench_seal.cpp (one
+            # keygen per rep), so its real op count is n_total alone.
+            ops_per_rep = 1 if summary["operation"] == "keygen" else inner_loop
             out_rows.append({
                 "library": summary["library"], "scheme": summary["scheme"],
                 "N": summary["N"], "category": summary["category"],
                 "scenario": args.scenario, "operation": summary["operation"],
-                "metric": "energy_pkg_j_per_op", "mean": energy_pkg / (n_total * inner_loop),
+                "metric": "energy_pkg_j_per_op", "mean": energy_pkg / (n_total * ops_per_rep),
                 "std": "", "ci_low": "", "ci_high": "",
                 "flag": "n=1_invocation_not_repeated",
             })

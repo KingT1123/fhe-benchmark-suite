@@ -9,7 +9,7 @@ SEAL,BFV,16384,1,standard,encrypt,latency_ms,9.0963023,0.21168105731970907,9.054
 SEAL,BFV,16384,1,standard,encrypt,energy_pkg_j_per_op,0.17157051585714286,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,16384,1,standard,encrypt,peak_memory_mb,218.921875,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,16384,1,standard,keygen,latency_ms,275.3494,7.551779554809877,273.85096309927025,276.84783690072976,273.20050000000003,271.69874999999996,274.87175,
-SEAL,BFV,16384,1,standard,keygen,energy_pkg_j_per_op,0.005896069161904762,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,16384,1,standard,keygen,energy_pkg_j_per_op,5.896069161904762,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,16384,1,standard,keygen,peak_memory_mb,92.328125,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,16384,1,standard,multiply,latency_ms,49.65499,4.239527745033531,48.813775718158354,50.49620428184164,47.092600000000004,45.95425,53.9377,HIGH_VARIANCE
 SEAL,BFV,16384,1,standard,multiply,energy_pkg_j_per_op,0.2769361252,,,,,,,n=1_invocation_not_repeated
@@ -27,7 +27,7 @@ SEAL,BFV,2048,1,standard,encrypt,latency_ms,0.37955341,0.006979321350028934,0.37
 SEAL,BFV,2048,1,standard,encrypt,energy_pkg_j_per_op,0.009398511095238095,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,1,standard,encrypt,peak_memory_mb,21.234375,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,1,standard,keygen,latency_ms,21.880278,0.6697834971440133,21.747378423107403,22.0131775768926,22.02805,21.614199999999997,22.335625,
-SEAL,BFV,2048,1,standard,keygen,energy_pkg_j_per_op,0.0006993008857142857,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,2048,1,standard,keygen,energy_pkg_j_per_op,0.6993008857142857,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,1,standard,keygen,peak_memory_mb,5.20703125,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,1,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,2048,1,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -41,7 +41,7 @@ SEAL,BFV,2048,3,standard,encrypt,latency_ms,0.36234539,0.009610071739917637,0.36
 SEAL,BFV,2048,3,standard,encrypt,energy_pkg_j_per_op,0.008139295961904762,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,3,standard,encrypt,peak_memory_mb,20.8984375,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,3,standard,keygen,latency_ms,14.572677,0.5470775351498693,14.464124948092351,14.68122905190765,14.653500000000001,14.4795,14.864049999999999,
-SEAL,BFV,2048,3,standard,keygen,energy_pkg_j_per_op,0.0005199457047619047,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,2048,3,standard,keygen,energy_pkg_j_per_op,0.5199457047619047,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,3,standard,keygen,peak_memory_mb,4.953125,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,3,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,2048,3,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -55,7 +55,7 @@ SEAL,BFV,2048,5,standard,encrypt,latency_ms,0.26851336,0.0014617979417916357,0.2
 SEAL,BFV,2048,5,standard,encrypt,energy_pkg_j_per_op,0.006253609152380953,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,5,standard,encrypt,peak_memory_mb,20.625,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,5,standard,keygen,latency_ms,10.4106135,0.529646892091106,10.305520065835777,10.515706934164223,10.533750000000001,10.379125,10.6683,HIGH_VARIANCE
-SEAL,BFV,2048,5,standard,keygen,energy_pkg_j_per_op,0.00041153034285714286,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,2048,5,standard,keygen,energy_pkg_j_per_op,0.4115303428571429,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,5,standard,keygen,peak_memory_mb,4.7109375,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,2048,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,2048,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -69,7 +69,7 @@ SEAL,BFV,4096,1,standard,encrypt,latency_ms,0.92965224,0.005808195309207412,0.92
 SEAL,BFV,4096,1,standard,encrypt,energy_pkg_j_per_op,0.02079756526666667,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,1,standard,encrypt,peak_memory_mb,40.046875,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,1,standard,keygen,latency_ms,41.615293,0.9607958187378003,41.42465026494471,41.80593573505529,41.8626,40.996175,42.278775,
-SEAL,BFV,4096,1,standard,keygen,energy_pkg_j_per_op,0.0011033085904761904,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,4096,1,standard,keygen,energy_pkg_j_per_op,1.1033085904761906,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,1,standard,keygen,peak_memory_mb,8.20703125,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,1,standard,multiply,latency_ms,2.9076441,0.034475183904403225,2.9008034755687824,2.914484724431218,2.89992,2.8941575000000004,2.9080449999999995,
 SEAL,BFV,4096,1,standard,multiply,energy_pkg_j_per_op,0.10340906626666667,,,,,,,n=1_invocation_not_repeated
@@ -87,7 +87,7 @@ SEAL,BFV,4096,3,standard,encrypt,latency_ms,0.73235658,0.0156141385781922,0.7292
 SEAL,BFV,4096,3,standard,encrypt,energy_pkg_j_per_op,0.016695271923809523,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,3,standard,encrypt,peak_memory_mb,38.22265625,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,3,standard,keygen,latency_ms,25.062352,0.7963549601284671,24.904337898863318,25.220366101136683,25.251600000000003,24.746100000000002,25.531625,
-SEAL,BFV,4096,3,standard,keygen,energy_pkg_j_per_op,0.0008910930666666667,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,4096,3,standard,keygen,energy_pkg_j_per_op,0.8910930666666668,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,3,standard,keygen,peak_memory_mb,6.2265625,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,3,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,4096,3,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -101,7 +101,7 @@ SEAL,BFV,4096,5,standard,encrypt,latency_ms,0.75318502,0.004322909091074773,0.75
 SEAL,BFV,4096,5,standard,encrypt,energy_pkg_j_per_op,0.01831791240952381,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,5,standard,encrypt,peak_memory_mb,38.046875,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,5,standard,keygen,latency_ms,22.536763,0.7068998292666165,22.396498737569566,22.677027262430435,22.704300000000003,22.277974999999998,22.92605,
-SEAL,BFV,4096,5,standard,keygen,energy_pkg_j_per_op,0.0007312929714285715,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,4096,5,standard,keygen,energy_pkg_j_per_op,0.7312929714285715,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,5,standard,keygen,peak_memory_mb,6.15625,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,4096,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,4096,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -115,7 +115,7 @@ SEAL,BFV,8192,1,standard,encrypt,latency_ms,2.5483791,0.10747435799507965,2.5270
 SEAL,BFV,8192,1,standard,encrypt,energy_pkg_j_per_op,0.05994901534285715,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,1,standard,encrypt,peak_memory_mb,79.40234375,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,1,standard,keygen,latency_ms,66.075669,1.2260628441960808,65.83239153208359,66.31894646791642,66.21475000000001,65.217775,66.8118,
-SEAL,BFV,8192,1,standard,keygen,energy_pkg_j_per_op,0.002094566942857143,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,8192,1,standard,keygen,energy_pkg_j_per_op,2.094566942857143,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,1,standard,keygen,peak_memory_mb,16.38671875,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,1,standard,multiply,latency_ms,8.6504691,0.2021249240180014,8.610363129942536,8.690575070057465,8.608805,8.5722375,8.670825,
 SEAL,BFV,8192,1,standard,multiply,energy_pkg_j_per_op,0.2897127172380952,,,,,,,n=1_invocation_not_repeated
@@ -133,7 +133,7 @@ SEAL,BFV,8192,3,standard,encrypt,latency_ms,1.8975252,0.013242187518028348,1.894
 SEAL,BFV,8192,3,standard,encrypt,energy_pkg_j_per_op,0.042070472457142856,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,3,standard,encrypt,peak_memory_mb,75.390625,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,3,standard,keygen,latency_ms,44.932293,0.9622886188197912,44.74135406102191,45.123231938978094,45.094,44.375175,45.4879,
-SEAL,BFV,8192,3,standard,keygen,energy_pkg_j_per_op,0.0011973154571428572,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,8192,3,standard,keygen,energy_pkg_j_per_op,1.1973154571428573,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,3,standard,keygen,peak_memory_mb,12.21875,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,3,standard,multiply,latency_ms,6.0166428,0.035142344255293737,6.009669796481016,6.023615803518983,6.00849,5.99979,6.015057499999999,
 SEAL,BFV,8192,3,standard,multiply,energy_pkg_j_per_op,0.2119096105904762,,,,,,,n=1_invocation_not_repeated
@@ -151,7 +151,7 @@ SEAL,BFV,8192,5,standard,encrypt,latency_ms,1.5987594,0.0532893282818171,1.58818
 SEAL,BFV,8192,5,standard,encrypt,energy_pkg_j_per_op,0.038577573161904764,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,5,standard,encrypt,peak_memory_mb,71.421875,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,5,standard,keygen,latency_ms,26.619807,0.8510579538783453,26.450938638113215,26.78867536188679,26.74595,26.302599999999998,27.126549999999998,
-SEAL,BFV,8192,5,standard,keygen,energy_pkg_j_per_op,0.0008873079142857144,,,,,,,n=1_invocation_not_repeated
+SEAL,BFV,8192,5,standard,keygen,energy_pkg_j_per_op,0.8873079142857143,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,5,standard,keygen,peak_memory_mb,8.140625,,,,,,,n=1_invocation_not_repeated
 SEAL,BFV,8192,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,8192,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -165,7 +165,7 @@ SEAL,BGV,16384,1,standard,encrypt,latency_ms,13.978299,0.7760989344533311,13.824
 SEAL,BGV,16384,1,standard,encrypt,energy_pkg_j_per_op,0.3116291628380952,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,16384,1,standard,encrypt,peak_memory_mb,220.109375,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,16384,1,standard,keygen,latency_ms,272.39762,2.684067352193513,271.86504280605783,272.9301971939422,272.258,270.78249999999997,273.52575,
-SEAL,BGV,16384,1,standard,keygen,energy_pkg_j_per_op,0.006177407352380953,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,16384,1,standard,keygen,energy_pkg_j_per_op,6.1774073523809525,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,16384,1,standard,keygen,peak_memory_mb,91.9921875,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,16384,1,standard,multiply,latency_ms,2.3666512,0.06816492012699195,2.353125800998049,2.380176599001951,2.35147,2.3420825,2.3591825,
 SEAL,BGV,16384,1,standard,multiply,energy_pkg_j_per_op,0.09850698532380951,,,,,,,n=1_invocation_not_repeated
@@ -183,7 +183,7 @@ SEAL,BGV,2048,1,standard,encrypt,latency_ms,0.4653324,0.002934103989674228,0.464
 SEAL,BGV,2048,1,standard,encrypt,energy_pkg_j_per_op,0.010474198057142857,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,1,standard,encrypt,peak_memory_mb,21.24609375,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,1,standard,keygen,latency_ms,21.925795,0.7074441665337458,21.78542272924628,22.06616727075372,22.1695,21.704825,22.389525,
-SEAL,BGV,2048,1,standard,keygen,energy_pkg_j_per_op,0.0007584756095238095,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,2048,1,standard,keygen,energy_pkg_j_per_op,0.7584756095238095,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,1,standard,keygen,peak_memory_mb,5.0859375,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,1,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,2048,1,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -197,7 +197,7 @@ SEAL,BGV,2048,3,standard,encrypt,latency_ms,0.38619037,0.0026228981836737743,0.3
 SEAL,BGV,2048,3,standard,encrypt,energy_pkg_j_per_op,0.008822689285714285,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,3,standard,encrypt,peak_memory_mb,20.99609375,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,3,standard,keygen,latency_ms,14.476133,0.5771570486435992,14.36161252003538,14.590653479964622,14.562999999999999,14.268275000000001,14.8093,
-SEAL,BGV,2048,3,standard,keygen,energy_pkg_j_per_op,0.00045899086666666665,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,2048,3,standard,keygen,energy_pkg_j_per_op,0.45899086666666666,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,3,standard,keygen,peak_memory_mb,4.90625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,3,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,2048,3,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -211,7 +211,7 @@ SEAL,BGV,2048,5,standard,encrypt,latency_ms,0.27643375,0.0038468966775804876,0.2
 SEAL,BGV,2048,5,standard,encrypt,energy_pkg_j_per_op,0.006514682676190477,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,5,standard,encrypt,peak_memory_mb,20.640625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,5,standard,keygen,latency_ms,10.3654735,0.5209845218786459,10.262098868017425,10.468848131982575,10.5151,10.311525,10.6233,HIGH_VARIANCE
-SEAL,BGV,2048,5,standard,keygen,energy_pkg_j_per_op,0.0004253700857142857,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,2048,5,standard,keygen,energy_pkg_j_per_op,0.42537008571428575,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,5,standard,keygen,peak_memory_mb,4.62890625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,2048,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,2048,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -225,7 +225,7 @@ SEAL,BGV,4096,1,standard,encrypt,latency_ms,1.2933728,0.011321344824996036,1.291
 SEAL,BGV,4096,1,standard,encrypt,energy_pkg_j_per_op,0.028144386142857143,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,1,standard,encrypt,peak_memory_mb,40.13671875,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,1,standard,keygen,latency_ms,41.63836,0.9028775172254049,41.45920951251151,41.81751048748849,41.88695,41.033325000000005,42.2808,
-SEAL,BGV,4096,1,standard,keygen,energy_pkg_j_per_op,0.0010979995428571428,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,4096,1,standard,keygen,energy_pkg_j_per_op,1.097999542857143,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,1,standard,keygen,peak_memory_mb,8.1015625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,1,standard,multiply,latency_ms,0.16181436,0.010070903406579098,0.15981607427428762,0.16381264572571236,0.1583905,0.15768,0.1603785,HIGH_VARIANCE
 SEAL,BGV,4096,1,standard,multiply,energy_pkg_j_per_op,0.07141354247619047,,,,,,,n=1_invocation_not_repeated
@@ -243,7 +243,7 @@ SEAL,BGV,4096,3,standard,encrypt,latency_ms,0.93929166,0.008565093340042266,0.93
 SEAL,BGV,4096,3,standard,encrypt,energy_pkg_j_per_op,0.020816771895238097,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,3,standard,encrypt,peak_memory_mb,38.07421875,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,3,standard,keygen,latency_ms,24.846594,0.7609731349297743,24.69560042059705,24.99758757940295,25.0409,24.57775,25.310025,
-SEAL,BGV,4096,3,standard,keygen,energy_pkg_j_per_op,0.0008436494095238096,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,4096,3,standard,keygen,energy_pkg_j_per_op,0.8436494095238096,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,3,standard,keygen,peak_memory_mb,6.1640625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,3,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,4096,3,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -257,7 +257,7 @@ SEAL,BGV,4096,5,standard,encrypt,latency_ms,1.0219876,0.022831202941977855,1.017
 SEAL,BGV,4096,5,standard,encrypt,energy_pkg_j_per_op,0.024215240866666668,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,5,standard,encrypt,peak_memory_mb,38.1171875,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,5,standard,keygen,latency_ms,22.449729,0.7517918364229031,22.30055718941054,22.598900810589463,22.6251,22.3411,22.928350000000002,
-SEAL,BGV,4096,5,standard,keygen,energy_pkg_j_per_op,0.0006202288285714286,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,4096,5,standard,keygen,energy_pkg_j_per_op,0.6202288285714286,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,5,standard,keygen,peak_memory_mb,6.08203125,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,4096,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,4096,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -271,7 +271,7 @@ SEAL,BGV,8192,1,standard,encrypt,latency_ms,3.4213682,0.10381506999633255,3.4007
 SEAL,BGV,8192,1,standard,encrypt,energy_pkg_j_per_op,0.07389046327619048,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,1,standard,encrypt,peak_memory_mb,79.75,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,1,standard,keygen,latency_ms,66.481094,1.270054289448075,66.22908767494421,66.73310032505579,66.5376,65.450325,67.2017,
-SEAL,BGV,8192,1,standard,keygen,energy_pkg_j_per_op,0.0017285715523809523,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,8192,1,standard,keygen,energy_pkg_j_per_op,1.7285715523809524,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,1,standard,keygen,peak_memory_mb,16.37890625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,1,standard,multiply,latency_ms,0.4454177,0.006886450208543404,0.44405127887599527,0.4467841211240048,0.4443995,0.443299,0.4452385,
 SEAL,BGV,8192,1,standard,multiply,energy_pkg_j_per_op,0.16069803807619049,,,,,,,n=1_invocation_not_repeated
@@ -289,7 +289,7 @@ SEAL,BGV,8192,3,standard,encrypt,latency_ms,2.6152176,0.022732936418822403,2.610
 SEAL,BGV,8192,3,standard,encrypt,energy_pkg_j_per_op,0.05690951494285715,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,3,standard,encrypt,peak_memory_mb,75.3984375,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,3,standard,keygen,latency_ms,45.213267,0.9194781588801203,45.03082258505366,45.39571141494634,45.36905,44.72259999999999,45.69425,
-SEAL,BGV,8192,3,standard,keygen,energy_pkg_j_per_op,0.001265164,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,8192,3,standard,keygen,energy_pkg_j_per_op,1.265164,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,3,standard,keygen,peak_memory_mb,12.15234375,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,3,standard,multiply,latency_ms,0.30561687,0.005401178067633288,0.3045451590919665,0.30668858090803347,0.304605,0.30377849999999995,0.30575825,
 SEAL,BGV,8192,3,standard,multiply,energy_pkg_j_per_op,0.13915507476190475,,,,,,,n=1_invocation_not_repeated
@@ -307,7 +307,7 @@ SEAL,BGV,8192,5,standard,encrypt,latency_ms,2.1015389,0.09649568048002476,2.0823
 SEAL,BGV,8192,5,standard,encrypt,energy_pkg_j_per_op,0.04851606778095238,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,5,standard,encrypt,peak_memory_mb,71.53515625,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,5,standard,keygen,latency_ms,26.161731,0.758324199970973,26.011263026761938,26.31219897323806,26.281950000000002,25.846175,26.648325,
-SEAL,BGV,8192,5,standard,keygen,energy_pkg_j_per_op,0.0007769154190476191,,,,,,,n=1_invocation_not_repeated
+SEAL,BGV,8192,5,standard,keygen,energy_pkg_j_per_op,0.7769154190476191,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,5,standard,keygen,peak_memory_mb,8.20703125,,,,,,,n=1_invocation_not_repeated
 SEAL,BGV,8192,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,8192,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -321,7 +321,7 @@ SEAL,CKKS,16384,1,standard,encrypt,latency_ms,11.25293,0.06599895392498217,11.23
 SEAL,CKKS,16384,1,standard,encrypt,energy_pkg_j_per_op,0.25599663074285717,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,16384,1,standard,encrypt,peak_memory_mb,1090.33984375,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,16384,1,standard,keygen,latency_ms,266.09874,1.811023097309886,265.73939372706036,266.4580862729397,266.05150000000003,264.749,267.19350000000003,
-SEAL,CKKS,16384,1,standard,keygen,energy_pkg_j_per_op,0.005219544123809524,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,16384,1,standard,keygen,energy_pkg_j_per_op,5.219544123809524,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,16384,1,standard,keygen,peak_memory_mb,87.609375,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,16384,1,standard,multiply,latency_ms,2.2849221,0.13799973168832796,2.2575399593069645,2.312304240693036,2.2275799999999997,2.2262575,2.26243,HIGH_VARIANCE
 SEAL,CKKS,16384,1,standard,multiply,energy_pkg_j_per_op,0.5973780157428572,,,,,,,n=1_invocation_not_repeated
@@ -339,7 +339,7 @@ SEAL,CKKS,2048,1,standard,encrypt,latency_ms,0.47676424,0.017601180063813563,0.4
 SEAL,CKKS,2048,1,standard,encrypt,energy_pkg_j_per_op,0.011882784219047619,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,1,standard,encrypt,peak_memory_mb,21.3125,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,1,standard,keygen,latency_ms,20.607976,0.6890672036422527,20.47125011737508,20.74470188262492,20.758699999999997,20.543049999999997,20.999699999999997,
-SEAL,CKKS,2048,1,standard,keygen,energy_pkg_j_per_op,0.0006599548571428572,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,2048,1,standard,keygen,energy_pkg_j_per_op,0.6599548571428572,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,1,standard,keygen,peak_memory_mb,5.140625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,1,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,2048,1,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -353,7 +353,7 @@ SEAL,CKKS,2048,3,standard,encrypt,latency_ms,0.47906864,0.025877692151762954,0.4
 SEAL,CKKS,2048,3,standard,encrypt,energy_pkg_j_per_op,0.011805599219047619,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,3,standard,encrypt,peak_memory_mb,21.2890625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,3,standard,keygen,latency_ms,20.613427,0.7219425264422774,20.470177940096214,20.75667605990379,20.83465,20.403225,21.059199999999997,
-SEAL,CKKS,2048,3,standard,keygen,energy_pkg_j_per_op,0.0006622515428571428,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,2048,3,standard,keygen,energy_pkg_j_per_op,0.6622515428571428,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,3,standard,keygen,peak_memory_mb,5.0390625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,3,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,2048,3,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -367,7 +367,7 @@ SEAL,CKKS,2048,5,standard,encrypt,latency_ms,0.26938999,0.002767000511055578,0.2
 SEAL,CKKS,2048,5,standard,encrypt,energy_pkg_j_per_op,0.006874316942857142,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,5,standard,encrypt,peak_memory_mb,20.66796875,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,5,standard,keygen,latency_ms,9.0582259,0.3701766388682952,8.984774823807625,9.131676976192376,9.092915000000001,9.032755,9.202835,
-SEAL,CKKS,2048,5,standard,keygen,energy_pkg_j_per_op,0.0003754421238095238,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,2048,5,standard,keygen,energy_pkg_j_per_op,0.3754421238095238,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,5,standard,keygen,peak_memory_mb,4.609375,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,2048,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,2048,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -381,7 +381,7 @@ SEAL,CKKS,4096,1,standard,encrypt,latency_ms,1.2424278,0.07065999381845603,1.228
 SEAL,CKKS,4096,1,standard,encrypt,energy_pkg_j_per_op,0.03104312262857143,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,1,standard,encrypt,peak_memory_mb,71.07421875,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,1,standard,keygen,latency_ms,40.229688,0.9199573357784183,40.047148505961225,40.41222749403878,40.39149999999999,39.7396,40.8531,
-SEAL,CKKS,4096,1,standard,keygen,energy_pkg_j_per_op,0.0011355579047619049,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,4096,1,standard,keygen,energy_pkg_j_per_op,1.1355579047619049,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,1,standard,keygen,peak_memory_mb,8.0546875,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,1,standard,multiply,latency_ms,0.15981624,0.005622521511193923,0.15870060975068298,0.16093187024931702,0.15890300000000002,0.15851325,0.15936150000000002,
 SEAL,CKKS,4096,1,standard,multiply,energy_pkg_j_per_op,0.0603584244,,,,,,,n=1_invocation_not_repeated
@@ -399,7 +399,7 @@ SEAL,CKKS,4096,3,standard,encrypt,latency_ms,0.89445496,0.008065991566942021,0.8
 SEAL,CKKS,4096,3,standard,encrypt,energy_pkg_j_per_op,0.022495862771428572,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,3,standard,encrypt,peak_memory_mb,38.08203125,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,3,standard,keygen,latency_ms,23.151798,0.8142179693498058,22.990239490292986,23.313356509707013,23.34585,22.870175,23.699375,
-SEAL,CKKS,4096,3,standard,keygen,energy_pkg_j_per_op,0.0008202025142857143,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,4096,3,standard,keygen,energy_pkg_j_per_op,0.8202025142857142,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,3,standard,keygen,peak_memory_mb,5.9296875,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,3,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,4096,3,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -413,7 +413,7 @@ SEAL,CKKS,4096,5,standard,encrypt,latency_ms,0.86493053,0.00999095862829099,0.86
 SEAL,CKKS,4096,5,standard,encrypt,energy_pkg_j_per_op,0.020318778819047617,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,5,standard,encrypt,peak_memory_mb,38.03515625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,5,standard,keygen,latency_ms,20.76313,0.7523142564813262,20.61385452993696,20.91240547006304,21.023600000000002,20.598725,21.229475,
-SEAL,CKKS,4096,5,standard,keygen,energy_pkg_j_per_op,0.0006324500571428572,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,4096,5,standard,keygen,energy_pkg_j_per_op,0.6324500571428572,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,5,standard,keygen,peak_memory_mb,6.0390625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,4096,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,4096,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
@@ -427,7 +427,7 @@ SEAL,CKKS,8192,1,standard,encrypt,latency_ms,2.9753109,0.06374669774128848,2.962
 SEAL,CKKS,8192,1,standard,encrypt,energy_pkg_j_per_op,0.07078345435238095,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,1,standard,encrypt,peak_memory_mb,204.04296875,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,1,standard,keygen,latency_ms,65.289162,1.6765700628703617,64.95649412607304,65.62182987392697,65.04235,64.17155,65.972775,
-SEAL,CKKS,8192,1,standard,keygen,energy_pkg_j_per_op,0.0019563620095238094,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,8192,1,standard,keygen,energy_pkg_j_per_op,1.9563620095238097,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,1,standard,keygen,peak_memory_mb,15.4765625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,1,standard,multiply,latency_ms,0.45126305,0.011207046401165597,0.4490393288553592,0.4534867711446408,0.4468015,0.44588275,0.45028674999999996,
 SEAL,CKKS,8192,1,standard,multiply,energy_pkg_j_per_op,0.1619279250095238,,,,,,,n=1_invocation_not_repeated
@@ -445,7 +445,7 @@ SEAL,CKKS,8192,3,standard,encrypt,latency_ms,2.3335455,0.010917714118150224,2.33
 SEAL,CKKS,8192,3,standard,encrypt,energy_pkg_j_per_op,0.054408992923809525,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,3,standard,encrypt,peak_memory_mb,137.66796875,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,3,standard,keygen,latency_ms,43.089751,1.0882672649206995,42.87381516450878,43.30568683549122,43.12479999999999,42.4927,43.757575,
-SEAL,CKKS,8192,3,standard,keygen,energy_pkg_j_per_op,0.0013818637238095237,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,8192,3,standard,keygen,energy_pkg_j_per_op,1.3818637238095237,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,3,standard,keygen,peak_memory_mb,11.2890625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,3,standard,multiply,latency_ms,0.29645746,0.0037930766899921245,0.29570483129330505,0.29721008870669496,0.2956925,0.29518525,0.296371,
 SEAL,CKKS,8192,3,standard,multiply,energy_pkg_j_per_op,0.12251942906666667,,,,,,,n=1_invocation_not_repeated
@@ -463,7 +463,7 @@ SEAL,CKKS,8192,5,standard,encrypt,latency_ms,1.7653172,0.027776240121966313,1.75
 SEAL,CKKS,8192,5,standard,encrypt,energy_pkg_j_per_op,0.04120228963809524,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,5,standard,encrypt,peak_memory_mb,71.4765625,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,5,standard,keygen,latency_ms,24.851554,0.7273282560192752,24.707236294503875,24.995871705496125,25.04365,24.712600000000002,25.246174999999997,
-SEAL,CKKS,8192,5,standard,keygen,energy_pkg_j_per_op,0.0008454043619047619,,,,,,,n=1_invocation_not_repeated
+SEAL,CKKS,8192,5,standard,keygen,energy_pkg_j_per_op,0.845404361904762,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,5,standard,keygen,peak_memory_mb,7.453125,,,,,,,n=1_invocation_not_repeated
 SEAL,CKKS,8192,5,standard,multiply,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,8192,5,standard,relinearize,latency_ms,,,,,,,,skipped_depth0_undefined_at_this_config
