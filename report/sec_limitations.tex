@@ -4,7 +4,8 @@
 Stated plainly rather than left implicit:
 
 \begin{itemize}[leftmargin=*, itemsep=2pt]
-  \item \textbf{$N{=}2048$, category 5} fails to build entirely -- SEAL's prime search cannot find enough NTT-friendly primes at this combination of ring size and security level. This is a genuine library limitation, not a bug; it is documented, not patched around.
+  \item \textbf{$N{=}2048$, category 5 sits at the edge of feasibility.} It is included in the grid and in every measured scenario, but only with a single 26-bit prime (Table~\ref{tab:paramgrid}) and a reduced plaintext modulus ($t=12289$). Its BFV/BGV fresh noise margin is about 1 bit, so it supports no multiplicative depth; its correctness was stability-tested separately (Section~\ref{sec:security-validation}).
+  \item \textbf{Matrix--vector multiplication is out of scope for this stage.} It was removed from the planned composite workloads with the supervisor's agreement and remains a possible extension. The composite workloads that remain in scope are the dot product and polynomial evaluation.
   \item \textbf{Energy is not isolated to the benchmark process.} RAPL measures total package power draw during the measurement window, not one process's share of it. Background load was minimized but not eliminated.
   \item \textbf{No DRAM-domain energy is available on this hardware.} Only \texttt{package-0} and a \texttt{core} subzone are exposed under \texttt{/sys/class/powercap/}; package energy is the value reported throughout this report.
   \item \textbf{Apparent per-item energy improvement at larger batch sizes} (Section~\ref{sec:results}) is attributed to fixed Docker invocation overhead amortizing over more work, not a genuine drop in per-operation energy cost -- consistent with the flat per-item latency result.

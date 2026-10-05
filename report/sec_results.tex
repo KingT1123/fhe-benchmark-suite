@@ -5,7 +5,7 @@ This section presents the results obtained for SEAL. Latency figures are drawn f
 
 \subsection{Latency}
 
-Table~\ref{tab:latency} gives the range of each operation's cost across every tested parameter combination. 83 of 112 latency measurements were flagged \texttt{HIGH\_VARIANCE} -- expected for fast operations, where ordinary background noise is large relative to the operation itself.
+Table~\ref{tab:latency} gives the range of each operation's cost across every tested parameter combination. 38 of 144 Standard-scenario latency measurements were flagged \texttt{HIGH\_VARIANCE} -- expected for fast operations, where ordinary background noise is large relative to the operation itself.
 
 \begin{table}[h!]
 \centering\small
@@ -99,7 +99,7 @@ $N{=}16384$ (MB) & 2.10 & 2.36 & 1.18 & 18.88 \\
 \label{fig:storage}
 \end{figure}
 
-The relinearization key is consistently the largest artifact -- roughly $12\times$ the ciphertext size at $N{=}16384$.
+The relinearization key is consistently the largest artifact -- $9\times$ the ciphertext size at $N{=}16384$ (18.88\,MB vs.\ 2.10\,MB), up from $4\times$ at $N{=}8192$ (1.57\,MB vs.\ 0.39\,MB).
 
 The Composite scenario's Galois (rotation) keys are a more extreme case, and one this harness got wrong until an extra-rigor correctness pass caught it: SEAL's \texttt{create\_galois\_keys()} generates a key for every power-of-two rotation step the scheme supports by default, not just the step(s) a given operation actually rotates by. A single rotate-by-1 measurement ($N{=}8192$, category~1) originally generated a 36.07\,MB key this way; requesting only the specific step actually used (via the explicit-steps overload) reduces this to 1.56\,MB -- a 23$\times$ reduction, with no change to correctness (verified by direct measurement, not assumed).
 
@@ -183,7 +183,7 @@ Both the zero-budget and the thin-budget configuration show error of order 1--10
 
 \subsubsection*{Resource constraints}
 
-SEAL's peak memory use (118.66\,MB, Standard; 118.77\,MB, Constrained) stays under 3\% of the 4\,GB Constrained-scenario cap. Standard and Constrained produced the same 112 succeeded / 24 skipped / 8 failed pattern, and latency ranges were statistically indistinguishable between the two (Table~\ref{tab:constrained}).
+SEAL's peak memory use (118.66\,MB, Standard; 118.77\,MB, Constrained) stays under 3\% of the 4\,GB Constrained-scenario cap. On the common $N \le 8192$ grid, Standard and Constrained produced the same pattern -- 126 configurations measured, 36 skipped (depth 0), none failed -- and latency ranges were close between the two (Table~\ref{tab:constrained}). No formal equivalence test was applied to this comparison, so it is a descriptive observation, not a statistical claim.
 
 \begin{table}[h!]
 \centering\small
@@ -193,14 +193,14 @@ SEAL's peak memory use (118.66\,MB, Standard; 118.77\,MB, Constrained) stays und
 \midrule
 Peak memory (max, MB) & 118.66 & 118.77 \\
 Energy per op (max, J) & 7.42 & 5.39 \\
-\texttt{HIGH\_VARIANCE} count & 83/112 & 63/112 \\
+\texttt{HIGH\_VARIANCE} count ($N \le 8192$) & 30/126 & 32/126 \\
 \bottomrule
 \end{tabular}
 \caption{Standard vs.\ Constrained, full grid.}
 \label{tab:constrained}
 \end{table}
 
-The lower variance count under Constrained is consistent with core-pinning reducing scheduling noise, on top of the resource cap itself never binding at this workload scale.
+The \texttt{HIGH\_VARIANCE} counts are nearly identical on the common grid, so core-pinning did not measurably reduce timing variance in this campaign. (The Standard total including the 18 $N{=}16384$ cells is 38/144.)
 
 \subsubsection*{Batching}
 
