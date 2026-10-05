@@ -1364,6 +1364,48 @@ def aggregate_noise_trace(args):
           f"noise-budget API -- see bench_seal.cpp).")
 
 
+def energy_memory_rows(em_dir, tag):
+    """Round-3 energy/memory protocol (run_energy_memory_docker.sh) for one
+    Standard/Constrained cell. Returns a list of (metric, stats-dict, flag).
+
+    Energy: each measured rep of <tag>_energy.csv carries the RAPL energy of
+    ONLY its timed window (energy_uj), the ops in that window (inner_loop),
+    the per-op latency, and the idle package power measured just before the
+    reps in the same process (idle_power_w). Per rep:
+        window_s  = latency_ms * inner_loop / 1000
+        gross/op  = energy_uj / 1e6 / inner_loop
+        net/op    = (energy_uj / 1e6 - idle_power_w * window_s) / inner_loop
+    then real mean/std/CI over the reps. net (idle-corrected) is the energy
+    the operation itself adds above the idle machine; gross is the package
+    total over the same window, kept for transparency.
+    Memory: VmHWM of MEM_RUNS separate inner_loop=1 invocations
+    (<tag>_mem<k>.log), stats over invocations."""
+    rows = []
+    e_path = os.path.join(em_dir, f"{tag}_energy.csv")
+    if os.path.exists(e_path):
+        measured = [r for r in csv.DictReader(open(e_path)) if r.get("status") == "measured"]
+        if measured:
+            gross, net = [], []
+            for r in measured:
+                k = int(r["inner_loop"])
+                e_j = int(r["energy_uj"]) / 1e6
+                window_s = float(r["latency_ms"]) * k / 1000.0
+                gross.append(e_j / k)
+                net.append((e_j - float(r["idle_power_w"]) * window_s) / k)
+            idle = [float(r["idle_power_w"]) for r in measured][:1]
+            rows.append(("energy_net_j_per_op", _stats_over_trials(net), ""))
+            rows.append(("energy_pkg_j_per_op", _stats_over_trials(gross), ""))
+            rows.append(("idle_power_w", (idle[0],) + ("",) * 6 + ("single_idle_window_before_reps",), None))
+    mem = []
+    for m_path in sorted(glob.glob(os.path.join(em_dir, f"{tag}_mem[0-9]*.log"))):
+        v = parse_mem_log(m_path)
+        if v is not None:
+            mem.append(v)
+    if mem:
+        rows.append(("peak_memory_mb", _stats_over_trials(mem), f"n={len(mem)}_invocations_inner_loop_1"))
+    return rows
+
+
 def aggregate_composite_controls(args):
     """Composite rotate-only / add-only noise controls: groups by (scheme,
     N, category, operation, vec_len, step_name) across the --trace-reps
@@ -1572,6 +1614,14 @@ def main():
     else:
         files = [f for f in files if "_constrained" in f]
 
+    # Round-3 energy/memory protocol: once run_energy_memory_docker.sh has
+    # produced data for this scenario, energy and memory rows come ONLY from
+    # it (see energy_memory_rows); latency rows are unchanged either way.
+    em_dir = f"../results/raw/energy_memory/{args.scenario}"
+    use_em = bool(glob.glob(os.path.join(em_dir, "seal_*")))
+    if use_em:
+        print(f"Energy/memory: round-3 protocol data from {em_dir}")
+
     out_rows = []
     for f in files:
         summary = aggregate_latency_file(f)
@@ -1603,6 +1653,21 @@ def main():
             "iqr_low": summary["iqr_low_ms"], "iqr_high": summary["iqr_high_ms"],
             "flag": summary["flag"],
         })
+        if use_em:
+            base = {"library": summary["library"], "scheme": summary["scheme"],
+                    "N": summary["N"], "category": summary["category"],
+                    "scenario": args.scenario, "operation": summary["operation"]}
+            em = energy_memory_rows(em_dir, tag)
+            if not em:
+                out_rows.append({**base, "metric": "energy_net_j_per_op",
+                                 "flag": "not_measured_in_energy_memory_run"})
+            for metric, st, flag in em:
+                mean, std, ci_low, ci_high, median, iqr_low, iqr_high, hv = st
+                out_rows.append({**base, "metric": metric, "mean": mean, "std": std,
+                                 "ci_low": ci_low, "ci_high": ci_high, "median": median,
+                                 "iqr_low": iqr_low, "iqr_high": iqr_high,
+                                 "flag": hv if flag is None else ";".join(x for x in (hv, flag) if x)})
+            continue
         if energy_pkg is not None:
             # n_total reps each ran inner_loop ops internally (see
             # parse_inner_loop) -- divide by the real op count, not just reps.

@@ -267,6 +267,32 @@
 //   category) — same "own CSV schema, own function, header written before
 //   the possibly-throwing call, returns before the timing loop" shape as
 //   size/noise_trace/ckks_error.
+//
+// --rapl-dir=DIR / --idle-seconds=S / --peak-rss-out=FILE (round-3
+//   energy/memory protocol, all optional, all off by default so every
+//   existing scenario's output is unchanged): with --rapl-dir (a read-only
+//   bind mount of the host's /sys/class/powercap/intel-rapl:0, which Docker
+//   otherwise masks), the six timed operations read the package energy
+//   counter immediately before t0 and after t1, so each rep's energy covers
+//   ONLY the timed region -- not context/key setup, not the untimed
+//   fresh-ciphertext pre-build, not container start-up, which the old
+//   whole-`docker run` window included. --idle-seconds=S first measures idle
+//   package power over S seconds in the same process, just before the reps,
+//   after waiting --idle-settle-seconds: measured on this laptop, package
+//   power stays near its loaded level (~24 W) for ~4 s after heavy work
+//   before dropping to idle (~8-12 W), so an idle window that starts right
+//   after the previous cell would overstate idle power. Conversely, from
+//   idle the package needs ~0.5 s of load to reach its loaded power level,
+//   so --ramp-seconds busy-waits (untimed, unmeasured) between the idle
+//   window and the reps: otherwise short cells (keygen at small N: ~0.7 s
+//   of total work) would be measured mostly during the ramp.
+//   Each row then also carries inner_loop, energy_uj and idle_power_w;
+//   aggregate.py turns these into idle-corrected energy per operation:
+//   (energy_uj - idle_power_w * window) / ops. --peak-rss-out writes the
+//   process's VmHWM after the loop (exact, unlike polling /proc from
+//   outside), in the "Maximum resident set size (kbytes): N" format
+//   parse_mem_log() already reads -- used with --inner-loop=1 so peak memory
+//   reflects one operation, not the inner-loop pre-build.
 
 #include <seal/seal.h>
 #include <chrono>
@@ -281,6 +307,8 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
+#include <thread>
+#include <cstdint>
 
 using namespace seal;
 using Clock = std::chrono::steady_clock;
@@ -311,6 +339,11 @@ struct Args {
                                  // from --fill-pct), 0 == unset.
     std::string out;
     std::string grid_path = "../../config/param_grid.csv";
+    std::string rapl_dir;       // --rapl-dir: in-process energy, see header comment
+    int idle_seconds = 0;       // --idle-seconds: idle-power window before the reps
+    int idle_settle_seconds = 0;  // --idle-settle-seconds: wait before that window
+    int ramp_seconds = 0;         // --ramp-seconds: busy-wait after idle, before reps
+    std::string peak_rss_out;   // --peak-rss-out: write VmHWM after the loop
 };
 
 static std::string arg_value(const std::string &a) {
@@ -336,6 +369,11 @@ Args parse_args(int argc, char **argv) {
         else if (a.rfind("--vec-len=", 0) == 0) args.vec_len = std::stoi(arg_value(a));
         else if (a.rfind("--out=", 0) == 0) args.out = arg_value(a);
         else if (a.rfind("--grid=", 0) == 0) args.grid_path = arg_value(a);
+        else if (a.rfind("--rapl-dir=", 0) == 0) args.rapl_dir = arg_value(a);
+        else if (a.rfind("--idle-seconds=", 0) == 0) args.idle_seconds = std::stoi(arg_value(a));
+        else if (a.rfind("--idle-settle-seconds=", 0) == 0) args.idle_settle_seconds = std::stoi(arg_value(a));
+        else if (a.rfind("--ramp-seconds=", 0) == 0) args.ramp_seconds = std::stoi(arg_value(a));
+        else if (a.rfind("--peak-rss-out=", 0) == 0) args.peak_rss_out = arg_value(a);
         else throw std::runtime_error("Unknown argument: " + a);
     }
     if (args.scheme.empty() || args.N == 0 || args.category == 0 ||
@@ -655,6 +693,35 @@ int compute_effective_depth(Ctx &c, const Args &args, const GridRow &grid) {
     return last_good_depth;
 }
 
+// ---------- in-process RAPL energy (--rapl-dir, see header comment) ----------
+// rapl_now() returns 0 when --rapl-dir is unset, so the reads around t0/t1
+// below cost nothing for every other scenario. The reads sit OUTSIDE the
+// t0..t1 interval, so they never add to the measured latency; the energy
+// window is the timed region plus two sysfs reads (microseconds).
+static std::string g_rapl_energy_path;
+static uint64_t g_rapl_max_uj = 0;
+static uint64_t g_last_window_uj = 0;  // energy of the most recent timed region
+
+static uint64_t rapl_now() {
+    if (g_rapl_energy_path.empty()) return 0;
+    std::ifstream f(g_rapl_energy_path);  // reopened each read: sysfs value is
+    uint64_t v = 0;                        // generated at read time
+    if (!(f >> v)) throw std::runtime_error("Cannot read " + g_rapl_energy_path);
+    return v;
+}
+
+static uint64_t rapl_delta(uint64_t before, uint64_t after) {
+    return after >= before ? after - before : after + g_rapl_max_uj - before;  // wrap
+}
+
+static long read_vmhwm_kb() {
+    std::ifstream f("/proc/self/status");
+    std::string line;
+    while (std::getline(f, line))
+        if (line.rfind("VmHWM:", 0) == 0) return std::stol(line.substr(6));
+    return -1;
+}
+
 // ---------- timed operations ----------
 // Each returns elapsed time in milliseconds for ONE iteration.
 
@@ -666,6 +733,7 @@ double time_keygen(const Args &args, const GridRow &grid) {
     // something this harness re-measures per batch size.
     // Full context + key generation from scratch, mirrors real-world cost.
     std::vector<int> chain_bits = parse_chain(grid.chain);
+    uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     if (args.scheme == "BFV" || args.scheme == "BGV") {
         EncryptionParameters parms(args.scheme == "BFV" ? scheme_type::bfv : scheme_type::bgv);
@@ -686,6 +754,7 @@ double time_keygen(const Args &args, const GridRow &grid) {
         if (grid.depth > 0) { RelinKeys rk; keygen.create_relin_keys(rk); }
     }
     auto t1 = Clock::now();
+    g_last_window_uj = rapl_delta(e0, rapl_now());
     return std::chrono::duration<double, std::milli>(t1 - t0).count();
 }
 
@@ -714,9 +783,11 @@ double time_encrypt(Ctx &c, const Args &args, int batch_size, int inner_loop) {
         }
     }
     Ciphertext ct;
+    uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     for (int k = 0; k < total; k++) c.encryptor->encrypt(pts[k], ct);
     auto t1 = Clock::now();
+    g_last_window_uj = rapl_delta(e0, rapl_now());
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -726,9 +797,11 @@ double time_decrypt(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     cts.reserve(total);
     for (int k = 0; k < total; k++) cts.push_back(fresh_ciphertext(c, args));
     Plaintext pt;
+    uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     for (int k = 0; k < total; k++) c.decryptor->decrypt(cts[k], pt);
     auto t1 = Clock::now();
+    g_last_window_uj = rapl_delta(e0, rapl_now());
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -741,9 +814,11 @@ double time_add(Ctx &c, const Args &args, int batch_size, int inner_loop) {
         bs.push_back(fresh_ciphertext(c, args));
     }
     Ciphertext result;
+    uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     for (int k = 0; k < total; k++) c.evaluator->add(as[k], bs[k], result);
     auto t1 = Clock::now();
+    g_last_window_uj = rapl_delta(e0, rapl_now());
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -756,9 +831,11 @@ double time_multiply(Ctx &c, const Args &args, int batch_size, int inner_loop) {
         bs.push_back(fresh_ciphertext(c, args));
     }
     Ciphertext result;
+    uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     for (int k = 0; k < total; k++) c.evaluator->multiply(as[k], bs[k], result);
     auto t1 = Clock::now();
+    g_last_window_uj = rapl_delta(e0, rapl_now());
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -773,10 +850,12 @@ double time_relinearize(Ctx &c, const Args &args, int batch_size, int inner_loop
         c.evaluator->multiply(a, b, product);  // untimed setup step
         products.push_back(std::move(product));
     }
+    uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     for (int k = 0; k < total; k++)
         c.evaluator->relinearize_inplace(products[k], c.relin_keys);
     auto t1 = Clock::now();
+    g_last_window_uj = rapl_delta(e0, rapl_now());
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -1431,6 +1510,12 @@ int main(int argc, char **argv) {
     try {
         Args args = parse_args(argc, argv);
         GridRow grid = load_grid_row(args.grid_path, args.N, args.category);
+        if (!args.rapl_dir.empty()) {
+            g_rapl_energy_path = args.rapl_dir + "/energy_uj";
+            std::ifstream mf(args.rapl_dir + "/max_energy_range_uj");
+            if (!(mf >> g_rapl_max_uj)) throw std::runtime_error("Cannot read " + args.rapl_dir + "/max_energy_range_uj");
+            rapl_now();  // fail early if the counter itself isn't readable
+        }
 
         // ---- Packing scenario (--fill-pct=...): completely separate code
         // path and CSV schemas, checked FIRST so it intercepts operation=
@@ -1822,7 +1907,31 @@ int main(int argc, char **argv) {
 
         std::ofstream out(args.out);
         if (!out.is_open()) throw std::runtime_error("Cannot open output file: " + args.out);
-        out << "library,scheme,N,category,operation,batch_size,iteration,latency_ms,status\n";
+        const bool energy = !g_rapl_energy_path.empty();
+        out << "library,scheme,N,category,operation,batch_size,iteration,latency_ms,status"
+            << (energy ? ",inner_loop,energy_uj,idle_power_w" : "") << "\n";
+
+        // Idle package power, same process, just before the reps (round-3
+        // protocol): context/keys for non-keygen ops are built lazily inside
+        // the loop, so nothing SEAL-related runs during this window.
+        double idle_w = 0.0;
+        if (energy && args.idle_seconds > 0) {
+            std::this_thread::sleep_for(std::chrono::seconds(args.idle_settle_seconds));
+            auto w0 = Clock::now();
+            uint64_t i0 = rapl_now();
+            std::this_thread::sleep_for(std::chrono::seconds(args.idle_seconds));
+            uint64_t i1 = rapl_now();
+            auto w1 = Clock::now();
+            idle_w = rapl_delta(i0, i1) / 1e6 / std::chrono::duration<double>(w1 - w0).count();
+        }
+        if (energy && args.ramp_seconds > 0) {
+            volatile uint64_t spin = 0;
+            auto r0 = Clock::now();
+            while (Clock::now() - r0 < std::chrono::seconds(args.ramp_seconds)) spin = spin + 1;
+        }
+        // keygen ignores --inner-loop (one keygen per rep), so its real
+        // per-window op count is 1 -- recorded explicitly for aggregate.py.
+        const int ops_per_window = (args.operation == "keygen") ? 1 : args.inner_loop;
 
         int total = args.warmup + args.reps;
         for (int i = 0; i < total; i++) {
@@ -1846,9 +1955,15 @@ int main(int argc, char **argv) {
             std::string status = (i < args.warmup) ? "warmup" : "measured";
             out << "SEAL," << args.scheme << "," << args.N << "," << args.category << ","
                 << args.operation << "," << args.batch_size << "," << i << "," << ms << ","
-                << status << "\n";
+                << status;
+            if (energy) out << "," << ops_per_window << "," << g_last_window_uj << "," << idle_w;
+            out << "\n";
         }
         out.close();
+        if (!args.peak_rss_out.empty()) {
+            std::ofstream mo(args.peak_rss_out);
+            mo << "Maximum resident set size (kbytes): " << read_vmhwm_kb() << "\n";
+        }
         std::cerr << "OK: wrote " << total << " rows to " << args.out << std::endl;
         return 0;
     } catch (const std::exception &e) {
