@@ -7,6 +7,10 @@ SEAL,BFV,2048,3,size,ciphertext,size_bytes,65649,,,,,,,deterministic_single_meas
 SEAL,BFV,2048,3,size,public_key,size_bytes,65649,,,,,,,deterministic_single_measurement
 SEAL,BFV,2048,3,size,secret_key,size_bytes,32856,,,,,,,deterministic_single_measurement
 SEAL,BFV,2048,3,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
+SEAL,BFV,2048,5,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_measurement
+SEAL,BFV,2048,5,size,public_key,size_bytes,32881,,,,,,,deterministic_single_measurement
+SEAL,BFV,2048,5,size,secret_key,size_bytes,16472,,,,,,,deterministic_single_measurement
+SEAL,BFV,2048,5,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BFV,4096,1,size,ciphertext,size_bytes,131185,,,,,,,deterministic_single_measurement
 SEAL,BFV,4096,1,size,public_key,size_bytes,196721,,,,,,,deterministic_single_measurement
 SEAL,BFV,4096,1,size,secret_key,size_bytes,98392,,,,,,,deterministic_single_measurement
@@ -39,6 +43,10 @@ SEAL,BGV,2048,3,size,ciphertext,size_bytes,65649,,,,,,,deterministic_single_meas
 SEAL,BGV,2048,3,size,public_key,size_bytes,65649,,,,,,,deterministic_single_measurement
 SEAL,BGV,2048,3,size,secret_key,size_bytes,32856,,,,,,,deterministic_single_measurement
 SEAL,BGV,2048,3,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
+SEAL,BGV,2048,5,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_measurement
+SEAL,BGV,2048,5,size,public_key,size_bytes,32881,,,,,,,deterministic_single_measurement
+SEAL,BGV,2048,5,size,secret_key,size_bytes,16472,,,,,,,deterministic_single_measurement
+SEAL,BGV,2048,5,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,BGV,4096,1,size,ciphertext,size_bytes,131185,,,,,,,deterministic_single_measurement
 SEAL,BGV,4096,1,size,public_key,size_bytes,196721,,,,,,,deterministic_single_measurement
 SEAL,BGV,4096,1,size,secret_key,size_bytes,98392,,,,,,,deterministic_single_measurement
@@ -71,6 +79,10 @@ SEAL,CKKS,2048,3,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_mea
 SEAL,CKKS,2048,3,size,public_key,size_bytes,65649,,,,,,,deterministic_single_measurement
 SEAL,CKKS,2048,3,size,secret_key,size_bytes,32856,,,,,,,deterministic_single_measurement
 SEAL,CKKS,2048,3,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
+SEAL,CKKS,2048,5,size,ciphertext,size_bytes,32881,,,,,,,deterministic_single_measurement
+SEAL,CKKS,2048,5,size,public_key,size_bytes,32881,,,,,,,deterministic_single_measurement
+SEAL,CKKS,2048,5,size,secret_key,size_bytes,16472,,,,,,,deterministic_single_measurement
+SEAL,CKKS,2048,5,size,relin_keys,size_bytes,,,,,,,,skipped_depth0_undefined_at_this_config
 SEAL,CKKS,4096,1,size,ciphertext,size_bytes,131185,,,,,,,deterministic_single_measurement
 SEAL,CKKS,4096,1,size,public_key,size_bytes,196721,,,,,,,deterministic_single_measurement
 SEAL,CKKS,4096,1,size,secret_key,size_bytes,98392,,,,,,,deterministic_single_measurement

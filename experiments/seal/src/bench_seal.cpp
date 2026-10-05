@@ -450,14 +450,14 @@ Modulus bfv_bgv_plain_modulus(int N, int category) {
 
 // CKKS initial scale (bits). Every cell uses the shared formula computed
 // in build_context() below (min(40, (total_bits-10)/2), reserving headroom
-// for one future multiply) EXCEPT five cells whose reduced chain (Chapter
+// for one future multiply) EXCEPT six cells whose reduced chain (Chapter
 // 3, security-level validation) made that formula either unusably
 // imprecise or needlessly conservative. Each override here is the
 // empirically best scale found by direct round-trip testing against the
 // new chain (see sec_methodology.tex's Table~\ref{tab:configmeta-ckks}
 // note), not re-derived from a formula -- the shared formula's own
 // multiply-safety margin is exactly what most of these needed to deviate
-// from (four of the five are depth-0 and never multiply, so that reserved
+// from (five of the six are depth-0 and never multiply, so that reserved
 // margin was precision they didn't need to give up).
 int ckks_scale_bits_override(int N, int category, int default_bits) {
     if (N == 2048 && category == 1) return 24;
@@ -468,6 +468,11 @@ int ckks_scale_bits_override(int N, int category, int default_bits) {
         // limitation of this cell, not a clean fix -- see
         // sec_methodology.tex's Table~\ref{tab:configmeta-ckks} note.
         // Report this cell's CKKS results with that caveat attached.
+    if (N == 2048 && category == 5) return 24;  // single 26-bit prime; the
+        // formula gave 2^8 (max error ~157, unusable). 2^24 is the highest
+        // scale SEAL accepts here (2^25 throws "scale out of bounds"); a
+        // 200-trial probe gave 0/400 failed decode checks, worst max error
+        // 3.8e-3. 2^22 failed 30/200 after-add checks, so 2^24 it is.
     if (N == 4096 && category == 3) return 32;
     if (N == 4096 && category == 5) return 24;
     if (N == 8192 && category == 5) return 40;  // strictly better than the
