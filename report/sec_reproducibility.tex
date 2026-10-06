@@ -35,10 +35,11 @@ Source code, build scripts, and configuration are version-controlled at:
 \end{center}
 {\sloppy Result data \emph{is} version-controlled in the same repository: per-configuration raw output under \nolinkurl{experiments/results/raw/}, the aggregated CSVs used for every table and figure under \nolinkurl{experiments/results/final/}, and the randomized run-order seed of each sweep in \nolinkurl{experiments/results/run_metadata.csv}. Incomplete $N{=}16384$ fragments excluded from the analysis are kept, not deleted, in the separate directory \nolinkurl{experiments/results/} \nolinkurl{raw_quarantine_N16384_incomplete/}. Per-run console logs are not tracked.\par}
 
-All SEAL results in this report were produced from commit \sealcommit, tagged \texttt{seal-final-v1}:
+All SEAL code and results in this report correspond to the commit
 \begin{center}
-\texttt{git checkout seal-final-v1}
+\sealcommit
 \end{center}
+tagged \texttt{seal-final-v1} in the repository (\texttt{git checkout seal-final-v1}). The only later commit records this hash in the report source itself.
 
 The full parameter grid (Table~\ref{tab:paramgrid}) is at \texttt{experiments/config/param\_grid.csv}. The benchmark's input values use a fixed seed, but SEAL generates its keys and encryption randomness afresh in every run, as it must. Repeated runs therefore reproduce timings and sizes up to ordinary system noise (captured by the confidence intervals reported throughout), while noise-budget values can differ by a few bits from run to run (Section~\ref{sec:results}, BGV at $N{=}4096$/category~1).
 
