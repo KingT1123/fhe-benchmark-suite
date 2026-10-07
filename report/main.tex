@@ -119,7 +119,7 @@
 
   \vfill
 
-  {\large Version 4 -- revised after the third round of review\par}
+  {\large Version 5 -- revised after the fourth round of review\par}
   \vspace{0.2cm}
   {\large \today\par}
   \vspace{0.5cm}
@@ -138,7 +138,7 @@ This report presents the results obtained to date in a Master's thesis benchmark
 
 Six metrics were measured -- latency, memory, energy, storage, noise-budget evolution, and CKKS error accumulation -- across deployment scenarios (a full-resource baseline, a resource-constrained profile simulating a small edge device, a batch/streaming profile, and chained composite workloads) and a twelve-point parameter grid spanning four ring dimensions and three NIST-aligned security categories. This work's contribution is a unified, security-stratified evaluation that brings performance, energy-per-operation, memory/storage, and correctness/precision together under one consistent framework across FHE libraries.
 
-Headline findings: SEAL's measured costs scale with ring dimension and security level as the underlying parameter tables predict; energy per operation tracks latency at a roughly constant added power; one operation needs at most about 22\,MiB of memory at $N \le 8192$, so the Resource-Constrained x86 profile (4 cores / 4\,GB RAM cap) never binds, and its latency and memory match the full-resource baseline; batching amortizes one-time key-generation cost but does not reduce the recurring cost of individual cryptographic operations; single-operation costs predict the cost of chained workloads within $\pm$10\%; and the smallest ring dimension ($N{=}2048$) is usable for BFV/BGV but, for CKKS, only at reduced precision at categories 3 and 5.
+Headline findings: SEAL's measured costs scale with ring dimension and security level as the underlying parameter tables predict; package energy per operation tracks latency at a roughly constant power; the peak process RSS observed while repeatedly running one operation stays below about 22\,MiB at $N \le 8192$, so the Resource-Constrained x86 profile (4 cores / 4\,GB RAM cap) never binds, and its latency and memory match the full-resource baseline; batching amortizes one-time key-generation cost but does not reduce the recurring cost of individual cryptographic operations; for the dot product at $N{=}8192$, category~1, the sum of single-operation costs predicts the chained cost within $\pm$10\%; and at the smallest ring dimension ($N{=}2048$), category~5 is an experimental limit case (1 bit of BFV/BGV noise budget after an addition) and CKKS category~3 is a very-low-precision configuration (about 8\% error).
 
 Section~\ref{sec:reproducibility} provides the complete information needed to reproduce every result in this report, including exact software versions, hardware specification, and a public code repository.
 
@@ -147,6 +147,8 @@ Section~\ref{sec:reproducibility} provides the complete information needed to re
 
 \newpage
 
+\input{generated/text_numbers.tex}
+\input{generated/batching_numbers.tex}
 \input{sec_intro.tex}
 \input{sec_methodology.tex}
 \input{sec_results.tex}

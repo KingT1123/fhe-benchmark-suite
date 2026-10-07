@@ -1,6 +1,36 @@
-\section{Next Steps}
+\section{Next Steps: Cross-Library Comparability}
 \label{sec:nextsteps}
 
-SEAL is now fully closed out against every metric and scenario defined in Section~\ref{sec:methodology}. The same framework -- unchanged parameter grid, unchanged metrics, unchanged statistical protocol -- will be applied next to \textbf{OpenFHE}, then \textbf{HElib} and \textbf{Lattigo}. OpenFHE supports a third scheme (BGV, in addition to BFV and CKKS); the other two dimensions of the methodology carry over directly.
+The same framework -- parameter grid, metrics, scenarios, statistical protocol, energy/memory protocol and correctness checks -- will be applied next to \textbf{OpenFHE}, then \textbf{HElib} and \textbf{Lattigo}. For the final comparison to be scientific rather than four independent benchmarks, the libraries must be run on parameters that are the same wherever possible, and every unavoidable difference must be stated. Table~\ref{tab:comparability} summarizes how each library represents the parameters; it is taken from each library's own source code and documentation (OpenFHE's default-parameter header, HElib's \texttt{Context.h}, and Lattigo's \texttt{core/rlwe} package).
 
-Once all four libraries are evaluated, the final deliverable is a direct cross-library comparison -- same scheme against same scheme, under identical conditions -- which no library's individual results, including SEAL's above, can substitute for on their own.
+\begin{table}[h!]
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\begin{tabular}{@{}L{1.45cm}L{1.5cm}L{4.0cm}L{3.4cm}L{4.4cm}@{}}
+\toprule
+\textbf{Library} & \textbf{Schemes} & \textbf{Ring and modulus chain} & \textbf{Plaintext modulus / CKKS scale} & \textbf{Defaults that differ} \\
+\midrule
+SEAL 4.1.2 & BFV, BGV, CKKS & $N$ set directly; chain given as an explicit list of prime sizes (last prime reserved for key switching) & $t$ set directly; CKKS scale passed at encoding & ternary secret; centered binomial error, $\sigma \approx 3.2$; one special prime for key switching \\
+OpenFHE & BFV, BGV, CKKS & $N$ settable or chosen automatically; chain generated from multiplicative depth, scaling-modulus size and first-modulus size, not from an explicit list & $t$ set directly; CKKS precision set by the scaling-modulus size; rescaling automatic by default & ternary secret; Gaussian error, $\sigma = 3.19$; hybrid key switching (BV for BFV); a 128-bit security check that can enlarge or reject $N$ \\
+HElib & BGV, CKKS (no BFV) & cyclotomic order $m$ ($m = 2N$ for power-of-two rings); chain generated from a total bit budget (\texttt{bits}) & BGV plaintext $p^r$; CKKS precision parameter instead of an explicit scale & dense secret by default; error $\sigma = 3.2$; key switching with $c$ columns; built-in security estimate \\
+Lattigo v6 & BFV (built on BGV), BGV, CKKS & $\log N$ set directly; chain given as explicit primes or prime sizes ($Q$), key-switching primes ($P$) separately & $t$ set directly; CKKS default scale set directly & ternary secret; discrete Gaussian error, $\sigma = 3.2$; one or more key-switching primes \\
+\bottomrule
+\end{tabular}
+\caption{Parameter representation per library. ``Ternary'' secret: coefficients in $\{-1,0,1\}$.}
+\label{tab:comparability}
+\end{table}
+
+\paragraph{Imposed identically whenever the library allows it.} Ring dimension $N$; security category, validated against the same 2024/2025 guideline table (Table~\ref{tab:guideline52}) whatever the library's own check says; total $\log q$ and depth of the modulus chain as in Table~\ref{tab:paramgrid}; plaintext modulus $t$ for BFV/BGV; CKKS scale in bits; a uniform ternary secret and an error of standard deviation about 3.2; the same inputs, operations, repetition counts, energy/memory protocol and correctness thresholds.
+
+\paragraph{Chosen or represented differently by the library.} The exact primes of the chain (OpenFHE and HElib generate their own), the key-switching method and its extra primes, the error sampler (centered binomial in SEAL, Gaussian elsewhere), the CKKS rescaling policy, and HElib's $m$ and $p^r$ representation. These are recorded per cell and are not tuned to favour any library; where a library's default would change one of the imposed parameters (for example OpenFHE raising $N$ to meet its own security check), the default is overridden and the override is recorded.
+
+\paragraph{When a configuration cannot be reproduced exactly.}
+\begin{enumerate}[leftmargin=*, itemsep=2pt]
+  \item $N$, the scheme and the security category are never changed. A scheme a library does not provide (BFV in HElib) is reported as \emph{not available}; no other scheme is substituted for it.
+  \item If the exact chain cannot be given, use the closest valid chain with the same depth and a total $\log q$ that is \emph{not larger} than the grid's (so security is never lower), and record the actual primes and $\log q$.
+  \item Any cell run with a deviation from the imposed parameters is flagged \emph{approximate}, the deviation is listed, and the cell is reported separately from the direct, same-parameter comparison.
+  \item A cell that cannot be run at all (for example, no valid chain at that size) is reported as \emph{not available} with the library's error, as was done for SEAL; it is never filled with a value from another configuration.
+\end{enumerate}
+
+Once all four libraries are evaluated, the final deliverable is a direct cross-library comparison -- same scheme against same scheme, under these rules -- which no library's individual results, including SEAL's above, can substitute for on their own.

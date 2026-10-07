@@ -245,11 +245,11 @@ def energy_memory():
 
     mib = lambda x: f"{x:.1f}"
     lines = [r"\begin{tabular}{@{}lccc@{}}", r"\toprule",
-             r"Operation & Net energy (J/op) & Gross energy (J/op) & Peak memory (MiB) \\",
+             r"Operation & Gross energy (J/op) & Net energy, estimate (J/op) & Peak process RSS (MiB) \\",
              r"\midrule"]
     for op in OPS:
-        lines.append(f"{op} & {rng('standard', 'energy_net_j_per_op', op)} & "
-                     f"{rng('standard', 'energy_pkg_j_per_op', op)} & "
+        lines.append(f"{op} & {rng('standard', 'energy_pkg_j_per_op', op)} & "
+                     f"{rng('standard', 'energy_net_j_per_op', op)} & "
                      f"{rng('standard', 'peak_memory_mb', op, fmt=mib)} \\\\")
     lines += [r"\bottomrule", r"\end{tabular}"]
     write("energy_memory_table.tex", "\n".join(lines) + "\n")
@@ -270,13 +270,13 @@ def energy_memory():
     lines = [r"\begin{tabular}{@{}lccc@{}}", r"\toprule",
              r"Metric & Constrained / Standard (median) & 10th--90th percentile & Cells \\",
              r"\midrule"]
-    for label, metric in (("Latency", "latency_ms"), ("Peak memory", "peak_memory_mb"),
+    for label, metric in (("Latency", "latency_ms"), ("Peak process RSS", "peak_memory_mb"),
                           ("Gross energy per op", "energy_pkg_j_per_op"),
                           ("Net energy per op", "energy_net_j_per_op")):
         n, med, lo, hi = ratios(metric)
         lines.append(f"{label} & {med:.2f} & {lo:.2f} -- {hi:.2f} & {n} \\\\")
     lines += [r"\midrule",
-              f"Max.\\ peak memory (MiB) & \\multicolumn{{3}}{{l}}{{Standard {mx['standard']:.1f}, "
+              f"Max.\\ peak process RSS (MiB) & \\multicolumn{{3}}{{l}}{{Standard {mx['standard']:.1f}, "
               f"Constrained {mx['constrained']:.1f}}} \\\\",
               f"\\texttt{{HIGH\\_VARIANCE}} latency & \\multicolumn{{3}}{{l}}{{Standard {hv['standard']}/{meas['standard']}, "
               f"Constrained {hv['constrained']}/{meas['constrained']}}} \\\\",
@@ -403,6 +403,51 @@ def packing():
     write("packing_table.tex", "\n".join(lines) + "\n")
 
 
+# --------------------------------------------- composite checks / text numbers
+def composite_checks():
+    rows = load("seal_composite_checks.csv")
+    lines = [r"\begin{tabular}{@{}llrrl@{}}", r"\toprule",
+             r"Scheme & Workload & Passed & Worst error & Criterion \\", r"\midrule"]
+    for s in ("BFV", "BGV", "CKKS"):
+        for op, label in (("dot_product_check", "dot product (all lengths)"), ("poly_eval_check", "poly.\\ evaluation")):
+            rs = [r for r in rows if r["scheme"] == s and r["operation"] == op]
+            passed, trials = sum(int(r["passed"]) for r in rs), sum(int(r["trials"]) for r in rs)
+            worst = max(float(r["max_norm_error"]) for r in rs)
+            crit = "exact mod $t$" if s != "CKKS" else r"normalized error $< 10^{-2}$"
+            err = "exact" if s != "CKKS" else sci(worst)
+            lines.append(f"{s} & {label} & {passed}/{trials} & {err} & {crit} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("composite_checks_table.tex", "\n".join(lines) + "\n")
+    total = sum(int(r["trials"]) for r in rows)
+    passed = sum(int(r["passed"]) for r in rows)
+    return total, passed
+
+
+def text_numbers(checks):
+    def hv(sc, maxN=None):
+        rs = [r for r in load(f"seal_{sc}.csv") if r["metric"] == "latency_ms" and r["mean"]
+              and (maxN is None or int(r["N"]) <= maxN)]
+        return sum(r["flag"] == "HIGH_VARIANCE" for r in rs), len(rs)
+    hs, ns = hv("standard")
+    hs8, ns8 = hv("standard", 8192)
+    hc8, nc8 = hv("constrained", 8192)
+    # Power implied by energy per op / latency (Standard, every measured cell).
+    D = {}
+    for r in load("seal_standard.csv"):
+        if r["mean"]:
+            D[(r["scheme"], r["N"], r["category"], r["operation"], r["metric"])] = float(r["mean"])
+    def pw(metric):
+        v = sorted(x / (D[k[:4] + ("latency_ms",)] / 1000) for k, x in D.items() if k[4] == metric)
+        return v[len(v) // 2], v[0], v[-1]
+    gm, glo, ghi = pw("energy_pkg_j_per_op")
+    nm, nlo, nhi = pw("energy_net_j_per_op")
+    macros = {"grossPowerMed": f"{gm:.1f}", "grossPowerLo": f"{glo:.1f}", "grossPowerHi": f"{ghi:.1f}",
+              "netPowerMed": f"{nm:.1f}", "netPowerLo": f"{nlo:.1f}", "netPowerHi": f"{nhi:.1f}",
+              "hvStd": hs, "nStd": ns, "hvStdCommon": hs8, "hvConCommon": hc8, "nCommon": ns8,
+              "checksTotal": checks[0], "checksPassed": checks[1]}
+    write("text_numbers.tex", "\n".join(f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in macros.items()) + "\n")
+
+
 if __name__ == "__main__":
     noise_budget()
     ckks()
@@ -412,3 +457,4 @@ if __name__ == "__main__":
     storage()
     batching()
     packing()
+    text_numbers(composite_checks())
