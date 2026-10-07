@@ -1,0 +1,11 @@
+library,scheme,N,category,operation,vec_len,trial,abs_error,norm_error,threshold,correctness,status
+SEAL,BGV,8192,1,dot_product_check,8192,0,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,1,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,2,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,3,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,4,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,5,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,6,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,7,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,8,0,0,exact_mod_t,correct,measured
+SEAL,BGV,8192,1,dot_product_check,8192,9,0,0,exact_mod_t,correct,measured

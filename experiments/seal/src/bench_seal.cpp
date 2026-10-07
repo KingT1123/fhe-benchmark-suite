@@ -618,10 +618,10 @@ std::pair<Ciphertext, std::vector<uint64_t>> fresh_bfv_pair(Ctx &c, const Args &
     return {std::move(ct), std::move(data)};
 }
 
-Ciphertext fresh_ciphertext(Ctx &c, const Args &args) {
-    if (args.scheme == "BFV" || args.scheme == "BGV") {
-        return fresh_bfv_pair(c, args).first;
-    }
+// CKKS counterpart of fresh_bfv_pair: same values and RNG consumption as
+// fresh_ciphertext()'s CKKS branch (which now simply calls this), plus the
+// plaintext values, for decrypt-and-compare checks.
+std::pair<Ciphertext, std::vector<double>> fresh_ckks_pair(Ctx &c, const Args &args) {
     size_t slots = c.ckks_encoder->slot_count();
     std::vector<double> data(slots);
     std::uniform_real_distribution<double> dist(-1.0, 1.0);
@@ -630,7 +630,14 @@ Ciphertext fresh_ciphertext(Ctx &c, const Args &args) {
     c.ckks_encoder->encode(data, c.ckks_scale, pt);
     Ciphertext ct;
     c.encryptor->encrypt(pt, ct);
-    return ct;
+    return {std::move(ct), std::move(data)};
+}
+
+Ciphertext fresh_ciphertext(Ctx &c, const Args &args) {
+    if (args.scheme == "BFV" || args.scheme == "BGV") {
+        return fresh_bfv_pair(c, args).first;
+    }
+    return fresh_ckks_pair(c, args).first;
 }
 
 // ---------- Packing scenario: partial-fill ciphertext generator ----------
@@ -692,6 +699,14 @@ int compute_effective_depth(Ctx &c, const Args &args, const GridRow &grid) {
     }
     return last_good_depth;
 }
+
+// CKKS pass/fail bound for every decrypt-and-compare check in this file
+// (ckks_error trace, composite dot_product/poly_eval checks). The rationale
+// is documented next to CkksTraceRow below. For the composite checks the
+// error is normalized by max(1, |expected|): identical to the absolute
+// error for results of magnitude <= 1 (the ckks_error convention), and a
+// relative error for larger results such as a long dot product.
+constexpr double CKKS_CORRECTNESS_THRESHOLD = 1e-2;
 
 // ---------- in-process RAPL energy (--rapl-dir, see header comment) ----------
 // rapl_now() returns 0 when --rapl-dir is unset, so the reads around t0/t1
@@ -952,16 +967,20 @@ double time_rotate(Ctx &c, const Args &args) {
 struct DotProductResult {
     double latency_ms;
     int noise_budget_bits;  // BFV/BGV only; -1 means "not applicable" (CKKS).
-    std::string correctness;  // BFV/BGV only: real check against the
-                               // independently-computed exact dot product
-                               // (item 1); empty for CKKS (see header note
-                               // on why this isn't extended to CKKS here).
+    std::string correctness;  // real check of slot 0 against the
+                               // independently computed dot product: exact
+                               // mod t for BFV/BGV (item 1); for CKKS (added
+                               // in round 4) normalized error <
+                               // CKKS_CORRECTNESS_THRESHOLD.
+    double abs_error = 0.0;   // |decoded - expected| (0 for an exact BFV/BGV match)
+    double norm_error = 0.0;  // abs_error / max(1, |expected|)
 };
 
 DotProductResult time_dot_product(Ctx &c, const Args &args, int vec_len, std::size_t slot_count) {
     // ---- untimed setup: encode+encrypt two zero-padded vec_len-length
     // vectors ----
     Plaintext pt_a, pt_b;
+    double expected_dot_ckks = 0.0;  // CKKS: exact sum_{i<vec_len} a[i]*b[i] in double
     uint64_t expected_dot = 0;  // BFV/BGV only: sum_{i<vec_len} a[i]*b[i] mod t,
                                  // computed independently in plaintext -- the
                                  // real correctness check compares this against
@@ -979,6 +998,7 @@ DotProductResult time_dot_product(Ctx &c, const Args &args, int vec_len, std::si
         for (int i = 0; i < vec_len; i++) { a[i] = static_cast<double>(i + 1) * 0.01; b[i] = static_cast<double>(i + 2) * 0.01; }
         c.ckks_encoder->encode(a, c.ckks_scale, pt_a);
         c.ckks_encoder->encode(b, c.ckks_scale, pt_b);
+        for (int i = 0; i < vec_len; i++) expected_dot_ckks += a[i] * b[i];
     }
     Ciphertext ca, cb;
     c.encryptor->encrypt(pt_a, ca);
@@ -1036,14 +1056,45 @@ DotProductResult time_dot_product(Ctx &c, const Args &args, int vec_len, std::si
         std::vector<uint64_t> decoded;
         c.batch_encoder->decode(pt_dec, decoded);
         result.correctness = (decoded[0] == expected_dot) ? "correct" : "MISMATCH";
+        if (decoded[0] != expected_dot) result.abs_error = result.norm_error = 1.0;
+    } else {
+        // CKKS (round 4), also after t1: slot 0 holds the total for the
+        // same reason as above (the doubling rotate-and-add reduction).
+        Plaintext pt_dec;
+        c.decryptor->decrypt(sum, pt_dec);
+        std::vector<double> decoded;
+        c.ckks_encoder->decode(pt_dec, decoded);
+        result.abs_error = std::abs(decoded[0] - expected_dot_ckks);
+        result.norm_error = result.abs_error / std::max(1.0, std::abs(expected_dot_ckks));
+        result.correctness = (result.norm_error < CKKS_CORRECTNESS_THRESHOLD) ? "correct" : "MISMATCH";
     }
     return result;
 }
 
-double time_poly_eval(Ctx &c, const Args &args) {
+struct PolyEvalResult {
+    double latency_ms;
+    std::string correctness;  // all slots vs. 2x^2+3x+5 computed in plaintext:
+                               // exact mod t (BFV/BGV), or normalized error <
+                               // CKKS_CORRECTNESS_THRESHOLD (CKKS). Round 4.
+    double abs_error = 0.0;   // max over slots |decoded - expected| (CKKS); for
+                               // BFV/BGV the number of mismatching slots
+    double norm_error = 0.0;  // CKKS: max over slots abs / max(1, |expected|)
+};
+
+PolyEvalResult time_poly_eval(Ctx &c, const Args &args) {
     const double A = 2.0, B = 3.0, C = 5.0;  // arbitrary small nonzero
                                                // constants -- see header comment.
-    Ciphertext x = fresh_ciphertext(c, args);  // fully-packed, untimed setup
+    // Fully-packed, untimed setup. Same inputs as fresh_ciphertext() (it
+    // calls the same *_pair helpers); the plaintext values are kept only
+    // for the after-t1 correctness check.
+    std::vector<uint64_t> x_int;
+    std::vector<double> x_real;
+    Ciphertext x;
+    if (args.scheme == "BFV" || args.scheme == "BGV") {
+        auto pr = fresh_bfv_pair(c, args); x = std::move(pr.first); x_int = std::move(pr.second);
+    } else {
+        auto pr = fresh_ckks_pair(c, args); x = std::move(pr.first); x_real = std::move(pr.second);
+    }
 
     Plaintext pa, pb, pc;
     if (args.scheme == "BFV" || args.scheme == "BGV") {
@@ -1072,7 +1123,37 @@ double time_poly_eval(Ctx &c, const Args &args) {
     c.evaluator->relinearize_inplace(result, c.relin_keys);
     c.evaluator->add_plain_inplace(result, pc);        // (a*x+b)*x + c
     auto t1 = Clock::now();
-    return std::chrono::duration<double, std::milli>(t1 - t0).count();
+
+    PolyEvalResult r;
+    r.latency_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+    // Decrypt-and-compare, after t1 (cannot affect the latency above).
+    Plaintext pt_dec;
+    c.decryptor->decrypt(result, pt_dec);
+    if (args.scheme == "BFV" || args.scheme == "BGV") {
+        uint64_t t = c.context->first_context_data()->parms().plain_modulus().value();
+        std::vector<uint64_t> decoded;
+        c.batch_encoder->decode(pt_dec, decoded);
+        std::size_t bad = 0;
+        for (std::size_t i = 0; i < x_int.size(); i++) {
+            uint64_t v = x_int[i] % t;
+            uint64_t expected = ((static_cast<uint64_t>(A) * v % t) * v % t
+                                 + static_cast<uint64_t>(B) * v % t + static_cast<uint64_t>(C)) % t;
+            if (decoded[i] != expected) bad++;
+        }
+        r.abs_error = r.norm_error = static_cast<double>(bad);
+        r.correctness = bad == 0 ? "correct" : "MISMATCH";
+    } else {
+        std::vector<double> decoded;
+        c.ckks_encoder->decode(pt_dec, decoded);
+        for (std::size_t i = 0; i < x_real.size(); i++) {
+            double expected = (A * x_real[i] + B) * x_real[i] + C;
+            double err = std::abs(decoded[i] - expected);
+            r.abs_error = std::max(r.abs_error, err);
+            r.norm_error = std::max(r.norm_error, err / std::max(1.0, std::abs(expected)));
+        }
+        r.correctness = (r.norm_error < CKKS_CORRECTNESS_THRESHOLD) ? "correct" : "MISMATCH";
+    }
+    return r;
 }
 
 // ---------- serialized size measurement (--operation=size) ----------
@@ -1348,7 +1429,8 @@ std::vector<NoiseTraceRow> run_add_only_trace(const Args &args, const GridRow &g
 // project actually uses" (<=3e-4) and "every cell already known to be
 // broken or marginal" (>=0.08), so it isn't a knife-edge choice riding on
 // one specific measurement.
-constexpr double CKKS_CORRECTNESS_THRESHOLD = 1e-2;
+// (CKKS_CORRECTNESS_THRESHOLD itself is defined near the top of the timed-
+// operations section, since the composite checks use it too.)
 
 struct CkksTraceRow {
     int trial;
@@ -1748,6 +1830,55 @@ int main(int argc, char **argv) {
             return 0;
         }
 
+        // ---- Composite correctness checks (round 4): run the SAME workload
+        // functions as dot_product / poly_eval (same setup, same timed
+        // region, same keys) for --trace-reps trials and record only the
+        // decrypt-and-compare verdict. Latency is not written: timings come
+        // from the main Composite runs.
+        if (args.operation == "dot_product_check" || args.operation == "poly_eval_check") {
+            const bool dot = (args.operation == "dot_product_check");
+            if (dot && args.vec_len <= 0)
+                throw std::runtime_error("--operation=dot_product_check requires --vec-len=N");
+            Ctx c = build_context(args, grid);
+            std::size_t slot_count = (args.scheme == "BFV" || args.scheme == "BGV")
+                ? c.batch_encoder->slot_count() : c.ckks_encoder->slot_count();
+            if (dot) {
+                if (static_cast<std::size_t>(args.vec_len) > slot_count)
+                    throw std::runtime_error("--vec-len exceeds slot_count for this config");
+                int row_size = (args.scheme == "CKKS") ? static_cast<int>(slot_count)
+                                                         : static_cast<int>(slot_count) / 2;
+                std::vector<int> galois_steps;  // same minimal key set as dot_product
+                for (int i = 0; i < ceil_log2(args.vec_len); i++) {
+                    int shift = 1 << i;
+                    galois_steps.push_back((args.scheme == "CKKS" || shift < row_size) ? shift : 0);
+                }
+                KeyGenerator galois_keygen(*c.context, c.secret_key);
+                galois_keygen.create_galois_keys(galois_steps, c.galois_keys);
+            }
+            std::ofstream out(args.out);
+            if (!out.is_open()) throw std::runtime_error("Cannot open output file: " + args.out);
+            out << "library,scheme,N,category,operation,vec_len,trial,abs_error,norm_error,"
+                   "threshold,correctness,status\n";
+            const std::string threshold = (args.scheme == "CKKS")
+                ? std::to_string(CKKS_CORRECTNESS_THRESHOLD) : "exact_mod_t";
+            for (int trial = 0; trial < args.trace_reps; trial++) {
+                std::string verdict; double abs_e, norm_e;
+                if (dot) {
+                    DotProductResult r = time_dot_product(c, args, args.vec_len, slot_count);
+                    verdict = r.correctness; abs_e = r.abs_error; norm_e = r.norm_error;
+                } else {
+                    PolyEvalResult r = time_poly_eval(c, args);
+                    verdict = r.correctness; abs_e = r.abs_error; norm_e = r.norm_error;
+                }
+                out << "SEAL," << args.scheme << "," << args.N << "," << args.category << ","
+                    << args.operation << "," << (dot ? args.vec_len : 0) << "," << trial << ","
+                    << abs_e << "," << norm_e << "," << threshold << "," << verdict << ",measured\n";
+            }
+            out.close();
+            std::cerr << "OK: wrote " << args.trace_reps << " rows to " << args.out << std::endl;
+            return 0;
+        }
+
         if (args.operation == "dot_product") {
             if (args.vec_len <= 0) {
                 throw std::runtime_error("--operation=dot_product requires --vec-len=N (a literal "
@@ -1858,7 +1989,7 @@ int main(int argc, char **argv) {
 
             int total = args.warmup + args.reps;
             for (int i = 0; i < total; i++) {
-                double ms = time_poly_eval(c, args);
+                double ms = time_poly_eval(c, args).latency_ms;
                 std::string status = (i < args.warmup) ? "warmup" : "measured";
                 out << "SEAL," << args.scheme << "," << args.N << "," << args.category << ","
                     << args.operation << "," << i << "," << ms << "," << status << "\n";

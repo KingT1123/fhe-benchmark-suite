@@ -1429,6 +1429,37 @@ def energy_memory_rows(em_dir, tag, idle_baseline_w):
     return rows
 
 
+def aggregate_composite_checks(args):
+    """Composite decrypt-and-compare checks (run_composite_checks_docker.sh):
+    per (scheme, operation, vec_len), the number of trials, how many passed,
+    and the worst error. Errors: BFV/BGV dot product 0 if exact (1 if not);
+    BFV/BGV poly_eval = number of mismatching slots; CKKS = absolute error
+    and error normalized by max(1, |expected|), compared to the threshold."""
+    raw_dir = args.raw_dir or "../results/raw/composite_checks"
+    out_path = args.out or "../results/final/seal_composite_checks.csv"
+    groups = {}
+    for f in sorted(glob.glob(os.path.join(raw_dir, "seal_*.csv"))):
+        for r in csv.DictReader(open(f)):
+            key = (r["library"], r["scheme"], r["N"], r["category"], r["operation"],
+                   int(r["vec_len"]), r["threshold"])
+            groups.setdefault(key, []).append(r)
+    out_rows = []
+    for (lib, scheme, N, cat, op, vl, thr), rows in sorted(groups.items()):
+        out_rows.append({
+            "library": lib, "scheme": scheme, "N": N, "category": cat, "operation": op,
+            "vec_len": vl if vl else "", "trials": len(rows),
+            "passed": sum(r["correctness"] == "correct" for r in rows),
+            "max_abs_error": max(float(r["abs_error"]) for r in rows),
+            "max_norm_error": max(float(r["norm_error"]) for r in rows),
+            "threshold": thr,
+        })
+    _write_final(out_path, out_rows,
+                 fieldnames=("library", "scheme", "N", "category", "operation", "vec_len",
+                             "trials", "passed", "max_abs_error", "max_norm_error", "threshold"))
+    print(f"Wrote {len(out_rows)} rows to {out_path}")
+    print(f"{sum(r['trials'] - r['passed'] for r in out_rows)} trial(s) failed the check.")
+
+
 def aggregate_composite_controls(args):
     """Composite rotate-only / add-only noise controls: groups by (scheme,
     N, category, operation, vec_len, step_name) across the --trace-reps
@@ -1577,7 +1608,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
-                              "composite", "composite_controls", "size", "noise_trace",
+                              "composite", "composite_controls", "composite_checks", "size", "noise_trace",
                               "ckks_error", "config_metadata"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
@@ -1586,6 +1617,10 @@ def main():
 
     if args.scenario == "composite_controls":
         aggregate_composite_controls(args)
+        return
+
+    if args.scenario == "composite_checks":
+        aggregate_composite_checks(args)
         return
 
     if args.scenario in ("size", "noise_trace", "ckks_error", "config_metadata"):
