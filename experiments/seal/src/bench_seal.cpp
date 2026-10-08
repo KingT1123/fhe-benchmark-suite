@@ -344,6 +344,7 @@ struct Args {
     int idle_settle_seconds = 0;  // --idle-settle-seconds: wait before that window
     int ramp_seconds = 0;         // --ramp-seconds: busy-wait after idle, before reps
     std::string peak_rss_out;   // --peak-rss-out: write VmHWM after the loop
+    bool random_inputs = false; // --check-inputs=random: *_check ops only (round 5)
 };
 
 static std::string arg_value(const std::string &a) {
@@ -374,6 +375,11 @@ Args parse_args(int argc, char **argv) {
         else if (a.rfind("--idle-settle-seconds=", 0) == 0) args.idle_settle_seconds = std::stoi(arg_value(a));
         else if (a.rfind("--ramp-seconds=", 0) == 0) args.ramp_seconds = std::stoi(arg_value(a));
         else if (a.rfind("--peak-rss-out=", 0) == 0) args.peak_rss_out = arg_value(a);
+        else if (a.rfind("--check-inputs=", 0) == 0) {
+            std::string v = arg_value(a);
+            if (v != "fixed" && v != "random") throw std::runtime_error("--check-inputs must be fixed or random");
+            args.random_inputs = (v == "random");
+        }
         else throw std::runtime_error("Unknown argument: " + a);
     }
     if (args.scheme.empty() || args.N == 0 || args.category == 0 ||
@@ -987,15 +993,21 @@ DotProductResult time_dot_product(Ctx &c, const Args &args, int vec_len, std::si
                                  // the decoded ciphertext (item 1), replacing
                                  // "noise budget > 0 implies correct".
     if (args.scheme == "BFV" || args.scheme == "BGV") {
+        uint64_t t = c.context->first_context_data()->parms().plain_modulus().value();
         std::vector<uint64_t> a(slot_count, 0), b(slot_count, 0);
         for (int i = 0; i < vec_len; i++) { a[i] = static_cast<uint64_t>(i + 1); b[i] = static_cast<uint64_t>(i + 2); }
+        if (args.random_inputs)  // --check-inputs=random (checks only): uniform in [0, t)
+            for (int i = 0; i < vec_len; i++) { a[i] = rng() % t; b[i] = rng() % t; }
         c.batch_encoder->encode(a, pt_a);
         c.batch_encoder->encode(b, pt_b);
-        uint64_t t = c.context->first_context_data()->parms().plain_modulus().value();
         for (int i = 0; i < vec_len; i++) expected_dot = (expected_dot + (a[i] * b[i]) % t) % t;
     } else {
         std::vector<double> a(slot_count, 0.0), b(slot_count, 0.0);
         for (int i = 0; i < vec_len; i++) { a[i] = static_cast<double>(i + 1) * 0.01; b[i] = static_cast<double>(i + 2) * 0.01; }
+        if (args.random_inputs) {  // --check-inputs=random (checks only): uniform in [-1, 1]
+            std::uniform_real_distribution<double> dist(-1.0, 1.0);
+            for (int i = 0; i < vec_len; i++) { a[i] = dist(rng); b[i] = dist(rng); }
+        }
         c.ckks_encoder->encode(a, c.ckks_scale, pt_a);
         c.ckks_encoder->encode(b, c.ckks_scale, pt_b);
         for (int i = 0; i < vec_len; i++) expected_dot_ckks += a[i] * b[i];
@@ -1090,7 +1102,16 @@ PolyEvalResult time_poly_eval(Ctx &c, const Args &args) {
     std::vector<uint64_t> x_int;
     std::vector<double> x_real;
     Ciphertext x;
-    if (args.scheme == "BFV" || args.scheme == "BGV") {
+    if ((args.scheme == "BFV" || args.scheme == "BGV") && args.random_inputs) {
+        // --check-inputs=random (checks only): uniform in [0, t) instead of
+        // the timing runs' 0/1 values.
+        uint64_t t = c.context->first_context_data()->parms().plain_modulus().value();
+        x_int.resize(c.batch_encoder->slot_count());
+        for (auto &v : x_int) v = rng() % t;
+        Plaintext pt;
+        c.batch_encoder->encode(x_int, pt);
+        c.encryptor->encrypt(pt, x);
+    } else if (args.scheme == "BFV" || args.scheme == "BGV") {
         auto pr = fresh_bfv_pair(c, args); x = std::move(pr.first); x_int = std::move(pr.second);
     } else {
         auto pr = fresh_ckks_pair(c, args); x = std::move(pr.first); x_real = std::move(pr.second);
@@ -1857,7 +1878,7 @@ int main(int argc, char **argv) {
             }
             std::ofstream out(args.out);
             if (!out.is_open()) throw std::runtime_error("Cannot open output file: " + args.out);
-            out << "library,scheme,N,category,operation,vec_len,trial,abs_error,norm_error,"
+            out << "library,scheme,N,category,operation,vec_len,inputs,trial,abs_error,norm_error,"
                    "threshold,correctness,status\n";
             const std::string threshold = (args.scheme == "CKKS")
                 ? std::to_string(CKKS_CORRECTNESS_THRESHOLD) : "exact_mod_t";
@@ -1871,7 +1892,8 @@ int main(int argc, char **argv) {
                     verdict = r.correctness; abs_e = r.abs_error; norm_e = r.norm_error;
                 }
                 out << "SEAL," << args.scheme << "," << args.N << "," << args.category << ","
-                    << args.operation << "," << (dot ? args.vec_len : 0) << "," << trial << ","
+                    << args.operation << "," << (dot ? args.vec_len : 0) << ","
+                    << (args.random_inputs ? "random" : "fixed") << "," << trial << ","
                     << abs_e << "," << norm_e << "," << threshold << "," << verdict << ",measured\n";
             }
             out.close();

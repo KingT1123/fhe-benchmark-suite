@@ -200,15 +200,18 @@ def composite():
         last = max((k for k in st if k != "fresh"), key=lambda k: int(k.rsplit("_", 1)[1]))
         return st["fresh"] - st[last]
 
-    lines = [r"\begin{tabular}{@{}lrrrrrll@{}}", r"\toprule",
-             r"Scheme & Length & $k$ & Predicted (ms) & Measured (ms) & Diff. & 90\% CI of diff.\ (ms) & TOST ($\pm$10\%) \\",
+    lines = [r"\begin{tabular}{@{}lrrrrrrlll@{}}", r"\toprule",
+             r"Scheme & Length & $k$ & Pred.\ (ms) & Meas.\ (ms) & Diff. & W--S df & 90\% CI, W--S (ms) & 90\% CI, bootstrap (ms) & TOST \\",
              r"\midrule"]
     pred = load("seal_composite_prediction.csv")
     for r in pred:
         p_, a_ = float(r["predicted_ms"]), float(r["actual_ms"])
-        verdict = "equivalent" if r["verdict"] == "equivalent_within_margin" else "not established"
+        both = r["ws_verdict"] == r["boot_verdict"] == "equivalent_within_margin"
+        verdict = "equivalent" if both else "not established"
         lines.append(f"{r['scheme']} & {r['vec_len']} & {r['rotate_steps']} & {p_:.2f} & {a_:.2f} & "
-                     f"{100 * (a_ - p_) / p_:+.1f}\\% & [{float(r['ci_low']):+.2f}, {float(r['ci_high']):+.2f}] & "
+                     f"{100 * (a_ - p_) / p_:+.1f}\\% & {float(r['ws_df']):.0f} & "
+                     f"[{float(r['ws_ci_low']):+.2f}, {float(r['ws_ci_high']):+.2f}] & "
+                     f"[{float(r['boot_ci_low']):+.2f}, {float(r['boot_ci_high']):+.2f}] & "
                      f"{verdict} \\\\")
     lines += [r"\bottomrule", r"\end{tabular}"]
     write("composite_prediction_table.tex", "\n".join(lines) + "\n")
@@ -406,21 +409,24 @@ def packing():
 # --------------------------------------------- composite checks / text numbers
 def composite_checks():
     rows = load("seal_composite_checks.csv")
-    lines = [r"\begin{tabular}{@{}llrrl@{}}", r"\toprule",
-             r"Scheme & Workload & Passed & Worst error & Criterion \\", r"\midrule"]
+    lines = [r"\begin{tabular}{@{}lllrrl@{}}", r"\toprule",
+             r"Scheme & Workload & Inputs & Passed & Worst error & Criterion \\", r"\midrule"]
     for s in ("BFV", "BGV", "CKKS"):
         for op, label in (("dot_product_check", "dot product (all lengths)"), ("poly_eval_check", "poly.\\ evaluation")):
-            rs = [r for r in rows if r["scheme"] == s and r["operation"] == op]
-            passed, trials = sum(int(r["passed"]) for r in rs), sum(int(r["trials"]) for r in rs)
-            worst = max(float(r["max_norm_error"]) for r in rs)
-            crit = "exact mod $t$" if s != "CKKS" else r"normalized error $< 10^{-2}$"
-            err = "exact" if s != "CKKS" else sci(worst)
-            lines.append(f"{s} & {label} & {passed}/{trials} & {err} & {crit} \\\\")
+            for inp in ("fixed", "random"):
+                rs = [r for r in rows if r["scheme"] == s and r["operation"] == op and r["inputs"] == inp]
+                passed, trials = sum(int(r["passed"]) for r in rs), sum(int(r["trials"]) for r in rs)
+                worst = max(float(r["max_norm_error"]) for r in rs)
+                crit = "exact mod $t$" if s != "CKKS" else r"normalized error $< 10^{-2}$"
+                err = "exact" if s != "CKKS" else sci(worst)
+                lines.append(f"{s} & {label} & {inp} & {passed}/{trials} & {err} & {crit} \\\\")
     lines += [r"\bottomrule", r"\end{tabular}"]
     write("composite_checks_table.tex", "\n".join(lines) + "\n")
     total = sum(int(r["trials"]) for r in rows)
     passed = sum(int(r["passed"]) for r in rows)
-    return total, passed
+    neg = {r["scheme"]: (int(r["trials"]) - int(r["passed"]), int(r["trials"]))
+           for r in load("seal_composite_checks_negative.csv")}
+    return total, passed, neg
 
 
 def text_numbers(checks):
@@ -444,7 +450,9 @@ def text_numbers(checks):
     macros = {"grossPowerMed": f"{gm:.1f}", "grossPowerLo": f"{glo:.1f}", "grossPowerHi": f"{ghi:.1f}",
               "netPowerMed": f"{nm:.1f}", "netPowerLo": f"{nlo:.1f}", "netPowerHi": f"{nhi:.1f}",
               "hvStd": hs, "nStd": ns, "hvStdCommon": hs8, "hvConCommon": hc8, "nCommon": ns8,
-              "checksTotal": checks[0], "checksPassed": checks[1]}
+              "checksTotal": checks[0], "checksPassed": checks[1],
+              "negFailBFV": checks[2]["BFV"][0], "negFailBGV": checks[2]["BGV"][0],
+              "negTrials": checks[2]["BFV"][1]}
     write("text_numbers.tex", "\n".join(f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in macros.items()) + "\n")
 
 

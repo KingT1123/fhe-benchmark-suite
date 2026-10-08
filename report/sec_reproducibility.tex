@@ -35,68 +35,91 @@ Source code, build scripts, and configuration are version-controlled at:
 \end{center}
 {\sloppy Result data \emph{is} version-controlled in the same repository: per-configuration raw output under \nolinkurl{experiments/results/raw/}, the aggregated CSVs used for every table and figure under \nolinkurl{experiments/results/final/}, and the randomized run-order seed of each sweep in \nolinkurl{experiments/results/run_metadata.csv}. Incomplete $N{=}16384$ fragments excluded from the analysis are kept, not deleted, in the separate directory \nolinkurl{experiments/results/} \nolinkurl{raw_quarantine_N16384_incomplete/}. Per-run console logs are not tracked.\par}
 
-All SEAL code and results in this report correspond to the commit
+{\sloppy This version of the report is tagged \texttt{seal-final-v3} in the repository. All SEAL code and results in it correspond to the commit
 \begin{center}
 \sealcommit
 \end{center}
-tagged \texttt{seal-final-v2} in the repository (\texttt{git checkout seal-final-v2}). The only later commit records this hash in the report source itself. The earlier tag \texttt{seal-final-v1} (commit \texttt{bbe81d4}) is kept unchanged as the state of the previous version.
+A commit cannot contain its own hash, so the tag points to the next commit, which only writes this hash into the report; it differs from the commit above in \texttt{report/} alone (\texttt{git diff \textit{<commit>} seal-final-v3 -{}- experiments/} prints nothing). The earlier tags \texttt{seal-final-v1} (\texttt{bbe81d4}) and \texttt{seal-final-v2} (\texttt{20fec88}) are kept unchanged as the states of the previous versions.\par}
 
 The full parameter grid (Table~\ref{tab:paramgrid}) is at \texttt{experiments/config/param\_grid.csv}. The benchmark's input values use a fixed seed, but SEAL generates its keys and encryption randomness afresh in every run, as it must. Repeated runs therefore reproduce timings and sizes up to ordinary system noise (captured by the confidence intervals reported throughout), while noise-budget values can differ by a few bits from run to run (Section~\ref{sec:results}, BGV at $N{=}4096$/category~1).
 
 \subsection{Reproduction steps}
 
+The steps below re-measure everything. The run scripts skip any cell whose raw file already exists (so an interrupted sweep can resume), so the committed results must first be moved aside; they then remain available for comparison. Commands marked \texttt{sudo} need root for the CPU-governor setting and the RAPL counter. Measured values will differ from the committed ones within ordinary run-to-run variation.
+
 \begin{lstlisting}
 git clone https://github.com/KingT1123/fhe-benchmark-suite.git
-cd fhe-benchmark-suite/experiments/seal
+cd fhe-benchmark-suite
+git checkout seal-final-v3
+cd experiments
 
-# 1. Build the SEAL Docker image and compile the harness
-bash docker_build_and_run.sh
+# 0. Keep the committed results aside, start from empty directories
+mv results/raw results/raw_committed
+mv results/final results/final_committed
+mkdir -p results/raw results/final
 
-# 2. Run each scenario (from experiments/scripts/)
-cd ../scripts
-bash run_standard_docker.sh
-bash run_constrained_docker.sh
-bash run_edge_batch_docker.sh
-# storage, noise budget, CKKS error:
-bash run_extended_metrics_docker.sh
-# dedicated energy/memory runs (see Methodology), need sudo:
+# 1. Build the pinned image and compile the harness
+docker build -t seal-env seal
+(cd seal && bash docker_build_and_run.sh)
+cd scripts
+
+# 2. Timing scenarios (exact grids used in this report)
+sudo bash -c 'GRID=../config/param_grid_le8192.csv bash run_standard_docker.sh'
+sudo bash -c 'GRID=../config/param_grid_n16384cat1.csv bash run_standard_docker.sh'
+sudo bash -c 'GRID=../config/param_grid_le8192.csv bash run_constrained_docker.sh'
+sudo bash -c 'GRID=../config/param_grid_le8192.csv bash run_edge_batch_docker.sh'
+
+# 3. Storage, noise budget, CKKS error, configuration records
+GRID=../config/param_grid_le8192.csv bash run_extended_metrics_docker.sh
+GRID=../config/param_grid_n16384cat1.csv METRICS=size \
+    bash run_extended_metrics_docker.sh
+GRID=../config/param_grid_n16384.csv METRICS=config_metadata \
+    bash run_extended_metrics_docker.sh
+
+# 4. Composite and packing (N=8192/category 1)
+sudo bash run_composite_docker.sh
+sudo bash run_packing_docker.sh
+bash run_composite_controls_docker.sh
+bash run_composite_checks_docker.sh
+
+# 5. Dedicated energy/memory runs. make_energy_plan.py sizes the
+#    timed blocks from the new Standard latencies; skip it to reuse
+#    the committed config/energy_plan.csv of this campaign.
+python3 aggregate.py --scenario=standard
 python3 make_energy_plan.py
 sudo bash run_energy_memory_docker.sh standard
 sudo bash run_energy_memory_docker.sh constrained
-# composite and packing (single-row grids, N=8192/category 1):
-bash run_composite_docker.sh
-bash run_packing_docker.sh
 
-# 3. Aggregate raw output into final results
-python3 aggregate.py --scenario=standard
-python3 aggregate.py --scenario=constrained
-python3 aggregate.py --scenario=edge_batch
-python3 aggregate.py --scenario=size
-python3 aggregate.py --scenario=noise_trace
-python3 aggregate.py --scenario=ckks_error
-python3 aggregate.py --scenario=config_metadata
-python3 aggregate.py --scenario=composite
-python3 aggregate.py --scenario=packing
+# 6. Aggregate everything, regenerate the report's tables
+for s in standard constrained edge_batch size noise_trace \
+         ckks_error config_metadata composite composite_controls \
+         composite_checks packing; do
+    python3 aggregate.py --scenario=$s
+done
+python3 make_report_tables.py
 \end{lstlisting}
 
-Energy measurement requires \texttt{sudo} for RAPL access; the run scripts prompt for this where needed.
+After a \texttt{sudo} run, \texttt{sudo chown -R \$USER ../results/} returns the files to the user. A full re-run takes roughly a day on the laptop of Table~\ref{tab:env}, most of it in the Standard timing sweep.
 
 \subsection{Output layout}
 
 \begin{center}
 \small
-\begin{tabular}{@{}lp{7.2cm}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{6.6cm}>{\raggedright\arraybackslash}p{7.6cm}@{}}
 \toprule
 \textbf{Path} & \textbf{Contents} \\
 \midrule
-\texttt{experiments/results/raw/} & Per-configuration raw output, Standard/Constrained \\
-\texttt{experiments/results/raw/edge\_batch/} & Raw output, Edge/Batch scenario \\
-\texttt{experiments/results/raw/extended\_metrics/} & Raw storage/noise/CKKS-error output \\
-\texttt{experiments/results/raw/composite/} & Raw output, Composite scenario \\
-\texttt{experiments/results/raw/packing/} & Raw output, Packing scenario \\
-\texttt{experiments/results/raw/energy\_memory/} & Raw output, dedicated energy/memory runs \\
-\texttt{experiments/results/run\_metadata.csv} & Run-order seed of each sweep \\
-\texttt{experiments/results/final/} & Aggregated CSVs -- the source for every table and figure in this report \\
+\nolinkurl{experiments/results/raw/} & Per-configuration raw output, Standard/Constrained \\
+\nolinkurl{experiments/results/raw/edge_batch/} & Raw output, Edge/Batch scenario \\
+\nolinkurl{experiments/results/raw/extended_metrics/} & Raw storage/noise/CKKS-error output \\
+\nolinkurl{experiments/results/raw/composite/} & Raw output, Composite scenario \\
+\nolinkurl{experiments/results/raw/packing/} & Raw output, Packing scenario \\
+\nolinkurl{experiments/results/raw/energy_memory/} & Raw output, dedicated energy/memory runs \\
+\nolinkurl{experiments/results/raw/composite_controls/} & Rotate-only/add-only noise controls \\
+\nolinkurl{experiments/results/raw/composite_checks/} & Composite correctness checks \\
+\nolinkurl{experiments/results/raw/composite_checks_negative/} & Negative control of the checks \\
+\nolinkurl{experiments/results/run_metadata.csv} & Run-order seed of each sweep \\
+\nolinkurl{experiments/results/final/} & Aggregated CSVs -- the source for every table and figure in this report \\
 \bottomrule
 \end{tabular}
 \end{center}

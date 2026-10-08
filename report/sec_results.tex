@@ -124,16 +124,16 @@ using the Standard-scenario multiply, relinearize and add latencies and the Comp
 \[
 \sigma^2_{\text{pred}} = \sigma^2_{\text{mult}} + \sigma^2_{\text{relin}} + k^2\,(\sigma^2_{\text{rot}} + \sigma^2_{\text{add}}).
 \]
-Prediction and measurement were compared with a two one-sided tests (TOST) equivalence test (Welch's $t$, $\alpha = 0.05$) with a margin of $\pm 10\%$ of the predicted value; the predicted side uses the multiply measurement's sample size ($n{=}100$) as a representative $n$, a documented approximation.
+Prediction and measurement were compared with a two one-sided tests (TOST) equivalence procedure at $\alpha = 0.05$ with a margin of $\pm 10\%$ of the predicted value: equivalence holds when the 90\% confidence interval of the difference (measured minus predicted) lies inside the margin. Because the prediction combines four independent samples, the interval is computed from the raw per-repetition data of all five samples (multiply, relinearize, rotate, add and the measured chain; 100 repetitions each) in two independent ways: (i) Welch's $t$ with Welch--Satterthwaite degrees of freedom, $\nu = \big(\sum_i c_i^2 s_i^2/n_i\big)^2 / \sum_i \big(c_i^2 s_i^2/n_i\big)^2/(n_i-1)$ with $c_i = 1, 1, k, k, 1$; and (ii) a percentile bootstrap with 20{,}000 resamples, each sample resampled independently with a fixed seed.
 
 \begin{table}[h!]
-\centering\small\setlength{\tabcolsep}{4pt}
-\input{generated/composite_prediction_table.tex}
-\caption{Predicted vs.\ measured dot-product latency, $N{=}8192$/category~1. ``Diff.'' is measured minus predicted; the 90\% CI is the interval the TOST procedure uses. CKKS stops at length 4096, its slot count.}
+\centering\small
+\resizebox{\textwidth}{!}{\input{generated/composite_prediction_table.tex}}
+\caption{Predicted vs.\ measured dot-product latency, $N{=}8192$/category~1. ``Diff.'' is measured minus predicted; ``W--S df'' the Welch--Satterthwaite degrees of freedom; the 90\% intervals are those the TOST procedure uses, from each method. CKKS stops at length 4096, its slot count.}
 \label{tab:composite-pred}
 \end{table}
 
-All twelve comparisons (Table~\ref{tab:composite-pred}) are equivalent within $\pm 10\%$, at every vector length and for all three schemes: for the dot product at $N{=}8192$, category~1, the chain's cost is the sum of its operations' isolated costs. This was tested only for this workload and these parameters; it is not established for other workloads, ring dimensions or security levels. The formula slightly overestimates in 11 of the 12 cells (by 0.4--4.9\%; in most cells the confidence interval excludes zero); a plausible reason is that in a chain the operations run back-to-back on data already in cache, which isolated timings do not benefit from.
+Both methods give the same verdict and nearly identical intervals (differences of at most 0.03\,ms against margins of 0.85--3.6\,ms). All twelve comparisons (Table~\ref{tab:composite-pred}) are equivalent within $\pm 10\%$, at every vector length and for all three schemes: for the dot product at $N{=}8192$, category~1, the chain's cost is the sum of its operations' isolated costs. This was tested only for this workload and these parameters; it is not established for other workloads, ring dimensions or security levels. The formula slightly overestimates in 11 of the 12 cells (by 0.4--4.9\%; in most cells the confidence interval excludes zero); a plausible reason is that in a chain the operations run back-to-back on data already in cache, which isolated timings do not benefit from.
 
 \paragraph{Noise in the chain, and isolated controls.} Every BFV and BGV dot product decrypted correctly (840 of 840 repetitions checked against the exact result). To attribute the chain's noise-budget use to its parts, two control traces repeat only the $k$ rotations or only the $k$ additions of the chain, from a fresh ciphertext (10 trials each, all decrypting correctly). Table~\ref{tab:composite-noise} shows that rotations and additions are cheap -- at most about 5 and 3.4 bits over 13 steps -- so the multiplication at the start of the chain (about 32 bits for BFV and 37 for BGV at this size, Table~\ref{tab:noisebudget}) dominates the chain's noise cost.
 
@@ -144,12 +144,14 @@ All twelve comparisons (Table~\ref{tab:composite-pred}) are equivalent within $\
 \label{tab:composite-noise}
 \end{table}
 
-\paragraph{Correctness of the composite workloads.} Every composite workload was also checked by decrypt-and-compare (Table~\ref{tab:composite-checks}). The checks run the same workload code as the timed runs (same inputs, keys and operations) for 10 trials per cell, outside the timed region. BFV and BGV results must match exactly, modulo the plaintext modulus $t$: the dot product's total in slot~0, and the polynomial's value in every slot. CKKS results are compared with the exact value computed in double precision, using the error normalized by $\max(1, |\text{expected}|)$ -- the absolute error for results of magnitude at most one, a relative error for larger ones such as a long dot product -- with the threshold $10^{-2}$ used for every CKKS check in this study. All \checksPassed{} of \checksTotal{} checks passed. (BFV/BGV inputs to the polynomial are 0 or 1, the same small values used throughout the timing runs.)
+\paragraph{Correctness of the composite workloads.} Every composite workload was also checked by decrypt-and-compare (Table~\ref{tab:composite-checks}). The checks run the same workload code as the timed runs (same operations and keys) for 10 trials per cell, outside the timed region, with two input sets. \emph{Fixed}: the timing runs' own inputs -- for the dot product $a_i = i+1$, $b_i = i+2$ (scaled by 0.01 for CKKS); for the polynomial, random $x \in \{0,1\}$ for BFV/BGV and random $x \in [-1,1]$ for CKKS. \emph{Random}: inputs drawn uniformly over the whole plaintext range $[0, t)$ for BFV/BGV and over $[-1,1]$ for CKKS, different in every trial (from the harness's seeded generator, so reproducible). BFV and BGV results must match exactly, modulo $t$: the dot product's total in slot~0, and the polynomial's value in every slot. CKKS results are compared with the exact value computed in double precision, using the error normalized by $\max(1, |\text{expected}|)$ -- the absolute error for results of magnitude at most one, a relative error for larger ones -- with the threshold $10^{-2}$ used for every CKKS check in this study. All \checksPassed{} of \checksTotal{} checks passed.
+
+As a negative control, the same dot-product check was run where it should fail: at $N{=}4096$/category~1, whose noise budget is nearly exhausted after one multiplication, followed by 12 rotate-and-add steps. It failed in \negFailBFV{} of \negTrials{} BFV trials and \negFailBGV{} of \negTrials{} BGV trials, confirming that the check detects incorrect results (\texttt{seal\_composite\_checks\_negative.csv}).
 
 \begin{table}[h!]
 \centering\small
 \input{generated/composite_checks_table.tex}
-\caption{Decrypt-and-compare checks of the composite workloads, $N{=}8192$/category~1, 10 trials per cell; dot product at lengths 8, 64, 512 and the full slot count (from \texttt{seal\_composite\_checks.csv}).}
+\caption{Decrypt-and-compare checks of the composite workloads, $N{=}8192$/category~1, 10 trials per cell and input set; dot product at lengths 8, 64, 512 and the full slot count (from \texttt{seal\_composite\_checks.csv}).}
 \label{tab:composite-checks}
 \end{table}
 

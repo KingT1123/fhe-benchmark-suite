@@ -1,0 +1,11 @@
+library,scheme,N,category,operation,vec_len,inputs,trial,abs_error,norm_error,threshold,correctness,status
+SEAL,CKKS,8192,1,dot_product_check,8,random,0,4.40651e-09,4.40651e-09,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,1,8.98682e-10,8.98682e-10,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,2,6.97938e-10,6.07125e-10,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,3,1.31474e-09,1.04223e-09,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,4,2.10578e-09,2.10578e-09,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,5,2.95019e-09,2.95019e-09,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,6,3.44249e-09,3.44249e-09,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,7,1.39329e-09,1.26418e-09,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,8,2.80322e-10,2.526e-10,0.010000,correct,measured
+SEAL,CKKS,8192,1,dot_product_check,8,random,9,2.66377e-09,2.6531e-09,0.010000,correct,measured

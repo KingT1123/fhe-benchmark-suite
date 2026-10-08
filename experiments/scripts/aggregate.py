@@ -855,6 +855,64 @@ def _composite_dot_product_raw_path(raw_dir, scheme, N, category, vec_len):
     return os.path.join(raw_dir, f"seal_{scheme.lower()}_N{N}_cat{category}_dot_product_veclen{vec_len}.csv")
 
 
+COMPOSITE_BOOTSTRAP_RESAMPLES = 20000
+COMPOSITE_BOOTSTRAP_SEED = 20261008  # fixed, so the bootstrap is reproducible
+
+
+def _measured_latencies(raw_path):
+    """Per-rep latency_ms values of the measured (non-warmup) rows."""
+    return [float(r["latency_ms"]) for r in csv.DictReader(open(raw_path))
+            if r.get("status") == "measured"]
+
+
+def rigorous_prediction_test(mult, relin, rot, add, actual, k, margin, alpha=0.05):
+    """Round-5 check of the composite prediction, from the RAW per-rep
+    samples of the four operations and of the measured chain.
+
+    predicted mean = mean(mult) + mean(relin) + k*(mean(rot) + mean(add)),
+    four independent samples, so the variance of the predicted MEAN is
+        Vp = s_mult^2/n + s_relin^2/n + k^2 (s_rot^2/n + s_add^2/n)
+    and of the measured mean Va = s_act^2/n. Two independent analyses:
+
+    1. Welch-Satterthwaite: diff = actual - predicted, SE = sqrt(Vp + Va),
+       df = (sum c_i^2 s_i^2/n_i)^2 / sum (c_i^2 s_i^2/n_i)^2/(n_i - 1)
+       over all five samples (c = 1, 1, k, k, 1); the (1-2 alpha) CI uses
+       t(1-alpha, df). Replaces the earlier 'representative n' shortcut.
+    2. Percentile bootstrap: resample each of the five samples with
+       replacement (fixed seed), recompute diff each time; the (1-2 alpha)
+       CI is the alpha / 1-alpha percentiles.
+    Equivalence (TOST at alpha) holds when the (1-2 alpha) CI lies inside
+    +/- margin; a CI entirely outside it indicates a real difference."""
+    import numpy as np
+    from scipy import stats as sstats
+    samples = [np.asarray(x, dtype=float) for x in (mult, relin, rot, add, actual)]
+    coef = [1.0, 1.0, float(k), float(k), 1.0]
+    terms = [c * c * x.var(ddof=1) / len(x) for c, x in zip(coef, samples)]
+    pred = samples[0].mean() + samples[1].mean() + k * (samples[2].mean() + samples[3].mean())
+    diff = samples[4].mean() - pred
+    se = math.sqrt(sum(terms))
+    df = sum(terms) ** 2 / sum(t * t / (len(x) - 1) for t, x in zip(terms, samples))
+    tq = sstats.t.ppf(1 - alpha, df)
+    ws_lo, ws_hi = diff - tq * se, diff + tq * se
+
+    rng = np.random.default_rng(COMPOSITE_BOOTSTRAP_SEED)
+    B = COMPOSITE_BOOTSTRAP_RESAMPLES
+    boot_means = [x[rng.integers(0, len(x), size=(B, len(x)))].mean(axis=1) for x in samples]
+    boot_diff = boot_means[4] - (boot_means[0] + boot_means[1] + k * (boot_means[2] + boot_means[3]))
+    b_lo, b_hi = np.quantile(boot_diff, [alpha, 1 - alpha])
+
+    def verdict(lo, hi):
+        if -margin < lo and hi < margin:
+            return "equivalent_within_margin"
+        if lo > margin or hi < -margin:
+            return "real_difference_outside_margin"
+        return "equivalence_not_established"
+    return {"ws_se": se, "ws_df": df, "ws_ci_low": ws_lo, "ws_ci_high": ws_hi,
+            "ws_verdict": verdict(ws_lo, ws_hi),
+            "boot_resamples": B, "boot_ci_low": float(b_lo), "boot_ci_high": float(b_hi),
+            "boot_verdict": verdict(b_lo, b_hi)}
+
+
 def check_composite_prediction(final_rows, args, margin_pct=COMPOSITE_PREDICTION_MARGIN_PCT):
     """Does single-operation timing predict multi-operation (chained) cost?
     For each (scheme, vec_len) dot_product cell, builds a PREDICTED chain
@@ -937,6 +995,12 @@ def check_composite_prediction(final_rows, args, margin_pct=COMPOSITE_PREDICTION
         margin = test["margin"]
         real_diff = (not test["equivalent"]) and (
             test["ci_low"] > margin or test["ci_high"] < -margin)
+        rigorous = rigorous_prediction_test(
+            _measured_latencies(_standard_raw_path(standard_raw_dir, scheme, N, category, "multiply")),
+            _measured_latencies(_standard_raw_path(standard_raw_dir, scheme, N, category, "relinearize")),
+            _measured_latencies(rotate_path),
+            _measured_latencies(_standard_raw_path(standard_raw_dir, scheme, N, category, "add")),
+            _measured_latencies(dp_path), k, margin)
 
         results.append({
             "scheme": scheme, "N": N, "category": category,
@@ -944,7 +1008,7 @@ def check_composite_prediction(final_rows, args, margin_pct=COMPOSITE_PREDICTION
             "predicted_ms": pred_mean, "predicted_n": n_pred,
             "actual_ms": actual_mean, "actual_n": n_actual,
             "margin_pct": margin_pct, "real_difference_outside_margin": real_diff,
-            **test,
+            **test, **rigorous,
         })
     return results
 
@@ -954,7 +1018,9 @@ def write_composite_prediction_csv(out_path, results):
                   "predicted_ms", "predicted_n", "actual_ms", "actual_n",
                   "diff", "margin_pct", "margin", "se", "df",
                   "ci_low", "ci_high", "p_lower", "p_upper",
-                  "verdict", "real_difference_outside_margin"]
+                  "verdict", "real_difference_outside_margin",
+                  "ws_se", "ws_df", "ws_ci_low", "ws_ci_high", "ws_verdict",
+                  "boot_resamples", "boot_ci_low", "boot_ci_high", "boot_verdict"]
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
@@ -1441,13 +1507,13 @@ def aggregate_composite_checks(args):
     for f in sorted(glob.glob(os.path.join(raw_dir, "seal_*.csv"))):
         for r in csv.DictReader(open(f)):
             key = (r["library"], r["scheme"], r["N"], r["category"], r["operation"],
-                   int(r["vec_len"]), r["threshold"])
+                   int(r["vec_len"]), r.get("inputs") or "fixed", r["threshold"])
             groups.setdefault(key, []).append(r)
     out_rows = []
-    for (lib, scheme, N, cat, op, vl, thr), rows in sorted(groups.items()):
+    for (lib, scheme, N, cat, op, vl, inputs, thr), rows in sorted(groups.items()):
         out_rows.append({
             "library": lib, "scheme": scheme, "N": N, "category": cat, "operation": op,
-            "vec_len": vl if vl else "", "trials": len(rows),
+            "vec_len": vl if vl else "", "inputs": inputs, "trials": len(rows),
             "passed": sum(r["correctness"] == "correct" for r in rows),
             "max_abs_error": max(float(r["abs_error"]) for r in rows),
             "max_norm_error": max(float(r["norm_error"]) for r in rows),
@@ -1455,9 +1521,14 @@ def aggregate_composite_checks(args):
         })
     _write_final(out_path, out_rows,
                  fieldnames=("library", "scheme", "N", "category", "operation", "vec_len",
-                             "trials", "passed", "max_abs_error", "max_norm_error", "threshold"))
+                             "inputs", "trials", "passed", "max_abs_error", "max_norm_error", "threshold"))
     print(f"Wrote {len(out_rows)} rows to {out_path}")
     print(f"{sum(r['trials'] - r['passed'] for r in out_rows)} trial(s) failed the check.")
+    if args.raw_dir is None and args.out is None:  # default run: also the negative control
+        neg = argparse.Namespace(raw_dir="../results/raw/composite_checks_negative",
+                                 out="../results/final/seal_composite_checks_negative.csv")
+        if glob.glob(os.path.join(neg.raw_dir, "seal_*.csv")):
+            aggregate_composite_checks(neg)
 
 
 def aggregate_composite_controls(args):
