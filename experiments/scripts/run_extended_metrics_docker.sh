@@ -45,6 +45,9 @@ GRID_CONTAINER="/work/config/$(basename "$GRID_HOST")"
 RAW_DIR="$EXPERIMENTS_DIR/results/raw/extended_metrics"
 LOG_DIR="$EXPERIMENTS_DIR/results/logs/extended_metrics"
 TRACE_REPS=10
+# METRICS: which of the four metrics to run (default all). The N=16384/
+# category-1 storage row was run with METRICS=size only, see the report.
+METRICS="${METRICS:-size noise_trace ckks_error config_metadata}"
 
 mkdir -p "$RAW_DIR" "$LOG_DIR"
 
@@ -192,7 +195,7 @@ echo "run_order_seed: $RUN_ORDER_SEED" >> "$CPU_STATE_LOG"
 mapfile -t ALL_CELLS < <(
     tail -n +2 "$GRID_HOST" | while IFS=, read -r N CATEGORY SEC CHAIN LOGQ DEPTH; do
         for SCHEME in "${SCHEMES[@]}"; do
-            for METRIC in size noise_trace ckks_error config_metadata; do
+            for METRIC in $METRICS; do
                 echo "$N,$CATEGORY,$SCHEME,$METRIC,$DEPTH"
             done
         done
@@ -291,4 +294,4 @@ consolidate ckks_error seal_ckks_error.csv
 consolidate config_metadata seal_config_metadata.csv
 
 echo "Extended metrics sweep complete. Raw CSVs in $RAW_DIR."
-echo "Next: aggregate.py support for these three schemas (not yet written)."
+echo "Next: python3 aggregate.py --scenario=size / noise_trace / ckks_error / config_metadata"

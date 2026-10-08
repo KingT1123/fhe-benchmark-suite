@@ -11,3 +11,4 @@ timestamp,scenario,run_order_seed,num_cells
 2026-10-08T00:34:08+01:00,standard,2379214610,18
 2026-10-08T00:36:42+01:00,constrained,89021706,18
 2026-10-08T00:37:11+01:00,edge_batch,222962335,48
+2026-10-08T23:11:48+01:00,extended_metrics,913928420,9

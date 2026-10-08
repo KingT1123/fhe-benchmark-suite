@@ -276,4 +276,4 @@ done
 measure_idle_power "after"
 
 echo "Edge/Batch sweep complete. Raw CSVs in $RAW_DIR, logs in $LOG_DIR."
-echo "aggregate.py does not yet support --scenario=edge_batch -- that's the next step, not run here."
+echo "Next: python3 $SCRIPT_DIR/aggregate.py --scenario=edge_batch"
