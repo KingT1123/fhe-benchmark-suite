@@ -1503,12 +1503,42 @@ def aggregate_composite_checks(args):
     and error normalized by max(1, |expected|), compared to the threshold."""
     raw_dir = args.raw_dir or "../results/raw/composite_checks"
     out_path = args.out or "../results/final/seal_composite_checks.csv"
+    # Round 6: a program/Docker failure must never pass as a result. Refuse
+    # to aggregate if the run script recorded failed cells, or if any file is
+    # incomplete or malformed (MISMATCH, a detected wrong result, is valid).
+    failed = os.path.join(raw_dir, "FAILED_CELLS.txt")
+    if os.path.exists(failed) and os.path.getsize(failed) > 0:
+        raise SystemExit(f"ERROR: {failed} lists cells that failed to run -- rerun them first.")
+    expected_trials = 10
     groups = {}
     for f in sorted(glob.glob(os.path.join(raw_dir, "seal_*.csv"))):
-        for r in csv.DictReader(open(f)):
+        rows_f = list(csv.DictReader(open(f)))
+        bad = [r for r in rows_f if r.get("status") != "measured"
+               or r.get("correctness") not in ("correct", "MISMATCH")]
+        if len(rows_f) != expected_trials or bad:
+            raise SystemExit(f"ERROR: {f} is incomplete or malformed ({len(rows_f)} rows, "
+                             f"{len(bad)} invalid) -- a run failure, not a check result.")
+        for r in rows_f:
             key = (r["library"], r["scheme"], r["N"], r["category"], r["operation"],
                    int(r["vec_len"]), r.get("inputs") or "fixed", r["threshold"])
             groups.setdefault(key, []).append(r)
+    # Every expected cell must be present (main checks only; the negative
+    # control is a fixed pair of cells): per scheme, poly_eval plus the four
+    # dot-product lengths, for both input sets.
+    if raw_dir.rstrip("/").endswith("composite_checks"):
+        Ns = {int(k[2]) for k in groups}
+        expected = set()
+        for N in Ns:
+            for scheme in ("BFV", "BGV", "CKKS"):
+                full = N // 2 if scheme == "CKKS" else N
+                for inputs in ("fixed", "random"):
+                    expected.add((scheme, N, "poly_eval_check", 0, inputs))
+                    for vl in (8, 64, 512, full):
+                        expected.add((scheme, N, "dot_product_check", vl, inputs))
+        present = {(k[1], int(k[2]), k[4], k[5], k[6]) for k in groups}
+        if expected - present:
+            raise SystemExit(f"ERROR: missing composite-check cells: {sorted(expected - present)}")
+
     out_rows = []
     for (lib, scheme, N, cat, op, vl, inputs, thr), rows in sorted(groups.items()):
         out_rows.append({

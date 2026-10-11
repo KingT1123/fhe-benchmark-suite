@@ -28,7 +28,22 @@ RAW_DIR="$EXPERIMENTS_DIR/results/raw/composite_controls"
 TRACE_REPS=10
 VEC_LENS=(8 64 512 8192)
 
+FAILED="$RAW_DIR/FAILED_CELLS.txt"
 mkdir -p "$RAW_DIR"
+rm -f "$FAILED"
+
+# Program/Docker failures are kept apart from results (round 6, same rule as
+# run_composite_checks_docker.sh): a cell is complete only with exactly the
+# expected row count, all status=measured and correctness in {correct,
+# MISMATCH}; a failed run's partial file is deleted, the cell is listed in
+# $FAILED, and the script exits non-zero at the end.
+complete() {  # $1 = file, $2 = expected data rows
+    [ -f "$1" ] || return 1
+    awk -F, -v want="$2" '
+        NR == 1 { for (i = 1; i <= NF; i++) { if ($i == "correctness") c = i; if ($i == "status") s = i }; next }
+        { n++; if ($s != "measured" || ($c != "correct" && $c != "MISMATCH")) bad = 1 }
+        END { exit (c && s && n == want && !bad) ? 0 : 1 }' "$1"
+}
 
 ceil_log2() { local n=$1 k=0 p=1; while [ "$p" -lt "$n" ]; do p=$((p * 2)); k=$((k + 1)); done; echo "$k"; }
 
@@ -39,20 +54,29 @@ tail -n +2 "$GRID_HOST" | while IFS=, read -r N CATEGORY SEC CHAIN LOGQ DEPTH; d
                 TAG="seal_${SCHEME,,}_N${N}_cat${CATEGORY}_${OP}_veclen${VL}"
                 OUT_HOST="$RAW_DIR/${TAG}.csv"
                 EXPECTED=$((TRACE_REPS * ($(ceil_log2 "$VL") + 1)))
-                if [ -f "$OUT_HOST" ] && [ "$(tail -n +2 "$OUT_HOST" | wc -l)" -ge "$EXPECTED" ]; then
-                    echo "SKIPPED (already complete): ${TAG}.csv"
+                if complete "$OUT_HOST" "$EXPECTED"; then
+                    echo "SKIPPED (complete): ${TAG}.csv"
                     continue
                 fi
+                rm -f "$OUT_HOST"
                 echo ">> $TAG"
-                docker run --rm -v "$EXPERIMENTS_DIR":/work "$IMAGE" \
-                    /work/seal/build/bench_seal --scheme="$SCHEME" --N="$N" --category="$CATEGORY" \
-                    --operation="$OP" --vec-len="$VL" --trace-reps="$TRACE_REPS" \
-                    --out="/work/results/raw/composite_controls/${TAG}.csv" --grid="$GRID_CONTAINER" \
-                    || echo "   (non-zero exit — check $TAG)"
+                if ! { docker run --rm -v "$EXPERIMENTS_DIR":/work "$IMAGE" \
+                        /work/seal/build/bench_seal --scheme="$SCHEME" --N="$N" --category="$CATEGORY" \
+                        --operation="$OP" --vec-len="$VL" --trace-reps="$TRACE_REPS" \
+                        --out="/work/results/raw/composite_controls/${TAG}.csv" --grid="$GRID_CONTAINER" \
+                       && complete "$OUT_HOST" "$EXPECTED"; }; then
+                    echo "   PROGRAM/DOCKER FAILURE (not a result): $TAG" >&2
+                    rm -f "$OUT_HOST"
+                    echo "$TAG" >> "$FAILED"
+                fi
             done
         done
     done
 done
 
+if [ -s "$FAILED" ]; then
+    echo "ERROR: $(wc -l < "$FAILED") cell(s) failed to RUN (program or Docker error) -- listed in $FAILED." >&2
+    exit 1
+fi
 echo "Composite noise controls complete. Raw CSVs in $RAW_DIR."
 echo "Next: python3 $SCRIPT_DIR/aggregate.py --scenario=composite_controls"
