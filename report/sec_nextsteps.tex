@@ -35,4 +35,6 @@ Lattigo v6 & BFV (built on BGV), BGV, CKKS & $\log N$ set directly; chain given 
   \item A cell that cannot be run at all (for example, no valid chain at that size) is reported as \emph{not available} with the library's error, as was done for SEAL; it is never filled with a value from another configuration.
 \end{enumerate}
 
+For OpenFHE, the next library, a detailed SEAL-to-OpenFHE correspondence grid has been prepared as a separate document (\texttt{docs/comparability/openfhe\_grid.tex} in the repository). It was obtained by building each of the 36 SEAL configurations in OpenFHE~1.5.1 with its security check enabled, and it lists, per configuration, the parameters OpenFHE actually produces and whether the configuration is identical, near, only partly comparable, or not available; it is submitted for review before any OpenFHE measurement.
+
 Once all four libraries are evaluated, the final deliverable is a direct cross-library comparison -- same scheme against same scheme, under these rules -- which no library's individual results, including SEAL's above, can substitute for on their own.
