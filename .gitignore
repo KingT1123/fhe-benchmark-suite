@@ -25,3 +25,8 @@ experiments/results/raw_composite_offscope_backup_*/
 
 # Per-run logs — fully recreated by run_*_docker.sh via mkdir -p, no .gitkeep needed
 experiments/results/logs/
+
+# Lattice Estimator checkout (fetched at a pinned commit by experiments/security/run_estimator_docker.sh)
+experiments/security/lattice-estimator/
+experiments/security/estimator_progress.log
+experiments/security/estimator_console.log

@@ -34,9 +34,13 @@ Each configuration was tested for all three of SEAL's supported schemes: BFV (ex
 \subsection{Security-level validation}
 \label{sec:security-validation}
 
-The category labels in Table~\ref{tab:paramgrid} (128/192/256-bit) originate from the 2018 Homomorphic Encryption Standard's reference table. Since cryptanalysis has advanced since then, security was independently re-verified using the Lattice Estimator~\cite{albrecht2015estimator} (commit \texttt{3e48ef4}), against SEAL's actual distributions -- a uniform ternary secret and a Centered Binomial error distribution with $\sigma \approx 3.2$ (SEAL's compiled default; \texttt{SEAL\_USE\_GAUSSIAN\_NOISE} is not set in this build) -- rather than assumed generic parameters.
+The category labels in Table~\ref{tab:paramgrid} (128/192/256-bit) originate from the 2018 Homomorphic Encryption Standard's reference table. Since cryptanalysis has advanced since then, security was re-verified in two ways. First, every configuration's $\log q$ was compared with the threshold of Table~\ref{tab:guideline52}, an excerpt of Table 5.2 of the 2024/2025 Security Guidelines~\cite{bossuat2024}, itself computed with the Lattice Estimator. Second, the nine configurations at $N \le 8192$ were evaluated directly with the Lattice Estimator~\cite{albrecht2015estimator}; the three at $N{=}16384$ rely on the guideline table alone, because a direct estimate at that size takes many hours per configuration on the study laptop.
 
-The verification proceeded in two stages. First, every configuration's $\log q$ (Table~\ref{tab:paramgrid}) was compared against the threshold in Table~\ref{tab:guideline52} -- an excerpt of Table 5.2 from the 2024/2025 Security Guidelines~\cite{bossuat2024}, reproduced here for the ring dimensions used in this thesis, itself built from the same estimator. Second, this comparison was validated directly: nine of the twelve configurations -- every configuration at $N \le 8192$ -- were also run through the estimator's own full \texttt{LWE.estimate()} routine, which evaluates every supported attack (uSVP, BDD, dual, dual-hybrid, coded-BKW) and reports the cheapest, and the results agreed closely with the guideline-based prediction in every case. A full run at $N=16384$ is highly resource-intensive, however -- a single run at $N=8192$ already took over two hours even with 12-way parallelism, and the tool's own issue tracker documents impractical runtimes above $N=2^{13}$ as a known limitation -- so the three $N=16384$ configurations were assessed from the guideline comparison alone.
+\paragraph{Estimator inputs and settings.}\sloppy{} Each estimate is an LWE instance with dimension $n = N$; modulus $q$ = the product of the exact primes SEAL~4.1.2 generates for that row of the grid, including the special key-switching prime (the modulus the public key exposes; listed in \nolinkurl{experiments/security/seal_moduli.csv}); a uniform ternary secret (\texttt{ND.UniformMod(3)}), as SEAL samples it; and an unbounded number of samples, the estimator's default and the conservative choice. SEAL's error is a centered binomial distribution built from 21 random bits on each side (read from SEAL's source; \texttt{SEAL\_USE\_GAUSSIAN\_NOISE} is not set in this build), so its standard deviation is $\sqrt{10.5} \approx 3.24$. The estimator treats an error distribution through its standard deviation, so two models were run: SEAL's exact distribution, \texttt{ND.CenteredBinomial(21)}, and the conventional approximation by a discrete Gaussian of $\sigma = 3.19$, used by the Security Guidelines and by the estimator's own SEAL examples. The full \texttt{LWE.estimate} routine was used with its default cost model, evaluating every attack it implements -- uSVP, BDD, BDD hybrid and its meet-in-the-middle variant, dual and dual hybrid -- except Arora--Gr\"obner and BKW, which are never competitive at these sizes (Arora--Gr\"obner costs about $2^{597}$ here) and dominate the running time. The reported value is the cheapest attack. Estimator commit \texttt{3e48ef4}, SageMath~10.10 in a Docker image pinned by digest.
+
+\paragraph{Reproduction and archive.} \texttt{experiments/security/} contains the inputs, the script (\texttt{estimate\_seal.py}), its runner (\texttt{run\_estimator\_docker.sh}, which fetches the estimator at the pinned commit) and the outputs, one row per attack. The six configurations at $N \le 4096$ were re-run for this archive (\texttt{bash run\_estimator\_docker.sh full 2048}, then \texttt{4096}; about 20 minutes each set at 60\% of one core). The three at $N{=}8192$ were evaluated directly in the original run, whose outputs were not archived; they were not repeated (several hours each), and \texttt{bash run\_estimator\_docker.sh full 8192} reproduces them.
+
+\paragraph{What the re-run shows.} The two error models differ by at most 0.3 bits, the Gaussian approximation being the slightly more conservative. The original values are reproduced to within 0.4 bits, except $N{=}2048$/category~3: the original run used the nominal modulus $2^{34}$ (205.3 bits, reproduced exactly with that input), whereas SEAL's two 17-bit primes are both slightly below $2^{17}$, so the actual modulus has 33.2 bits and the estimate rises to 210.3 bits.
 
 \begin{table}[h!]
 \centering\small
@@ -58,29 +62,12 @@ Table~\ref{tab:secvalidation} gives the result for every configuration.
 
 \begin{table}[h!]
 \centering\small
-\begin{tabular}{@{}cccp{5.2cm}@{}}
-\toprule
-$N$ & Category & Estimated security & Method \\
-\midrule
-2048  & 1 & 131.3 bits & Lattice Estimator \\
-2048  & 3 & 205.3 bits & Lattice Estimator \\
-2048  & 5 & 272.0 bits & Lattice Estimator \\
-4096  & 1 & 137.2 bits & Lattice Estimator \\
-4096  & 3 & 208.6 bits & Lattice Estimator \\
-4096  & 5 & 263.3 bits & Lattice Estimator \\
-8192  & 1 & 137.7 bits & Lattice Estimator \\
-8192  & 3 & 204.1 bits & Lattice Estimator \\
-8192  & 5 & 272.8 bits & Lattice Estimator \\
-16384 & 1 & $\geq$128 bits ($\log q$ under threshold by 30 bits) & Guideline Table 5.2 \\
-16384 & 3 & $\geq$192 bits ($\log q$ under threshold by 17 bits) & Guideline Table 5.2 \\
-16384 & 5 & $\geq$256 bits ($\log q$ under threshold by 30 bits) & Guideline Table 5.2 \\
-\bottomrule
-\end{tabular}
-\caption{Estimated real security per configuration. Category numbers refer to the NIST-aligned tiers defined in Table~\ref{tab:paramgrid}. All values represent an infeasible amount of computation for an attacker regardless of method.}
+\input{generated/security_table.tex}
+\caption{Estimated security per configuration, in bits ($\log_2$ of the cheapest attack's cost). $\log_2 q$: SEAL's exact full modulus. The Gaussian column is the conventional model, the CBD(21) column SEAL's exact error distribution. Archived results: \texttt{experiments/security/results\_full\_N2048.csv} and \texttt{\_N4096.csv}.}
 \label{tab:secvalidation}
 \end{table}
 
-Every configuration in Table~\ref{tab:secvalidation} requires well over $2^{120}$ operations to attack -- far beyond any practically exploitable threshold under any of the methods used. Estimated security is now tightest at $N{=}2048$, category~1 (131.3 bits, only 3.3 bits above its 128-bit target) -- the direct cost of the correctness-driven trade-off discussed below, where this cell's chain could not be shrunk much further below the guideline threshold without losing noise budget entirely. Category~5 configurations retain the widest margins across all three ring dimensions (16+ bits above their 256-bit target at $N{=}2048$ and $N{=}8192$), since their much smaller absolute $\log q$ budgets left more room to land comfortably under the 2024/2025 guideline ceiling once re-tuned.
+Every configuration in Table~\ref{tab:secvalidation} requires well over $2^{120}$ operations to attack -- far beyond any practically exploitable threshold under any of the methods used. Estimated security is now tightest at $N{=}2048$, category~1 (131.3 bits, only 3.3 bits above its 128-bit target) -- the direct cost of the correctness-driven trade-off discussed below, where this cell's chain could not be shrunk much further below the guideline threshold without losing noise budget entirely. Category~5 configurations retain wide margins (about 16 bits above their 256-bit target at $N{=}2048$ and $N{=}8192$), since their much smaller absolute $\log q$ budgets left more room to land comfortably under the 2024/2025 guideline ceiling once re-tuned.
 
 Shrinking three of these chains for security compliance left too little coefficient-modulus budget to survive even a single homomorphic operation under BFV/BGV's standard plaintext modulus (SEAL's 20-bit batching prime, $t=1032193$ for $N \in \{2048, 4096, 8192\}$): fresh ciphertexts at these three configurations decrypted with zero remaining noise budget regardless of the operation performed. Each was instead given the smallest batching-compatible plaintext modulus that restored a real, positive noise-budget margin after the cell's actual required operation (Table~\ref{tab:configmeta-bfvbgv}).
 

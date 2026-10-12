@@ -411,7 +411,7 @@ def write_equivalence_csv(out_path, results):
                   "verdict", "real_difference_outside_margin"]
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in results:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -560,7 +560,7 @@ def write_packing_equivalence_csv(out_path, results):
                   "verdict", "real_difference_outside_margin"]
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in results:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -689,7 +689,7 @@ def aggregate_packing(args):
                   "fill_pct", "n_real", "slot_count", "metric", "mean", "std",
                   "ci_low", "ci_high", "median", "iqr_low", "iqr_high", "flag"]
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in out_rows:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -1023,7 +1023,7 @@ def write_composite_prediction_csv(out_path, results):
                   "boot_resamples", "boot_ci_low", "boot_ci_high", "boot_verdict"]
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in results:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -1170,7 +1170,7 @@ def aggregate_composite(args):
                   "vec_len", "slot_count", "metric", "mean", "std",
                   "ci_low", "ci_high", "median", "iqr_low", "iqr_high", "flag"]
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in out_rows:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -1299,7 +1299,7 @@ def aggregate_edge_batch(args):
                   "batch_size", "metric", "mean", "std", "ci_low", "ci_high",
                   "median", "iqr_low", "iqr_high", "flag"]
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in out_rows:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -1332,7 +1332,7 @@ def _write_final(out_path, out_rows,
                               "ci_high", "median", "iqr_low", "iqr_high", "flag")):
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(fieldnames))
+        w = csv.DictWriter(f, fieldnames=list(fieldnames), lineterminator="\n")
         w.writeheader()
         for r in out_rows:
             w.writerow({k: r.get(k, "") for k in fieldnames})
@@ -1858,7 +1858,7 @@ def main():
                   "metric", "mean", "std", "ci_low", "ci_high",
                   "median", "iqr_low", "iqr_high", "flag"]
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         for r in out_rows:
             w.writerow({k: r.get(k, "") for k in fieldnames})

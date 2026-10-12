@@ -1,0 +1,10 @@
+# Lattice Estimator values for N=8192 from the original (round-1) run, as
+# reported since V3. That run's outputs were not archived and it was not
+# repeated here (several hours per configuration on the study laptop). It
+# used the same estimator commit and, as the N=2048/4096 re-runs show, the
+# nominal modulus 2^log2_q and the Gaussian sigma=3.19 error model; the
+# command reproducing it is: bash run_estimator_docker.sh full 8192
+N,category,log2_q_nominal,error_model,log2_rop
+8192,1,200,Gaussian3.19_approx,137.7
+8192,3,140,Gaussian3.19_approx,204.1
+8192,5,108,Gaussian3.19_approx,272.8

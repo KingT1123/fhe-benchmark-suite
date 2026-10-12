@@ -10,6 +10,7 @@ Formatting only -- no statistics are computed here (aggregate.py stays the
 only place that happens); every value is read straight from a final CSV.
 """
 import csv
+import glob
 import math
 import os
 from collections import defaultdict
@@ -456,6 +457,42 @@ def text_numbers(checks):
     write("text_numbers.tex", "\n".join(f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in macros.items()) + "\n")
 
 
+# ------------------------------------------------------- security validation
+def security():
+    """Security table: archived Lattice Estimator results (experiments/security/
+    results_full_N*.csv, exact SEAL moduli), the earlier unarchived N=8192
+    values (earlier_run_N8192.csv), and the guideline check for N=16384."""
+    sec = "../security"
+    est = {}
+    for path in sorted(glob.glob(os.path.join(sec, "results_full_N*.csv"))):
+        for r in csv.DictReader(open(path)):
+            if r["attack"] == "MIN":
+                est[(int(r["N"]), int(r["category"]), r["error_model"])] = (float(r["log2_rop"]), float(r["log2_q"]))
+    earlier = {}
+    with open(os.path.join(sec, "earlier_run_N8192.csv")) as f:
+        for r in csv.DictReader(line for line in f if not line.startswith("#")):
+            earlier[(int(r["N"]), int(r["category"]))] = (float(r["log2_rop"]), float(r["log2_q_nominal"]))
+    guide = {1: {16384: 430}, 3: {16384: 297}, 5: {16384: 230}}  # Table 5.2, 2024/2025 guidelines
+    seal_logq = {(int(r["N"]), int(r["category"])): float(r["log2_q"])
+                 for r in csv.DictReader(open(os.path.join(sec, "seal_moduli.csv")))}
+    target = {1: 128, 3: 192, 5: 256}
+    lines = [r"\begin{tabular}{@{}ccrrrl@{}}", r"\toprule",
+             r"$N$ & Cat. & $\log_2 q$ & Gaussian $\sigma{=}3.19$ & CBD(21), exact & Source \\", r"\midrule"]
+    for (N, cat) in sorted(seal_logq):
+        lq = seal_logq[(N, cat)]
+        if (N, cat, "Gaussian3.19_approx") in est:
+            g = est[(N, cat, "Gaussian3.19_approx")][0]; c = est[(N, cat, "CBD21_exact")][0]
+            lines.append(f"{N} & {cat} & {lq:.1f} & {g:.1f} & {c:.1f} & estimator, re-run and archived \\\\")
+        elif (N, cat) in earlier:
+            g, lqn = earlier[(N, cat)]
+            lines.append(f"{N} & {cat} & {lq:.1f} & {g:.1f} & -- & estimator, earlier run (not archived) \\\\")
+        else:
+            lim = guide[cat][N]
+            lines.append(f"{N} & {cat} & {lq:.1f} & \\multicolumn{{2}}{{c}}{{$\\geq${target[cat]} ($\\log q$ {lim - lq:.0f} bits under limit)}} & guideline Table 5.2 \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    write("security_table.tex", "\n".join(lines) + "\n")
+
+
 if __name__ == "__main__":
     noise_budget()
     ckks()
@@ -465,4 +502,5 @@ if __name__ == "__main__":
     storage()
     batching()
     packing()
+    security()
     text_numbers(composite_checks())
