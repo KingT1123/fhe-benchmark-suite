@@ -1,0 +1,173 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, longtable, array, amsmath, amssymb, xcolor, enumitem}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parskip}{4pt}
+\setlength{\LTpre}{4pt}\setlength{\LTpost}{4pt}
+\sloppy
+
+\title{SEAL $\to$ OpenFHE correspondence, version 2\\[2pt]
+\large Classification by actual primes, operation-by-operation comparability,\\ functional and security validation of the candidates}
+\author{Boungo Tr\'esor}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} Methodological preparation only: \emph{no OpenFHE benchmark has been run}. Everything below comes from building every SEAL configuration in OpenFHE~1.5.1, exporting the primes OpenFHE actually generates, checking each operation functionally, and estimating the security of every configuration intended for measurement. All tables are generated from the raw files by scripts in the repository; the commands are given in Section~\ref{sec:repro}.
+
+\paragraph{Answers to the review points.}
+\begin{enumerate}[leftmargin=*, itemsep=1pt]
+  \item \emph{Actual primes:} OpenFHE's ciphertext primes $Q$ and key-switching primes $P$ are exported and compared value by value with SEAL's (Section~\ref{sec:classes}). Where only the prime sizes agree, the cell is called a \emph{same size profile}, never an exact match. There is no exact match.
+  \item \emph{Revised classes, operation by operation:} four configuration classes and a per-operation verdict in which key generation, encryption, relinearization and rotation require the key-switching modulus to match too (Section~\ref{sec:ops}).
+  \item \emph{Functional validation:} key generation, encryption, decryption, addition, multiplication, relinearization, rotation (and CKKS rescaling) for every accepted variant, with unsupported operations recorded; CKKS scale, levels, rescaling policy and error; BFV/BGV with SEAL's plaintext modulus (Section~\ref{sec:func}).
+  \item \emph{Security validation:} the 18 candidates, with their actual $QP$ and OpenFHE's real distributions, all meet their category; security-check rejections are separated from parameter-generation failures; OpenFHE's check was never bypassed (Sections~\ref{sec:requests} and~\ref{sec:sec}).
+  \item \emph{Same conditions:} pinned OpenFHE build in the same base image as SEAL, single-threaded, same compiler and flags (Section~\ref{sec:env}). $N{=}16384$ categories 3 and 5 are not presented as comparable (Section~\ref{sec:scope}).
+  \item \emph{SEAL $N{=}8192$ estimates:} re-run with SEAL's exact primes and archived; they reproduce the historical values (Section~\ref{sec:seal8192}).
+\end{enumerate}
+
+\section{Environment}
+\label{sec:env}
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}L{3.0cm}L{6.4cm}L{6.4cm}@{}}
+\toprule
+& \textbf{SEAL (measured)} & \textbf{OpenFHE (prepared)} \\
+\midrule
+Image & \texttt{seal-env}, \texttt{experiments/seal/Dockerfile} & \texttt{openfhe-env}, \texttt{experiments/openfhe/Dockerfile} \\
+Base system & Ubuntu 24.04 pinned by digest; package snapshot 20260501T000000Z & the same digest and the same snapshot \\
+Compiler & g++ 13.3.0, CMake 3.28.3 & the same (same snapshot) \\
+Library & SEAL 4.1.2, Release ($-$O3), HEXL off & OpenFHE v1.5.1, commit \texttt{1306d14f} verified at build; Release ($-$O3); \texttt{WITH\_NATIVEOPT=OFF}; \texttt{NATIVE\_SIZE=64} \\
+Threads & single-threaded & built with \texttt{WITH\_OPENMP=OFF}: cannot use extra threads \\
+Harness flags & \texttt{-std=c++17 -O2} & \texttt{-std=c++17 -O2} (probe; the benchmark harness will use the same) \\
+Machine and protocol & Ryzen 9 6900HX laptop; governor \texttt{performance}, core pinning, randomized order, temperature logged; \texttt{aggregate.py} & the same machine, scripts and statistics \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{How the configurations were requested}
+\label{sec:requests}
+
+For each of the 36 SEAL cells (3 schemes $\times$ 12 rows of \texttt{param\_grid.csv}) the probe (\texttt{experiments/openfhe/probe/openfhe\_probe\_v2.cpp}) requests three OpenFHE variants, always with the ring dimension $N$ fixed, OpenFHE's security check at the cell's level (\texttt{HEStd\_128/192/256\_classic}, never \texttt{HEStd\_NotSet}), SEAL's multiplicative depth and, for BFV/BGV, SEAL's plaintext modulus $t$. CKKS and BGV are requested with SEAL's prime sizes (\texttt{FirstModSize}, \texttt{ScalingModSize}) and manual rescaling (\texttt{FIXEDMANUAL}); OpenFHE requires the first prime to be at least as large as the others, so SEAL's 46+47 at $N{=}8192$/category~3 is requested as 47+47. OpenFHE offers no prime-size list for BFV, so BFV uses its automatic chain except in variant~B.
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item \textbf{A} -- OpenFHE's default key switching (hybrid for CKKS and BGV, BV for BFV);
+  \item \textbf{B} -- hybrid with one ciphertext prime per digit, so that $P$ is a single prime, as in SEAL;
+  \item \textbf{C} -- BV, with no key-switching modulus $P$.
+\end{itemize}
+
+Of the 108 requests, 47 were accepted. Of the 61 rejected, \textbf{53 were rejected by OpenFHE's security check} (the requested $\log QP$ exceeds OpenFHE's limit for that $N$ and level) and \textbf{8 failed in parameter generation} for another reason: BGV with BV at $N{=}2048$ and $N{=}4096$ (all categories) and BGV $N{=}16384$/category~1 in variants B and C, all with OpenFHE's error ``overflow shrinking candidate'' while searching for primes. No rejection was bypassed. Table~\ref{tab:requests} gives the outcome of every request.
+
+{\footnotesize\setlength{\tabcolsep}{4pt}
+\input{../../experiments/openfhe/probe/rejections_v2.tex}}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:requests}: outcome of every requested configuration. Raw messages: \texttt{params\_v2.csv}, column \texttt{error}.}
+
+\section{Classification by actual primes}
+\label{sec:classes}
+
+In SEAL a ciphertext lives modulo the data primes $Q_S$ (all but the last); the last prime $P_S$ is the special key-switching prime. In OpenFHE, $Q_O$ are the ciphertext primes and $P_O$ the key-switching primes. The nominal size of a prime is $\log_2 p$ rounded to the nearest bit. Each cell is classified with the accepted variant closest to SEAL that passes the functional checks of the operations SEAL measured there:
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item \textbf{exact match} -- $Q_O = Q_S$ and $P_O = P_S$, prime by prime;
+  \item \textbf{same size profile} -- the same number of primes and the same nominal size of each, for both $Q$ and $P$, but not the same primes in the same roles;
+  \item \textbf{partially comparable} -- $Q$ has the same size profile, but the key-switching modulus differs (other size, or none);
+  \item \textbf{separate analysis} -- the ciphertext modulus itself differs; \textbf{not available} -- no variant accepted.
+\end{itemize}
+
+{\footnotesize\setlength{\tabcolsep}{3pt}
+\input{../../experiments/openfhe/probe/grid_v2.tex}}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:grid}: classification per cell. Prime sizes in nominal bits ($\log_2 p$ rounded); Var.: the selected OpenFHE variant (A default, B hybrid with one prime per digit, C BV). SEAL's two ``17-bit'' primes at $N{=}2048$/category~3 are in fact $2^{16.39}$ and $2^{16.81}$, hence 16 and 17. $\log QP$: OpenFHE's full modulus. Prime values, equality flags and the number of shared primes: \texttt{grid\_v2.csv}.}
+
+\paragraph{What the classification shows.}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{No exact match} (0 of 36). \textbf{Same size profile: 5} (CKKS 2048/5, 8192/1, 16384/1/3/5); \textbf{partially comparable: 7}; \textbf{separate analysis: 12}; \textbf{not available: 12}.
+  \item Equal sizes do not mean equal primes. At CKKS $N{=}8192$/category~1 both libraries use 60+40+40 for $Q$ and 60 for $P$, but OpenFHE's $Q$ is SEAL's special prime, one of SEAL's 40-bit primes and a new 40-bit prime just above $2^{40}$, and its $P$ is SEAL's first data prime: 3 of 4 primes are shared, in different roles.
+  \item Equal level does not mean equal modulus. BGV $N{=}8192$/category~3 has $\log q = 140$ in SEAL but $\log QP = 94$ in the only accepted OpenFHE variant (BV, 47+47): both hybrid variants exceed OpenFHE's limit for 192 bits. The same holds for CKKS 8192/3.
+  \item BFV never matches: OpenFHE generates its own BFV chain (60-bit primes by default), and BGV at $N \ge 8192$ uses 39-bit primes where SEAL uses 40-bit ones (compatible with $t$).
+  \item At $N \le 4096$, every variant with a key-switching modulus is rejected by the security check (OpenFHE's $P$ primes, about 60 bits, are far larger than SEAL's small special prime); only BV survives, so every accepted cell there is at best partially comparable.
+\end{itemize}
+
+\section{Operation-by-operation comparability}
+\label{sec:ops}
+
+Consistent with Section~6 of the SEAL report, comparability is decided per operation:
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item \textbf{decryption, addition and multiplication} (without relinearization) act only on the ciphertext modulus: directly comparable when $Q$ has the same size profile;
+  \item \textbf{encryption} also depends on $P$ in SEAL (SEAL encrypts at the key level, including the special prime, then drops it), and \textbf{key generation, relinearization and rotation} use key switching: directly comparable only when $P$ matches as well;
+  \item no comparison where SEAL has no measurement ($N{=}16384$ categories 3 and 5; multiplication and relinearization at depth 0; rotation outside $N{=}8192$/category~1), where no variant was accepted, or where OpenFHE's operation failed its functional check.
+\end{itemize}
+Key generation is timed with the same boundary in both libraries: context creation, secret and public key, and relinearization keys when the depth is positive (as in SEAL's harness).
+
+{\footnotesize
+\input{../../experiments/openfhe/probe/operations_v2.tex}}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:ops}: \textbf{D} directly comparable; S separate analysis; -- no SEAL measurement; n/a no accepted variant. Data: \texttt{operations\_v2.csv}.}
+
+\textbf{32 operation cells are directly comparable}, in ten configurations: CKKS 8192/1 (all seven operations); CKKS 16384/1 (all but rotation, which SEAL did not measure there); CKKS 2048/5 (key generation, encryption, decryption, addition: neither library has a key-switching modulus there); decryption and addition for CKKS 2048/1, 4096/1 (plus multiplication), 4096/3, 4096/5, 8192/5 and BFV and BGV 8192/5. All key-switching operations outside CKKS 8192/1 and 16384/1 are analysed separately.
+
+\section{Functional validation}
+\label{sec:func}
+
+Each accepted variant was run on random inputs (all slots used). BFV/BGV: SEAL's plaintext modulus $t$, results compared exactly modulo $t$. CKKS: inputs uniform in $[-1, 1]$, error normalized by $\max(1, |\text{expected}|)$ and required to be below $10^{-2}$, the threshold of the SEAL campaign; the effective scale, level and number of RNS primes are recorded. Rescaling is manual (\texttt{FIXEDMANUAL}) and checked once after relinearization; as in SEAL, timed operations will not rescale. Over the 47 variants, 374 steps passed, 31 gave wrong results and 28 raised exceptions. Table~\ref{tab:func} shows the selected variant of each cell.
+
+{\footnotesize\setlength{\tabcolsep}{2.5pt}
+\input{../../experiments/openfhe/probe/functional_v2.tex}}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:func}: Var.: as in Table~\ref{tab:grid}. \checkmark\ passed; wrong: incorrect result; exc.: OpenFHE raised an exception (recorded as unsupported); -- not run (an earlier step failed). Scale S/O: SEAL's and OpenFHE's initial CKKS scale. $Q$ primes S/O: SEAL's data primes / OpenFHE's ciphertext primes. Max err.: largest normalized CKKS error over the steps that passed. Data: \texttt{functional\_v2.csv}, all variants.}
+
+\paragraph{What the failures are.}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Depth 0} (one ciphertext prime): multiplication and relinearization give wrong BFV/BGV results or raise CKKS exceptions (``approximation error is too high''). There is no multiplicative level; SEAL did not measure these operations either.
+  \item \textbf{CKKS with BV key switching}: relinearization and rotation fail or exceed $10^{-2}$ at several cells (for example 8192/1: error 0.04); with hybrid key switching (variant B) they pass. This is why B is selected at 8192/1 and 16384/1.
+  \item \textbf{Rotation with BV and a single prime} gives wrong BFV results at 4096/3 (and BFV/BGV with BV at 8192/5, not selected); SEAL measured rotation only at 8192/1, where it passes.
+  \item \textbf{CKKS 2048/3} (17-bit prime, scale $2^{17}$): decryption error about 0.2--0.3, already above the threshold. The cell is kept for security estimation but cannot be measured under the correctness criterion.
+  \item \textbf{CKKS scale}: OpenFHE's scale with \texttt{FIXEDMANUAL} is set by the scaling-prime size, while SEAL's is chosen per configuration. They are equal only at 8192/1 and $N{=}16384$ ($2^{40}$); elsewhere OpenFHE's is 2--14 bits larger. The cost of an operation depends on $N$ and the number of primes, not on the scale value, so this does not affect latency comparability, but CKKS approximation errors will be compared only where the scales are equal.
+  \item \textbf{BFV/BGV plaintext modulus}: SEAL's $t$ was accepted by OpenFHE in every accepted cell; every operation that SEAL measured is exact.
+\end{itemize}
+Re-running the probe reproduces the primes and every pass/fail result exactly; only the CKKS error magnitudes vary slightly, since OpenFHE draws its own encryption noise.
+
+\section{Security validation of the candidates}
+\label{sec:sec}
+
+\textbf{Candidates} are all selected variants whose SEAL counterpart was measured: the 24 accepted cells minus the six at $N{=}16384$ categories 3 and 5, giving 18. Each was estimated with the same Lattice Estimator commit (\texttt{3e48ef4}), the same SageMath image (pinned by digest) and the same settings as SEAL's (full \texttt{LWE.estimate}, default cost model, Arora--Gr\"obner and BKW excluded), with OpenFHE's actual parameters: $n = N$; $q$ = the product of the actual $Q$ \emph{and} $P$ primes (the modulus of the public and key-switching keys); uniform ternary secret (\texttt{ND.UniformMod(3)}) and discrete Gaussian error $\sigma = 3.19$, OpenFHE's defaults read from its source.
+
+{\footnotesize\setlength{\tabcolsep}{3pt}
+\input{../../experiments/openfhe/probe/security_v2.tex}}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:sec}: Var.: as in Table~\ref{tab:grid}. Shared primes: how many of OpenFHE's primes also appear in SEAL's chain. Cost: $\log_2$ of the cheapest attack's cost; target and margin in bits. Inputs: \texttt{experiments/security/openfhe\_candidates.csv}; outputs, one row per attack: \texttt{results\_openfhe\_N\{2048,4096,8192,16384\}.csv}; summary: \texttt{security\_v2.csv}.}
+
+\textbf{All 18 candidates meet their category.} The tightest are the three at $N{=}8192$/category~5 (0.9 bits above 256): their $\log QP = 114$ (SEAL's 54-bit prime size for $Q$ plus OpenFHE's 60-bit key-switching prime) is exactly the 256-bit limit for $N{=}8192$ in Table~5.2 of the 2024/2025 guidelines, whereas SEAL's 108 bits stay below it. The candidates with no key-switching modulus (BV, $N \le 4096$) have very large margins because their $\log QP$ is small. Two kinds of rejection are therefore kept apart: \emph{security rejections} are made by OpenFHE's own check when a configuration is requested (Section~\ref{sec:requests}); the Lattice Estimator rejected none of the configurations that OpenFHE accepted.
+
+\section{Scope at \texorpdfstring{$N{=}16384$}{N=16384}}
+\label{sec:scope}
+
+SEAL measured $N{=}16384$ only for category~1 (Standard scenario and storage). Categories 3 and 5 appear in Tables~\ref{tab:grid}--\ref{tab:func} only to record OpenFHE's behaviour; they are not candidates, are not estimated, and must not be presented as comparable. At $N{=}16384$/category~1, CKKS (same size profile) is directly comparable except for rotation, BFV is analysed separately, and BGV is not available.
+
+\section{SEAL \texorpdfstring{$N{=}8192$}{N=8192} security estimates}
+\label{sec:seal8192}
+
+The three SEAL values at $N{=}8192$ reported up to Version~7 (137.7, 204.1, 272.8 bits) came from an earlier run whose outputs were not kept and which used the nominal modulus $2^{\log q}$. They have now been re-run with SEAL's exact primes and both error models, and archived (\texttt{experiments/security/results\_full\_N8192.csv}): 137.72/137.73, 204.11/204.13 and 272.82/273.11 bits (Gaussian $\sigma{=}3.19$ / SEAL's exact CBD(21)), within 0.03 bits of the historical values. The SEAL report's security table and text now use the archived values and say explicitly that the earlier ones were historical.
+
+\section{Proposed rules for the OpenFHE campaign}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item Measure the 18 candidates of Table~\ref{tab:sec}, with the same operations, boundaries, repetitions, scenarios, energy/memory protocol and statistics as SEAL.
+  \item Report as \emph{directly comparable} only the 32 operation cells marked \textbf{D} in Table~\ref{tab:ops}; everything else is reported separately with its reason (different $Q$, different $P$, failed functional check), never merged into the direct comparison.
+  \item CKKS errors are compared only where the scales are equal; CKKS 2048/3 is not measured (fails the correctness criterion).
+  \item OpenFHE's security check stays enabled; no configuration is forced.
+\end{itemize}
+
+\section{Reproduction}
+\label{sec:repro}
+
+{\footnotesize
+\begin{tabular}{@{}L{5.3cm}L{11.2cm}@{}}
+\toprule
+Step & Command (from the repository root) \\
+\midrule
+Build the OpenFHE image & \texttt{cd experiments/openfhe \&\& docker build -t openfhe-env .} \\
+Probe + all tables of this document & \texttt{bash experiments/openfhe/probe/run\_probe\_docker.sh} (about 15\,s) \\
+Security estimates of the candidates & \texttt{cd experiments/security \&\& TARGET=openfhe OUT\_SUFFIX=\_N8192 bash run\_estimator\_docker.sh full 8192} (likewise 2048, 4096, 16384; about 10 min per candidate at $N{=}8192$, 22 min at $N{=}16384$, at half of one core) \\
+SEAL $N{=}8192$ estimates & \texttt{cd experiments/security \&\& bash run\_estimator\_docker.sh full 8192} (about one hour) \\
+\bottomrule
+\end{tabular}}
+
+\end{document}

@@ -1,0 +1,27 @@
+scheme,N,category,variant,log2_qp,secret,error_model,attack,log2_rop,target_bits,verdict,seconds,estimator_commit
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,bdd,216.93,128,,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,bdd_hybrid,216.93,128,,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,323.84,128,,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,dual,220.80,128,,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,dual_hybrid,215.50,128,,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,usvp,217.87,128,,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,66.0001,uniform_ternary,Gaussian3.19,MIN,215.50,128,meets category,292,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,bdd,241.46,192,,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,241.47,192,,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,357.48,192,,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,dual,245.95,192,,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,dual_hybrid,239.10,192,,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,usvp,242.68,192,,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,60.0000,uniform_ternary,Gaussian3.19,MIN,239.10,192,meets category,298,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,bdd,455.25,192,,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,455.26,192,,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,695.89,192,,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,dual,467.74,192,,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,dual_hybrid,441.56,192,,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,usvp,457.45,192,,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,34.0000,uniform_ternary,Gaussian3.19,MIN,441.56,192,meets category,449,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,5,C,27.0006,uniform_ternary,Gaussian3.19,bdd,514.56,256,,642,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,5,C,27.0006,uniform_ternary,Gaussian3.19,bdd_hybrid,514.56,256,,642,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,5,C,27.0006,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,inf,256,,642,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,5,C,27.0006,uniform_ternary,Gaussian3.19,dual_hybrid,inf,256,,642,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,5,C,27.0006,uniform_ternary,Gaussian3.19,MIN,514.56,256,meets category,642,3e48ef421ec256afddb3e7d2249a77eab6e9ba12

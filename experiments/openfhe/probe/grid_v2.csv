@@ -1,0 +1,37 @@
+scheme,N,category,seal_chain,variant,class,q_exact,p_exact,primes_shared_with_seal,openfhe_q_bits,openfhe_p_bits,openfhe_log2_qp,functional_failures,rejections,seal_ckks_log2_scale,openfhe_ckks_log2_scale
+BFV,2048,1,26+26,,not available,,,,,,,,A:security B:security C:security,,
+BGV,2048,1,26+26,,not available,,,,,,,,A:security B:security C:parameter-generation,,
+CKKS,2048,1,26+26,C,partially comparable,False,False,0/1,26,,26.0,,A:security B:security,24,26
+BFV,2048,3,17+17,,not available,,,,,,,,A:security B:security C:security,,
+BGV,2048,3,17+17,,not available,,,,,,,,A:security B:security C:parameter-generation,,
+CKKS,2048,3,17+17,C,separate analysis,False,False,0/1,17,,17.2,decrypt add,A:security B:security,15,17
+BFV,2048,5,26,,not available,,,,,,,,A:security B:security C:security,,
+BGV,2048,5,26,,not available,,,,,,,,A:security B:security C:parameter-generation,,
+CKKS,2048,5,26,C,same size profile,False,True,0/1,26,,26.0,,A:security B:security,24,26
+BFV,4096,1,33+33+34,,not available,,,,,,,,A:security B:security C:security,,
+BGV,4096,1,33+33+34,,not available,,,,,,,,A:security B:security C:parameter-generation,,
+CKKS,4096,1,33+33+34,C,partially comparable,False,False,0/2,33+33,,66.0,,A:security B:security,28,33
+BFV,4096,3,34+34,A,separate analysis,False,False,0/1,60,,60.0,,B:security,,
+BGV,4096,3,34+34,,not available,,,,,,,,A:security B:security C:parameter-generation,,
+CKKS,4096,3,34+34,C,partially comparable,False,False,0/1,34,,34.0,,A:security B:security,32,34
+BFV,4096,5,27+28,,not available,,,,,,,,A:security B:security C:security,,
+BGV,4096,5,27+28,,not available,,,,,,,,A:security B:security C:parameter-generation,,
+CKKS,4096,5,27+28,C,partially comparable,False,False,0/1,27,,27.0,,A:security B:security,24,27
+BFV,8192,1,60+40+40+60,A,separate analysis,False,False,2/3,60+60+60,,180.0,,,,
+BGV,8192,1,60+40+40+60,B,separate analysis,False,False,0/4,60+39+39,60,198.0,,A:security,,
+CKKS,8192,1,60+40+40+60,B,same size profile,False,False,3/4,60+40+40,60,200.0,,A:security,40,40
+BFV,8192,3,46+47+47,A,separate analysis,False,False,0/2,60+60,,120.0,,B:security,,
+BGV,8192,3,46+47+47,C,separate analysis,False,False,0/2,47+47,,94.0,,A:security B:security,,
+CKKS,8192,3,46+47+47,C,separate analysis,False,False,0/2,47+47,,94.0,,A:security B:security,40,47
+BFV,8192,5,54+54,B,partially comparable,False,False,1/2,54,60,114.0,,,,
+BGV,8192,5,54+54,A,partially comparable,False,False,0/2,54,60,114.0,,,,
+CKKS,8192,5,54+54,A,partially comparable,False,False,0/2,54,60,114.0,,,40,54
+BFV,16384,1,60+40*7+60,A,separate analysis,False,False,2/6,60+60+60+60+60+60,,360.0,,,,
+BGV,16384,1,60+40*7+60,,not available,,,,,,,,A:security B:parameter-generation C:parameter-generation,,
+CKKS,16384,1,60+40*7+60,B,same size profile,False,False,5/9,60+40+40+40+40+40+40+40,60,400.0,,A:security,40,40
+BFV,16384,3,60+40*4+60,A,separate analysis,False,False,2/4,60+60+60+60,,240.0,,,,
+BGV,16384,3,60+40*4+60,B,separate analysis,False,False,0/6,60+39+39+39+39,60,276.2,,A:security,,
+CKKS,16384,3,60+40*4+60,B,same size profile,False,False,4/6,60+40+40+40+40,60,280.0,,A:security,40,40
+BFV,16384,5,60+40*2+60,A,separate analysis,False,False,2/3,60+60+60,,180.0,,,,
+BGV,16384,5,60+40*2+60,B,separate analysis,False,False,0/4,60+39+39,60,198.5,,A:security,,
+CKKS,16384,5,60+40*2+60,B,same size profile,False,False,3/4,60+40+40,60,200.0,,A:security,40,40

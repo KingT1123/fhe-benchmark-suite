@@ -1,0 +1,19 @@
+scheme,N,category,variant,class,log2_qp,cheapest_attack,log2_cost,target_bits,margin_bits,verdict,estimator_commit
+CKKS,2048,1,C,partially comparable,26.0,dual_hybrid,271.67,128,143.67,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,2048,3,C,separate analysis,17.2,dual_hybrid,410.96,192,218.96,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,2048,5,C,same size profile,26.0,dual_hybrid,271.67,256,15.67,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,1,C,partially comparable,66.0,dual_hybrid,215.50,128,87.50,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,4096,3,A,separate analysis,60.0,dual_hybrid,239.10,192,47.10,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,3,C,partially comparable,34.0,dual_hybrid,441.56,192,249.56,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,4096,5,C,partially comparable,27.0,bdd,514.56,256,258.56,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,separate analysis,180.0,bdd,154.38,128,26.38,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,separate analysis,198.0,bdd,139.34,128,11.34,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,same size profile,200.0,bdd,137.72,128,9.72,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,separate analysis,120.0,dual_hybrid,242.62,192,50.62,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,separate analysis,94.0,dual_hybrid,319.03,192,127.03,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,separate analysis,94.0,dual_hybrid,319.03,192,127.03,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,partially comparable,114.0,dual_hybrid,256.86,256,0.86,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,partially comparable,114.0,dual_hybrid,256.86,256,0.86,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,partially comparable,114.0,dual_hybrid,256.86,256,0.86,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,16384,1,A,separate analysis,360.0,bdd,155.26,128,27.26,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,16384,1,B,same size profile,400.0,bdd,138.49,128,10.49,meets category,3e48ef421ec256afddb3e7d2249a77eab6e9ba12

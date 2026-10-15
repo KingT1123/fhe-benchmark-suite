@@ -1,0 +1,64 @@
+scheme,N,category,variant,log2_qp,secret,error_model,attack,log2_rop,target_bits,verdict,seconds,estimator_commit
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,bdd,154.38,128,,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,154.39,128,,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,218.61,128,,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,dual,156.19,128,,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,dual_hybrid,155.04,128,,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,usvp,154.85,128,,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,1,A,180.0000,uniform_ternary,Gaussian3.19,MIN,154.38,128,meets category,493,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,bdd,139.34,128,,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,bdd_hybrid,139.35,128,,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,188.43,128,,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,dual,141.01,128,,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,dual_hybrid,140.14,128,,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,usvp,139.59,128,,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,1,B,197.9962,uniform_ternary,Gaussian3.19,MIN,139.34,128,meets category,472,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,bdd,137.72,128,,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,137.72,128,,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,190.46,128,,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,dual,139.28,128,,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,dual_hybrid,138.42,128,,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,usvp,137.96,128,,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,1,B,200.0000,uniform_ternary,Gaussian3.19,MIN,137.72,128,meets category,467,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,bdd,243.11,192,,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,243.12,192,,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,354.94,192,,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,dual,245.93,192,,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,dual_hybrid,242.62,192,,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,usvp,243.78,192,,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,3,A,120.0000,uniform_ternary,Gaussian3.19,MIN,242.62,192,meets category,558,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,bdd,321.59,192,,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,bdd_hybrid,321.60,192,,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,484.53,192,,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,dual,325.51,192,,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,dual_hybrid,319.03,192,,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,usvp,322.43,192,,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,3,C,93.9939,uniform_ternary,Gaussian3.19,MIN,319.03,192,meets category,601,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,bdd,321.55,192,,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,321.56,192,,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,484.12,192,,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,dual,325.51,192,,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,dual_hybrid,319.03,192,,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,usvp,322.43,192,,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,3,C,94.0000,uniform_ternary,Gaussian3.19,MIN,319.03,192,meets category,609,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,bdd,257.81,256,,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,257.82,256,,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,381.59,256,,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,dual,260.74,256,,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,dual_hybrid,256.86,256,,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,usvp,258.33,256,,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BFV,8192,5,B,114.0000,uniform_ternary,Gaussian3.19,MIN,256.86,256,meets category,580,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,bdd,257.81,256,,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,257.82,256,,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,381.59,256,,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,dual,260.74,256,,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,dual_hybrid,256.86,256,,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,usvp,258.33,256,,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+BGV,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,MIN,256.86,256,meets category,576,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,bdd,257.81,256,,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,bdd_hybrid,257.82,256,,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,bdd_mitm_hybrid,381.59,256,,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,dual,260.74,256,,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,dual_hybrid,256.86,256,,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,usvp,258.33,256,,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+CKKS,8192,5,A,114.0000,uniform_ternary,Gaussian3.19,MIN,256.86,256,meets category,586,3e48ef421ec256afddb3e7d2249a77eab6e9ba12

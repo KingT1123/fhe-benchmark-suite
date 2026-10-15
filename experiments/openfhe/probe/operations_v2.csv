@@ -1,0 +1,253 @@
+scheme,N,category,operation,verdict,reason
+BFV,2048,1,keygen,not available,no accepted OpenFHE variant
+BFV,2048,1,encrypt,not available,no accepted OpenFHE variant
+BFV,2048,1,decrypt,not available,no accepted OpenFHE variant
+BFV,2048,1,add,not available,no accepted OpenFHE variant
+BFV,2048,1,multiply,not available,no accepted OpenFHE variant
+BFV,2048,1,relinearize,not available,no accepted OpenFHE variant
+BFV,2048,1,rotate,not available,no accepted OpenFHE variant
+BGV,2048,1,keygen,not available,no accepted OpenFHE variant
+BGV,2048,1,encrypt,not available,no accepted OpenFHE variant
+BGV,2048,1,decrypt,not available,no accepted OpenFHE variant
+BGV,2048,1,add,not available,no accepted OpenFHE variant
+BGV,2048,1,multiply,not available,no accepted OpenFHE variant
+BGV,2048,1,relinearize,not available,no accepted OpenFHE variant
+BGV,2048,1,rotate,not available,no accepted OpenFHE variant
+CKKS,2048,1,keygen,separate analysis,key-switching modulus differs
+CKKS,2048,1,encrypt,separate analysis,key-switching modulus differs
+CKKS,2048,1,decrypt,directly comparable,same ciphertext modulus profile
+CKKS,2048,1,add,directly comparable,same ciphertext modulus profile
+CKKS,2048,1,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,2048,1,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,2048,1,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,2048,3,keygen,not available,no accepted OpenFHE variant
+BFV,2048,3,encrypt,not available,no accepted OpenFHE variant
+BFV,2048,3,decrypt,not available,no accepted OpenFHE variant
+BFV,2048,3,add,not available,no accepted OpenFHE variant
+BFV,2048,3,multiply,not available,no accepted OpenFHE variant
+BFV,2048,3,relinearize,not available,no accepted OpenFHE variant
+BFV,2048,3,rotate,not available,no accepted OpenFHE variant
+BGV,2048,3,keygen,not available,no accepted OpenFHE variant
+BGV,2048,3,encrypt,not available,no accepted OpenFHE variant
+BGV,2048,3,decrypt,not available,no accepted OpenFHE variant
+BGV,2048,3,add,not available,no accepted OpenFHE variant
+BGV,2048,3,multiply,not available,no accepted OpenFHE variant
+BGV,2048,3,relinearize,not available,no accepted OpenFHE variant
+BGV,2048,3,rotate,not available,no accepted OpenFHE variant
+CKKS,2048,3,keygen,separate analysis,ciphertext modulus differs
+CKKS,2048,3,encrypt,separate analysis,ciphertext modulus differs
+CKKS,2048,3,decrypt,separate analysis,OpenFHE functional check failed
+CKKS,2048,3,add,separate analysis,OpenFHE functional check failed
+CKKS,2048,3,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,2048,3,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,2048,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,2048,5,keygen,not available,no accepted OpenFHE variant
+BFV,2048,5,encrypt,not available,no accepted OpenFHE variant
+BFV,2048,5,decrypt,not available,no accepted OpenFHE variant
+BFV,2048,5,add,not available,no accepted OpenFHE variant
+BFV,2048,5,multiply,not available,no accepted OpenFHE variant
+BFV,2048,5,relinearize,not available,no accepted OpenFHE variant
+BFV,2048,5,rotate,not available,no accepted OpenFHE variant
+BGV,2048,5,keygen,not available,no accepted OpenFHE variant
+BGV,2048,5,encrypt,not available,no accepted OpenFHE variant
+BGV,2048,5,decrypt,not available,no accepted OpenFHE variant
+BGV,2048,5,add,not available,no accepted OpenFHE variant
+BGV,2048,5,multiply,not available,no accepted OpenFHE variant
+BGV,2048,5,relinearize,not available,no accepted OpenFHE variant
+BGV,2048,5,rotate,not available,no accepted OpenFHE variant
+CKKS,2048,5,keygen,directly comparable,same size profile
+CKKS,2048,5,encrypt,directly comparable,same size profile
+CKKS,2048,5,decrypt,directly comparable,same size profile
+CKKS,2048,5,add,directly comparable,same size profile
+CKKS,2048,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,2048,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,2048,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,4096,1,keygen,not available,no accepted OpenFHE variant
+BFV,4096,1,encrypt,not available,no accepted OpenFHE variant
+BFV,4096,1,decrypt,not available,no accepted OpenFHE variant
+BFV,4096,1,add,not available,no accepted OpenFHE variant
+BFV,4096,1,multiply,not available,no accepted OpenFHE variant
+BFV,4096,1,relinearize,not available,no accepted OpenFHE variant
+BFV,4096,1,rotate,not available,no accepted OpenFHE variant
+BGV,4096,1,keygen,not available,no accepted OpenFHE variant
+BGV,4096,1,encrypt,not available,no accepted OpenFHE variant
+BGV,4096,1,decrypt,not available,no accepted OpenFHE variant
+BGV,4096,1,add,not available,no accepted OpenFHE variant
+BGV,4096,1,multiply,not available,no accepted OpenFHE variant
+BGV,4096,1,relinearize,not available,no accepted OpenFHE variant
+BGV,4096,1,rotate,not available,no accepted OpenFHE variant
+CKKS,4096,1,keygen,separate analysis,key-switching modulus differs
+CKKS,4096,1,encrypt,separate analysis,key-switching modulus differs
+CKKS,4096,1,decrypt,directly comparable,same ciphertext modulus profile
+CKKS,4096,1,add,directly comparable,same ciphertext modulus profile
+CKKS,4096,1,multiply,directly comparable,same ciphertext modulus profile
+CKKS,4096,1,relinearize,separate analysis,key-switching modulus differs
+CKKS,4096,1,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,4096,3,keygen,separate analysis,ciphertext modulus differs
+BFV,4096,3,encrypt,separate analysis,ciphertext modulus differs
+BFV,4096,3,decrypt,separate analysis,ciphertext modulus differs
+BFV,4096,3,add,separate analysis,ciphertext modulus differs
+BFV,4096,3,multiply,no SEAL measurement,SEAL did not measure this operation here
+BFV,4096,3,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BFV,4096,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BGV,4096,3,keygen,not available,no accepted OpenFHE variant
+BGV,4096,3,encrypt,not available,no accepted OpenFHE variant
+BGV,4096,3,decrypt,not available,no accepted OpenFHE variant
+BGV,4096,3,add,not available,no accepted OpenFHE variant
+BGV,4096,3,multiply,not available,no accepted OpenFHE variant
+BGV,4096,3,relinearize,not available,no accepted OpenFHE variant
+BGV,4096,3,rotate,not available,no accepted OpenFHE variant
+CKKS,4096,3,keygen,separate analysis,key-switching modulus differs
+CKKS,4096,3,encrypt,separate analysis,key-switching modulus differs
+CKKS,4096,3,decrypt,directly comparable,same ciphertext modulus profile
+CKKS,4096,3,add,directly comparable,same ciphertext modulus profile
+CKKS,4096,3,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,4096,3,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,4096,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,4096,5,keygen,not available,no accepted OpenFHE variant
+BFV,4096,5,encrypt,not available,no accepted OpenFHE variant
+BFV,4096,5,decrypt,not available,no accepted OpenFHE variant
+BFV,4096,5,add,not available,no accepted OpenFHE variant
+BFV,4096,5,multiply,not available,no accepted OpenFHE variant
+BFV,4096,5,relinearize,not available,no accepted OpenFHE variant
+BFV,4096,5,rotate,not available,no accepted OpenFHE variant
+BGV,4096,5,keygen,not available,no accepted OpenFHE variant
+BGV,4096,5,encrypt,not available,no accepted OpenFHE variant
+BGV,4096,5,decrypt,not available,no accepted OpenFHE variant
+BGV,4096,5,add,not available,no accepted OpenFHE variant
+BGV,4096,5,multiply,not available,no accepted OpenFHE variant
+BGV,4096,5,relinearize,not available,no accepted OpenFHE variant
+BGV,4096,5,rotate,not available,no accepted OpenFHE variant
+CKKS,4096,5,keygen,separate analysis,key-switching modulus differs
+CKKS,4096,5,encrypt,separate analysis,key-switching modulus differs
+CKKS,4096,5,decrypt,directly comparable,same ciphertext modulus profile
+CKKS,4096,5,add,directly comparable,same ciphertext modulus profile
+CKKS,4096,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,4096,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,4096,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,8192,1,keygen,separate analysis,ciphertext modulus differs
+BFV,8192,1,encrypt,separate analysis,ciphertext modulus differs
+BFV,8192,1,decrypt,separate analysis,ciphertext modulus differs
+BFV,8192,1,add,separate analysis,ciphertext modulus differs
+BFV,8192,1,multiply,separate analysis,ciphertext modulus differs
+BFV,8192,1,relinearize,separate analysis,ciphertext modulus differs
+BFV,8192,1,rotate,separate analysis,ciphertext modulus differs
+BGV,8192,1,keygen,separate analysis,ciphertext modulus differs
+BGV,8192,1,encrypt,separate analysis,ciphertext modulus differs
+BGV,8192,1,decrypt,separate analysis,ciphertext modulus differs
+BGV,8192,1,add,separate analysis,ciphertext modulus differs
+BGV,8192,1,multiply,separate analysis,ciphertext modulus differs
+BGV,8192,1,relinearize,separate analysis,ciphertext modulus differs
+BGV,8192,1,rotate,separate analysis,ciphertext modulus differs
+CKKS,8192,1,keygen,directly comparable,same size profile
+CKKS,8192,1,encrypt,directly comparable,same size profile
+CKKS,8192,1,decrypt,directly comparable,same size profile
+CKKS,8192,1,add,directly comparable,same size profile
+CKKS,8192,1,multiply,directly comparable,same size profile
+CKKS,8192,1,relinearize,directly comparable,same size profile
+CKKS,8192,1,rotate,directly comparable,same size profile
+BFV,8192,3,keygen,separate analysis,ciphertext modulus differs
+BFV,8192,3,encrypt,separate analysis,ciphertext modulus differs
+BFV,8192,3,decrypt,separate analysis,ciphertext modulus differs
+BFV,8192,3,add,separate analysis,ciphertext modulus differs
+BFV,8192,3,multiply,separate analysis,ciphertext modulus differs
+BFV,8192,3,relinearize,separate analysis,ciphertext modulus differs
+BFV,8192,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BGV,8192,3,keygen,separate analysis,ciphertext modulus differs
+BGV,8192,3,encrypt,separate analysis,ciphertext modulus differs
+BGV,8192,3,decrypt,separate analysis,ciphertext modulus differs
+BGV,8192,3,add,separate analysis,ciphertext modulus differs
+BGV,8192,3,multiply,separate analysis,ciphertext modulus differs
+BGV,8192,3,relinearize,separate analysis,ciphertext modulus differs
+BGV,8192,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+CKKS,8192,3,keygen,separate analysis,ciphertext modulus differs
+CKKS,8192,3,encrypt,separate analysis,ciphertext modulus differs
+CKKS,8192,3,decrypt,separate analysis,ciphertext modulus differs
+CKKS,8192,3,add,separate analysis,ciphertext modulus differs
+CKKS,8192,3,multiply,separate analysis,ciphertext modulus differs
+CKKS,8192,3,relinearize,separate analysis,ciphertext modulus differs
+CKKS,8192,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,8192,5,keygen,separate analysis,key-switching modulus differs
+BFV,8192,5,encrypt,separate analysis,key-switching modulus differs
+BFV,8192,5,decrypt,directly comparable,same ciphertext modulus profile
+BFV,8192,5,add,directly comparable,same ciphertext modulus profile
+BFV,8192,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+BFV,8192,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BFV,8192,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+BGV,8192,5,keygen,separate analysis,key-switching modulus differs
+BGV,8192,5,encrypt,separate analysis,key-switching modulus differs
+BGV,8192,5,decrypt,directly comparable,same ciphertext modulus profile
+BGV,8192,5,add,directly comparable,same ciphertext modulus profile
+BGV,8192,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+BGV,8192,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BGV,8192,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+CKKS,8192,5,keygen,separate analysis,key-switching modulus differs
+CKKS,8192,5,encrypt,separate analysis,key-switching modulus differs
+CKKS,8192,5,decrypt,directly comparable,same ciphertext modulus profile
+CKKS,8192,5,add,directly comparable,same ciphertext modulus profile
+CKKS,8192,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,8192,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,8192,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,1,keygen,separate analysis,ciphertext modulus differs
+BFV,16384,1,encrypt,separate analysis,ciphertext modulus differs
+BFV,16384,1,decrypt,separate analysis,ciphertext modulus differs
+BFV,16384,1,add,separate analysis,ciphertext modulus differs
+BFV,16384,1,multiply,separate analysis,ciphertext modulus differs
+BFV,16384,1,relinearize,separate analysis,ciphertext modulus differs
+BFV,16384,1,rotate,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,1,keygen,not available,no accepted OpenFHE variant
+BGV,16384,1,encrypt,not available,no accepted OpenFHE variant
+BGV,16384,1,decrypt,not available,no accepted OpenFHE variant
+BGV,16384,1,add,not available,no accepted OpenFHE variant
+BGV,16384,1,multiply,not available,no accepted OpenFHE variant
+BGV,16384,1,relinearize,not available,no accepted OpenFHE variant
+BGV,16384,1,rotate,not available,no accepted OpenFHE variant
+CKKS,16384,1,keygen,directly comparable,same size profile
+CKKS,16384,1,encrypt,directly comparable,same size profile
+CKKS,16384,1,decrypt,directly comparable,same size profile
+CKKS,16384,1,add,directly comparable,same size profile
+CKKS,16384,1,multiply,directly comparable,same size profile
+CKKS,16384,1,relinearize,directly comparable,same size profile
+CKKS,16384,1,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,keygen,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,encrypt,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,decrypt,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,add,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,multiply,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,keygen,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,encrypt,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,decrypt,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,add,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,multiply,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,keygen,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,encrypt,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,decrypt,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,add,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,3,rotate,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,keygen,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,encrypt,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,decrypt,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,add,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BFV,16384,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,keygen,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,encrypt,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,decrypt,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,add,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+BGV,16384,5,rotate,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,keygen,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,encrypt,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,decrypt,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,add,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,multiply,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,relinearize,no SEAL measurement,SEAL did not measure this operation here
+CKKS,16384,5,rotate,no SEAL measurement,SEAL did not measure this operation here

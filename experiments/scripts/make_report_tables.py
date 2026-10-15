@@ -460,18 +460,14 @@ def text_numbers(checks):
 # ------------------------------------------------------- security validation
 def security():
     """Security table: archived Lattice Estimator results (experiments/security/
-    results_full_N*.csv, exact SEAL moduli), the earlier unarchived N=8192
-    values (earlier_run_N8192.csv), and the guideline check for N=16384."""
+    results_full_N*.csv, exact SEAL moduli, N <= 8192) and the guideline check
+    for N=16384."""
     sec = "../security"
     est = {}
     for path in sorted(glob.glob(os.path.join(sec, "results_full_N*.csv"))):
         for r in csv.DictReader(open(path)):
             if r["attack"] == "MIN":
                 est[(int(r["N"]), int(r["category"]), r["error_model"])] = (float(r["log2_rop"]), float(r["log2_q"]))
-    earlier = {}
-    with open(os.path.join(sec, "earlier_run_N8192.csv")) as f:
-        for r in csv.DictReader(line for line in f if not line.startswith("#")):
-            earlier[(int(r["N"]), int(r["category"]))] = (float(r["log2_rop"]), float(r["log2_q_nominal"]))
     guide = {1: {16384: 430}, 3: {16384: 297}, 5: {16384: 230}}  # Table 5.2, 2024/2025 guidelines
     seal_logq = {(int(r["N"]), int(r["category"])): float(r["log2_q"])
                  for r in csv.DictReader(open(os.path.join(sec, "seal_moduli.csv")))}
@@ -483,9 +479,6 @@ def security():
         if (N, cat, "Gaussian3.19_approx") in est:
             g = est[(N, cat, "Gaussian3.19_approx")][0]; c = est[(N, cat, "CBD21_exact")][0]
             lines.append(f"{N} & {cat} & {lq:.1f} & {g:.1f} & {c:.1f} & estimator, re-run and archived \\\\")
-        elif (N, cat) in earlier:
-            g, lqn = earlier[(N, cat)]
-            lines.append(f"{N} & {cat} & {lq:.1f} & {g:.1f} & -- & estimator, earlier run (not archived) \\\\")
         else:
             lim = guide[cat][N]
             lines.append(f"{N} & {cat} & {lq:.1f} & \\multicolumn{{2}}{{c}}{{$\\geq${target[cat]} ($\\log q$ {lim - lq:.0f} bits under limit)}} & guideline Table 5.2 \\\\")

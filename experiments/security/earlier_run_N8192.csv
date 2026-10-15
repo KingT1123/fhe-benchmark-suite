@@ -1,3 +1,6 @@
+# SUPERSEDED: kept only as the record of what report versions V3-V7 showed.
+# The exact-prime re-run, results_full_N8192.csv, replaces these values and is
+# what the report now uses (make_report_tables.py no longer reads this file).
 # Lattice Estimator values for N=8192 from the original (round-1) run, as
 # reported since V3. That run's outputs were not archived and it was not
 # repeated here (several hours per configuration on the study laptop). It
