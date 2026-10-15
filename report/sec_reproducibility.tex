@@ -35,11 +35,11 @@ Source code, build scripts, and configuration are version-controlled at:
 \end{center}
 {\sloppy Result data \emph{is} version-controlled in the same repository: per-configuration raw output under \nolinkurl{experiments/results/raw/}, the aggregated CSVs used for every table and figure under \nolinkurl{experiments/results/final/}, and the randomized run-order seed of each sweep in \nolinkurl{experiments/results/run_metadata.csv}. Incomplete $N{=}16384$ fragments excluded from the analysis are kept, not deleted, in the separate directory \nolinkurl{experiments/results/} \nolinkurl{raw_quarantine_N16384_incomplete/}. Per-run console logs are not tracked.\par}
 
-{\sloppy This version of the report is tagged \texttt{seal-final-v4} in the repository. All SEAL code and results in it correspond to the commit
+{\sloppy This version of the report is tagged \texttt{seal-final-v5} in the repository. All SEAL code and results in it correspond to the commit
 \begin{center}
 \sealcommit
 \end{center}
-A commit cannot contain its own hash, so the tag points to the next commit, which only updates the report itself (this hash, the version label and the reference to the OpenFHE grid); it differs from the commit above in \texttt{report/} alone (\texttt{git diff \textit{<commit>} seal-final-v4 -{}- experiments/} prints nothing). The earlier tags \texttt{seal-final-v1} (\texttt{bbe81d4}), \texttt{seal-final-v2} (\texttt{20fec88}) and \texttt{seal-final-v3} (\texttt{0d0c4c5}) are kept unchanged as the states of the previous versions.\par}
+A commit cannot contain its own hash, so the tag points to the next commit, which only updates the report itself (this hash and the version label); it differs from the commit above in \texttt{report/} alone (\texttt{git diff \textit{<commit>} seal-final-v5 -{}- experiments/} prints nothing). The earlier tags \texttt{seal-final-v1} (\texttt{bbe81d4}), \texttt{seal-final-v2} (\texttt{20fec88}), \texttt{seal-final-v3} (\texttt{0d0c4c5}) and \texttt{seal-final-v4} (\texttt{f58f6ae}) are kept unchanged as the states of the previous versions.\par}
 
 The full parameter grid (Table~\ref{tab:paramgrid}) is at \texttt{experiments/config/param\_grid.csv}. The benchmark's input values use a fixed seed, but SEAL generates its keys and encryption randomness afresh in every run, as it must. Repeated runs therefore reproduce timings and sizes up to ordinary system noise (captured by the confidence intervals reported throughout), while noise-budget values can differ by a few bits from run to run (Section~\ref{sec:results}, BGV at $N{=}4096$/category~1).
 
@@ -50,7 +50,7 @@ The steps below re-measure everything. The run scripts skip any cell whose raw f
 \begin{lstlisting}
 git clone https://github.com/KingT1123/fhe-benchmark-suite.git
 cd fhe-benchmark-suite
-git checkout seal-final-v4
+git checkout seal-final-v5
 cd experiments
 
 # 0. Keep the committed results aside, start from empty directories
