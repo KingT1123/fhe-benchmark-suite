@@ -1,0 +1,109 @@
+scheme,N,category,variant,request,status,rejection_type,ring_dim,q_primes,p_primes,log2_q,log2_qp,error
+CKKS,2048,1,A,"depth=0 firstModSize=26 scalingModSize=26 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (4096)."
+BGV,2048,1,A,"depth=0 t=12289 firstModSize=26 scalingModSize=26 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (4096)."
+BFV,2048,1,A,"depth=0 t=12289 chain=automatic default",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 4096."
+CKKS,2048,1,B,"depth=0 firstModSize=26 scalingModSize=26 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (4096)."
+BGV,2048,1,B,"depth=0 t=12289 firstModSize=26 scalingModSize=26 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (4096)."
+BFV,2048,1,B,"depth=0 t=12289 scalingModSize=26 hybrid dnum=1",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,2048,1,C,"depth=0 firstModSize=26 scalingModSize=26 FIXEDMANUAL BV",accepted,,2048,"67219457","",26.0024,26.0024,
+BGV,2048,1,C,"depth=0 t=12289 firstModSize=26 scalingModSize=26 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," overflow shrinking candidate"
+BFV,2048,1,C,"depth=0 t=12289 chain=automatic BV",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 4096."
+CKKS,2048,3,A,"depth=0 firstModSize=17 scalingModSize=17 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BGV,2048,3,A,"depth=0 t=1032193 firstModSize=17 scalingModSize=17 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BFV,2048,3,A,"depth=0 t=1032193 chain=automatic default",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 4096."
+CKKS,2048,3,B,"depth=0 firstModSize=17 scalingModSize=17 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BGV,2048,3,B,"depth=0 t=1032193 firstModSize=17 scalingModSize=17 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BFV,2048,3,B,"depth=0 t=1032193 scalingModSize=17 hybrid dnum=1",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,2048,3,C,"depth=0 firstModSize=17 scalingModSize=17 FIXEDMANUAL BV",accepted,,2048,"151553","",17.2095,17.2095,
+BGV,2048,3,C,"depth=0 t=1032193 firstModSize=17 scalingModSize=17 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," overflow shrinking candidate"
+BFV,2048,3,C,"depth=0 t=1032193 chain=automatic BV",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 4096."
+CKKS,2048,5,A,"depth=0 firstModSize=26 scalingModSize=26 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BGV,2048,5,A,"depth=0 t=12289 firstModSize=26 scalingModSize=26 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BFV,2048,5,A,"depth=0 t=12289 chain=automatic default",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,2048,5,B,"depth=0 firstModSize=26 scalingModSize=26 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BGV,2048,5,B,"depth=0 t=12289 firstModSize=26 scalingModSize=26 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (2048) does not comply with HE standards recommendation (8192)."
+BFV,2048,5,B,"depth=0 t=12289 scalingModSize=26 hybrid dnum=1",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,2048,5,C,"depth=0 firstModSize=26 scalingModSize=26 FIXEDMANUAL BV",accepted,,2048,"67219457","",26.0024,26.0024,
+BGV,2048,5,C,"depth=0 t=12289 firstModSize=26 scalingModSize=26 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," overflow shrinking candidate"
+BFV,2048,5,C,"depth=0 t=12289 chain=automatic BV",rejected,security,,,,,," Ring dimension 2048 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,4096,1,A,"depth=1 firstModSize=33 scalingModSize=33 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BGV,4096,1,A,"depth=1 t=1032193 firstModSize=33 scalingModSize=33 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BFV,4096,1,A,"depth=1 t=1032193 chain=automatic default",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,4096,1,B,"depth=1 firstModSize=33 scalingModSize=33 FIXEDMANUAL hybrid dnum=2",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BGV,4096,1,B,"depth=1 t=1032193 firstModSize=33 scalingModSize=33 FIXEDMANUAL hybrid dnum=2",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BFV,4096,1,B,"depth=1 t=1032193 scalingModSize=33 hybrid dnum=2",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 16384."
+CKKS,4096,1,C,"depth=1 firstModSize=33 scalingModSize=33 FIXEDMANUAL BV",accepted,,4096,"8590163969 8590090241","",66.0001,66.0001,
+BGV,4096,1,C,"depth=1 t=1032193 firstModSize=33 scalingModSize=33 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," overflow shrinking candidate"
+BFV,4096,1,C,"depth=1 t=1032193 chain=automatic BV",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,4096,3,A,"depth=0 firstModSize=34 scalingModSize=34 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BGV,4096,3,A,"depth=0 t=1032193 firstModSize=34 scalingModSize=34 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BFV,4096,3,A,"depth=0 t=1032193 chain=automatic default",accepted,,4096,"1152921504606830593","",60,60,
+CKKS,4096,3,B,"depth=0 firstModSize=34 scalingModSize=34 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BGV,4096,3,B,"depth=0 t=1032193 firstModSize=34 scalingModSize=34 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BFV,4096,3,B,"depth=0 t=1032193 scalingModSize=34 hybrid dnum=1",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 16384."
+CKKS,4096,3,C,"depth=0 firstModSize=34 scalingModSize=34 FIXEDMANUAL BV",accepted,,4096,"17179967489","",34,34,
+BGV,4096,3,C,"depth=0 t=1032193 firstModSize=34 scalingModSize=34 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," overflow shrinking candidate"
+BFV,4096,3,C,"depth=0 t=1032193 chain=automatic BV",accepted,,4096,"1152921504606830593","",60,60,
+CKKS,4096,5,A,"depth=0 firstModSize=27 scalingModSize=27 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BGV,4096,5,A,"depth=0 t=40961 firstModSize=27 scalingModSize=27 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BFV,4096,5,A,"depth=0 t=40961 chain=automatic default",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,4096,5,B,"depth=0 firstModSize=27 scalingModSize=27 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BGV,4096,5,B,"depth=0 t=40961 firstModSize=27 scalingModSize=27 FIXEDMANUAL hybrid dnum=1",rejected,security,,,,,," The specified ring dimension (4096) does not comply with HE standards recommendation (8192)."
+BFV,4096,5,B,"depth=0 t=40961 scalingModSize=27 hybrid dnum=1",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,4096,5,C,"depth=0 firstModSize=27 scalingModSize=27 FIXEDMANUAL BV",accepted,,4096,"134275073","",27.0006,27.0006,
+BGV,4096,5,C,"depth=0 t=40961 firstModSize=27 scalingModSize=27 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," overflow shrinking candidate"
+BFV,4096,5,C,"depth=0 t=40961 chain=automatic BV",rejected,security,,,,,," Ring dimension 4096 specified by the user does not meet the security requirement. Please increase it to 8192."
+CKKS,8192,1,A,"depth=2 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (8192) does not comply with HE standards recommendation (16384)."
+BGV,8192,1,A,"depth=2 t=1032193 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (8192) does not comply with HE standards recommendation (16384)."
+BFV,8192,1,A,"depth=2 t=1032193 chain=automatic default",accepted,,8192,"1152921504606830593 1152921504606748673 1152921504606683137","",180,180,
+CKKS,8192,1,B,"depth=2 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=3",accepted,,8192,"1152921504606830593 1099511480321 1099511922689","1152921504606748673",140,200,
+BGV,8192,1,B,"depth=2 t=1032193 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=3",accepted,,8192,"1152921284492738561 574989303809 524254953473","1152920574211833857",137.996,197.996,
+BFV,8192,1,B,"depth=2 t=1032193 scalingModSize=40 hybrid dnum=3",accepted,,8192,"1099511480321 1099510890497 1099510824961","1152921504606830593",120,180,
+CKKS,8192,1,C,"depth=2 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,8192,"1152921504606830593 1099511480321 1099511922689","",140,140,
+BGV,8192,1,C,"depth=2 t=1032193 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,8192,"1152921284492738561 574989303809 524254953473","",137.996,137.996,
+BFV,8192,1,C,"depth=2 t=1032193 chain=automatic BV",accepted,,8192,"1152921504606830593 1152921504606748673 1152921504606683137","",180,180,
+CKKS,8192,3,A,"depth=1 firstModSize=47 scalingModSize=47 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (8192) does not comply with HE standards recommendation (16384)."
+BGV,8192,3,A,"depth=1 t=1032193 firstModSize=47 scalingModSize=47 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (8192) does not comply with HE standards recommendation (16384)."
+BFV,8192,3,A,"depth=1 t=1032193 chain=automatic default",accepted,,8192,"1152921504606830593 1152921504606748673","",120,120,
+CKKS,8192,3,B,"depth=1 firstModSize=47 scalingModSize=47 FIXEDMANUAL hybrid dnum=2",rejected,security,,,,,," The specified ring dimension (8192) does not comply with HE standards recommendation (16384)."
+BGV,8192,3,B,"depth=1 t=1032193 firstModSize=47 scalingModSize=47 FIXEDMANUAL hybrid dnum=2",rejected,security,,,,,," The specified ring dimension (8192) does not comply with HE standards recommendation (16384)."
+BFV,8192,3,B,"depth=1 t=1032193 scalingModSize=47 hybrid dnum=2",rejected,security,,,,,," Ring dimension 8192 specified by the user does not meet the security requirement. Please increase it to 16384."
+CKKS,8192,3,C,"depth=1 firstModSize=47 scalingModSize=47 FIXEDMANUAL BV",accepted,,8192,"140737488928769 140737488486401","",94,94,
+BGV,8192,3,C,"depth=1 t=1032193 firstModSize=47 scalingModSize=47 FIXEDMANUAL BV",accepted,,8192,"140534150430721 140348124479489","",93.9939,93.9939,
+BFV,8192,3,C,"depth=1 t=1032193 chain=automatic BV",accepted,,8192,"1152921504606830593 1152921504606748673","",120,120,
+CKKS,8192,5,A,"depth=0 firstModSize=54 scalingModSize=54 FIXEDMANUAL default",accepted,,8192,"18014398510661633","1152921504606830593",54,114,
+BGV,8192,5,A,"depth=0 t=1032193 firstModSize=54 scalingModSize=54 FIXEDMANUAL default",accepted,,8192,"18014262685253633","1152921284492738561",54,114,
+BFV,8192,5,A,"depth=0 t=1032193 chain=automatic default",accepted,,8192,"1152921504606830593","",60,60,
+CKKS,8192,5,B,"depth=0 firstModSize=54 scalingModSize=54 FIXEDMANUAL hybrid dnum=1",accepted,,8192,"18014398510661633","1152921504606830593",54,114,
+BGV,8192,5,B,"depth=0 t=1032193 firstModSize=54 scalingModSize=54 FIXEDMANUAL hybrid dnum=1",accepted,,8192,"18014262685253633","1152921284492738561",54,114,
+BFV,8192,5,B,"depth=0 t=1032193 scalingModSize=54 hybrid dnum=1",accepted,,8192,"18014398508400641","1152921504606830593",54,114,
+CKKS,8192,5,C,"depth=0 firstModSize=54 scalingModSize=54 FIXEDMANUAL BV",accepted,,8192,"18014398510661633","",54,54,
+BGV,8192,5,C,"depth=0 t=1032193 firstModSize=54 scalingModSize=54 FIXEDMANUAL BV",accepted,,8192,"18014262685253633","",54,54,
+BFV,8192,5,C,"depth=0 t=1032193 chain=automatic BV",accepted,,8192,"1152921504606830593","",60,60,
+CKKS,16384,1,A,"depth=7 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (16384) does not comply with HE standards recommendation (32768)."
+BGV,16384,1,A,"depth=7 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (16384) does not comply with HE standards recommendation (32768)."
+BFV,16384,1,A,"depth=7 t=786433 chain=automatic default",accepted,,16384,"1152921504606748673 1152921504606683137 1152921504606584833 1152921504605962241 1152921504604979201 1152921504600260609","",360,360,
+CKKS,16384,1,B,"depth=7 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=8",accepted,,16384,"1152921504606748673 1099514478593 1099507695617 1099514314753 1099508121601 1099512938497 1099510054913 1099511922689","1152921504606683137",340,400,
+BGV,16384,1,B,"depth=7 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=8",rejected,parameter-generation,,,,,," Overflow shrinking candidate"
+BFV,16384,1,B,"depth=7 t=786433 scalingModSize=40 hybrid dnum=8",accepted,,16384,"1099510054913 1099508121601 1099507695617 1099506515969 1099506352129 1099505827841 1099504549889 1099503894529","1152921504606748673",320,380,
+CKKS,16384,1,C,"depth=7 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,16384,"1152921504606748673 1099514478593 1099507695617 1099514314753 1099508121601 1099512938497 1099510054913 1099511922689","",340,340,
+BGV,16384,1,C,"depth=7 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",rejected,parameter-generation,,,,,," Overflow shrinking candidate"
+BFV,16384,1,C,"depth=7 t=786433 chain=automatic BV",accepted,,16384,"1152921504606748673 1152921504606683137 1152921504606584833 1152921504605962241 1152921504604979201 1152921504600260609","",360,360,
+CKKS,16384,3,A,"depth=4 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (16384) does not comply with HE standards recommendation (32768)."
+BGV,16384,3,A,"depth=4 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (16384) does not comply with HE standards recommendation (32768)."
+BFV,16384,3,A,"depth=4 t=786433 chain=automatic default",accepted,,16384,"1152921504606748673 1152921504606683137 1152921504606584833 1152921504605962241","",240,240,
+CKKS,16384,3,B,"depth=4 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=5",accepted,,16384,"1152921504606748673 1099508121601 1099512938497 1099510054913 1099511922689","1152921504606683137",220,280,
+BGV,16384,3,B,"depth=4 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=5",accepted,,16384,"1152921175323738113 695785586689 618476077057 515396730881 463857057793","1152918495260737537",216.172,276.172,
+BFV,16384,3,B,"depth=4 t=786433 scalingModSize=40 hybrid dnum=5",accepted,,16384,"1099510054913 1099508121601 1099507695617 1099506515969 1099506352129","1152921504606748673",200,260,
+CKKS,16384,3,C,"depth=4 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,16384,"1152921504606748673 1099508121601 1099512938497 1099510054913 1099511922689","",220,220,
+BGV,16384,3,C,"depth=4 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,16384,"1152921175323738113 695785586689 618476077057 515396730881 463857057793","",216.172,216.172,
+BFV,16384,3,C,"depth=4 t=786433 chain=automatic BV",accepted,,16384,"1152921504606748673 1152921504606683137 1152921504606584833 1152921504605962241","",240,240,
+CKKS,16384,5,A,"depth=2 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (16384) does not comply with HE standards recommendation (32768)."
+BGV,16384,5,A,"depth=2 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL default",rejected,security,,,,,," The specified ring dimension (16384) does not comply with HE standards recommendation (32768)."
+BFV,16384,5,A,"depth=2 t=786433 chain=automatic default",accepted,,16384,"1152921504606748673 1152921504606683137 1152921504606584833","",180,180,
+CKKS,16384,5,B,"depth=2 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=3",accepted,,16384,"1152921504606748673 1099510054913 1099511922689","1152921504606683137",140,200,
+BGV,16384,5,B,"depth=2 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL hybrid dnum=3",accepted,,16384,"1152921175323738113 695785586689 618476077057","1152918495260737537",138.51,198.51,
+BFV,16384,5,B,"depth=2 t=786433 scalingModSize=40 hybrid dnum=3",accepted,,16384,"1099510054913 1099508121601 1099507695617","1152921504606748673",120,180,
+CKKS,16384,5,C,"depth=2 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,16384,"1152921504606748673 1099510054913 1099511922689","",140,140,
+BGV,16384,5,C,"depth=2 t=786433 firstModSize=60 scalingModSize=40 FIXEDMANUAL BV",accepted,,16384,"1152921175323738113 695785586689 618476077057","",138.51,138.51,
+BFV,16384,5,C,"depth=2 t=786433 chain=automatic BV",accepted,,16384,"1152921504606748673 1152921504606683137 1152921504606584833","",180,180,
