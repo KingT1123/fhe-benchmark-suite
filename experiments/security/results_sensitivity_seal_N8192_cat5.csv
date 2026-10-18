@@ -1,0 +1,22 @@
+scheme,N,category,variant,log2_qp,secret,error_model,cost_model,attack,log2_rop,target_bits,verdict,seconds,estimator_commit
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",bdd,274.22,256,,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",bdd_hybrid,274.22,256,,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",bdd_mitm_hybrid,412.65,256,,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",dual,277.28,256,,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",dual_hybrid,272.82,256,,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",usvp,274.84,256,,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,"MATZOV (baseline, copied)",MIN,272.82,256,meets category,575,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,bdd,283.37,256,,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,bdd_hybrid,283.37,256,,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,bdd_mitm_hybrid,412.66,256,,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,dual,285.38,256,,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,dual_hybrid,280.89,256,,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,usvp,284.19,256,,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,BDGL16,MIN,280.89,256,meets category,611,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,bdd,251.46,256,,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,bdd_hybrid,251.46,256,,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,bdd_mitm_hybrid,412.65,256,,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,dual,252.00,256,,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,dual_hybrid,247.93,256,,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,usvp,250.83,256,,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
+SEAL,8192,5,-,108.0000,uniform_ternary,Gaussian3.19,ADPS16,MIN,247.93,256,BELOW category,590,3e48ef421ec256afddb3e7d2249a77eab6e9ba12
