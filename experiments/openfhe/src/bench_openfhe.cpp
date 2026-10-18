@@ -50,7 +50,13 @@
 //                  decrypt_full  = CryptoContext::Decrypt as an application
 //                                  calls it -- reported separately, never
 //                                  compared with SEAL's decrypt.
-//   add          EvalAdd (SEAL: Evaluator::add).
+//   add          EvalAdd (SEAL: Evaluator::add). Not the same work: OpenFHE's
+//                EvalAdd first clones its first operand into a NEW ciphertext
+//                (LeveledSHERNS::EvalAdd), SEAL's add copies it into an
+//                existing destination object reused across calls.
+//   add_inplace  diagnostic only: EvalAddInPlace, the addition without the
+//                clone, to show how much of add is the copy; not compared
+//                with SEAL's add.
 //   multiply     EvalMultNoRelin, no rescaling (FIXEDMANUAL) (SEAL:
 //                Evaluator::multiply, no relinearization, no rescaling).
 //   relinearize  RelinearizeInPlace on a pre-computed product (SEAL:
@@ -306,13 +312,15 @@ static double time_binary(Ctx &c, const Args &a, Check &chk, const std::string &
     Ciphertext<DCRTPoly> r;
     auto t0 = Clock::now();
     if (op == "add")           for (int k = 0; k < a.inner_loop; k++) r = c.cc->EvalAdd(xs[k].ct, ys[k].ct);
+    else if (op == "add_inplace") for (int k = 0; k < a.inner_loop; k++) c.cc->EvalAddInPlace(xs[k].ct, ys[k].ct);
     else if (op == "multiply") for (int k = 0; k < a.inner_loop; k++) r = c.cc->EvalMultNoRelin(xs[k].ct, ys[k].ct);
     else                       for (int k = 0; k < a.inner_loop; k++) c.cc->RelinearizeInPlace(prods[k]);
     auto t1 = Clock::now();
     if (op == "relinearize") r = prods.back();
+    if (op == "add_inplace") r = xs.back().ct;
     std::vector<double> e(slots);
     for (size_t i = 0; i < slots; i++)
-        e[i] = op == "add" ? xs.back().x[i] + ys.back().x[i] : xs.back().x[i] * ys.back().x[i];
+        e[i] = op.rfind("add", 0) == 0 ? xs.back().x[i] + ys.back().x[i] : xs.back().x[i] * ys.back().x[i];
     chk.err = norm_error(c, r, e, slots);
     return ms(t0, t1) / a.inner_loop;
 }
@@ -334,7 +342,7 @@ int main(int argc, char **argv) {
         Args a = parse_args(argc, argv);
         Config c = load_config(a);
         const std::string &op = a.operation;
-        const std::string base = op == "decrypt_full" ? "decrypt" : op;
+        const std::string base = op == "decrypt_full" ? "decrypt" : op == "add_inplace" ? "add" : op;
         if (c.ops.find(base) == std::string::npos)
             throw std::runtime_error(op + " is not among the operations to time for this configuration (" + c.ops + ")");
 
@@ -371,7 +379,8 @@ int main(int argc, char **argv) {
             else if (op == "encrypt")       t = time_encrypt(x, a, k);
             else if (op == "decrypt")       t = time_decrypt(x, a, k, false);
             else if (op == "decrypt_full")  t = time_decrypt(x, a, k, true);
-            else if (op == "add" || op == "multiply" || op == "relinearize") t = time_binary(x, a, k, op);
+            else if (op == "add" || op == "add_inplace" || op == "multiply" || op == "relinearize")
+                t = time_binary(x, a, k, op);
             else if (rotate)                t = time_rotate(x, a, k);
             else throw std::runtime_error("Unknown operation: " + op);
             const char *status = i < a.warmup ? "warmup" : "measured";

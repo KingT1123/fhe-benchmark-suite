@@ -1729,7 +1729,10 @@ def aggregate_pilot(args):
                          of the campaign?
       openfhe_vs_seal    OpenFHE vs SEAL, same session: ratio of the means
                          and the difference (no equivalence claim; matched-
-                         profile comparison, see the pilot note).
+                         profile comparison, see the pilot note). OpenFHE's
+                         diagnostics decrypt_full and add_inplace are set
+                         against SEAL's decrypt and add under their own labels
+                         (openfhe_full_api_vs_seal, openfhe_diagnostic_vs_seal).
     Outputs: results/final/pilot.csv and pilot_comparisons.csv (with --out=X.csv:
     X.csv and X_comparisons.csv)."""
     raw_dir = args.raw_dir or "../results/raw/pilot"
@@ -1798,9 +1801,11 @@ def aggregate_pilot(args):
             compare("seal_reproduction", op, "SEAL archived campaign",
                     (float(a["mean"]), float(a["std"]), 100), "SEAL this session", msd(s), 0.10)
     for (lib, op, scale), s in sorted(stats.items()):
-        sop = "decrypt" if op == "decrypt_full" else op
+        sop = {"decrypt_full": "decrypt", "add_inplace": "add"}.get(op, op)
+        kind = {"decrypt_full": "openfhe_full_api_vs_seal",
+                "add_inplace": "openfhe_diagnostic_vs_seal"}.get(op, "openfhe_vs_seal")
         if lib == "OpenFHE" and ("SEAL", sop, 40) in stats:
-            compare("openfhe_vs_seal" if op != "decrypt_full" else "openfhe_full_api_vs_seal", op,
+            compare(kind, op,
                     "SEAL this session", msd(stats[("SEAL", sop, 40)]), "OpenFHE this session", msd(s), None)
     cpath = out_path[:-len(".csv")] + "_comparisons.csv"
     with open(cpath, "w", newline="") as f:

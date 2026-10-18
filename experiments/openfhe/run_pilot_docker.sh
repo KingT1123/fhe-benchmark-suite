@@ -9,12 +9,13 @@
 # Prerequisites (no sudo): bash experiments/seal/docker_build_and_run.sh and
 # bash experiments/openfhe/docker_build.sh.
 #
-# Cells (21), all with the Standard-scenario protocol of the SEAL campaign:
+# Cells (22), all with the Standard-scenario protocol of the SEAL campaign:
 # 100 measured repetitions after 5 warm-up, inner loop 1000 (keygen and
 # rotate: one call per repetition, as in SEAL), one docker run per cell,
 # process pinned to one core (_inner_measure.sh: taskset + peak memory),
 # randomized order with a recorded seed, CPU temperature logged every 5 s.
-#   OpenFHE: keygen encrypt decrypt decrypt_full add multiply relinearize rotate
+#   OpenFHE: keygen encrypt decrypt decrypt_full add add_inplace multiply relinearize rotate
+#            (decrypt_full and add_inplace: diagnostics, see bench_openfhe.cpp)
 #   SEAL:    keygen encrypt decrypt add multiply relinearize rotate
 #   SEAL at CKKS scale 2^30 instead of 2^40, same primes (scale test):
 #            encrypt decrypt add multiply relinearize rotate
@@ -80,7 +81,7 @@ RUN_META="$EXP/results/run_metadata.csv"
 [ -f "$RUN_META" ] || echo "timestamp,scenario,run_order_seed,num_cells" > "$RUN_META"
 
 CELLS=()
-for op in keygen encrypt decrypt decrypt_full add multiply relinearize rotate; do CELLS+=("openfhe,$op,"); done
+for op in keygen encrypt decrypt decrypt_full add add_inplace multiply relinearize rotate; do CELLS+=("openfhe,$op,"); done
 for op in keygen encrypt decrypt add multiply relinearize rotate; do CELLS+=("seal,$op,"); done
 for op in encrypt decrypt add multiply relinearize rotate; do CELLS+=("seal,$op,30"); done
 mapfile -t ORDER < <(printf '%s\n' "${CELLS[@]}" | \
