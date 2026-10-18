@@ -22,6 +22,13 @@ NS=("$@"); [ ${#NS[@]} -eq 0 ] && NS=(2048 4096 8192)
 # TARGET=openfhe: the OpenFHE candidates (openfhe_candidates.csv, actual
 # Q and P primes), estimate_openfhe.py, OpenFHE's Gaussian 3.19 error; full
 # mode only; output results_openfhe<OUT_SUFFIX>.csv.
+# TARGET=sensitivity: the three OpenFHE candidates at N=8192/category 5
+# under the cost models BDGL16 and ADPS16 (sensitivity_openfhe.py); full
+# mode, N=8192 only; output results_sensitivity_N8192_cat5.csv.
+#   TARGET=sensitivity CPU_SHARE=0.5 bash run_estimator_docker.sh full 8192
+# TARGET=sensitivity_seal: the same two cost models for SEAL's own
+# N=8192/category 5 configuration (reference point); output
+# results_sensitivity_seal_N8192_cat5.csv.
 TARGET="${TARGET:-seal}"
 
 if [ ! -d "$HERE/lattice-estimator/.git" ]; then
@@ -34,7 +41,14 @@ git -C "$HERE/lattice-estimator" checkout -q "$ESTIMATOR_COMMIT"
 # output file belongs to the host user. Progress goes to stderr.
 COMMIT="$(git -C "$HERE/lattice-estimator" rev-parse HEAD)"
 LOG="$HERE/estimator_progress.log"   # watched live by monitor_estimator.sh
-if [ "$TARGET" = "openfhe" ]; then
+if [ "$TARGET" = "sensitivity" ] || [ "$TARGET" = "sensitivity_seal" ]; then
+    [ "$MODE" = "full" ] && [ "${NS[*]}" = "8192" ] || { echo "TARGET=$TARGET: use 'full 8192'" >&2; exit 1; }
+    if [ "$TARGET" = "sensitivity" ]; then
+        OUT="results_sensitivity_N8192_cat5.csv"; TOTAL=6; CMD="sensitivity_openfhe.py --out /tmp/out.csv"
+    else
+        OUT="results_sensitivity_seal_N8192_cat5.csv"; TOTAL=2; CMD="sensitivity_openfhe.py --seal --out /tmp/out.csv"
+    fi
+elif [ "$TARGET" = "openfhe" ]; then
     [ "$MODE" = "full" ] || { echo "TARGET=openfhe supports full mode only" >&2; exit 1; }
     OUT="results_openfhe${OUT_SUFFIX:-}.csv"
     TOTAL=$(awk -F, -v ns=" ${NS[*]} " 'NR > 1 && index(ns, " " $2 " ") {n++} END {print n + 0}' "$HERE/openfhe_candidates.csv")
