@@ -12,6 +12,7 @@ venv/
 
 # Build artifacts (SEAL harness binary/object files) — keep dir via .gitkeep
 experiments/seal/build/*
+experiments/openfhe/build/
 !experiments/seal/build/.gitkeep
 
 # Local-only results archives — not for the public repo. These are

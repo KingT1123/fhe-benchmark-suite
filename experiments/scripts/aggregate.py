@@ -1705,12 +1705,117 @@ def aggregate_config_metadata(args):
               f"the raw input, last one wins per key: {dupes}")
 
 
+# ---------- OpenFHE pilot (CKKS N=8192/category 1, SEAL in the same session) ----------
+
+PILOT_SCALE_MARGIN = 0.05  # TOST margin for the scale test: the HIGH_VARIANCE
+                            # threshold, i.e. a difference smaller than the
+                            # run-to-run spread already tolerated per cell.
+
+
+def aggregate_pilot(args):
+    """--scenario=pilot reads experiments/results/raw/pilot/ (written by
+    experiments/openfhe/run_pilot_docker.sh). Per cell (file), the same
+    latency statistics as every other scenario (aggregate_latency_file:
+    warm-up discarded, mean/std/95% CI/median/IQR, HIGH_VARIANCE flag), the
+    peak memory of the process (memory log) and, for OpenFHE, the share of
+    repetitions whose correctness check passed. Then three comparisons, all
+    on latency, each as Welch difference with its 90% CI and a TOST verdict:
+      scale_test         SEAL at scale 2^30 vs SEAL at 2^40 (same primes,
+                         same session), margin +/-5%: does the scale value
+                         change the cost of the operation?
+      seal_reproduction  SEAL in this session vs the archived SEAL campaign
+                         (results/final/seal_standard.csv, seal_composite.csv),
+                         margin +/-10%: are the session's conditions those
+                         of the campaign?
+      openfhe_vs_seal    OpenFHE vs SEAL, same session: ratio of the means
+                         and the difference (no equivalence claim; matched-
+                         profile comparison, see the pilot note).
+    Outputs: results/final/pilot.csv and pilot_comparisons.csv."""
+    raw_dir = args.raw_dir or "../results/raw/pilot"
+    log_dir = args.log_dir or "../results/logs/pilot"
+    out_path = args.out or "../results/final/pilot.csv"
+    rows, stats = [], {}
+    for f in sorted(glob.glob(os.path.join(raw_dir, "*_ckks_*.csv"))):
+        summary = aggregate_latency_file(f)
+        if summary is None:
+            continue
+        tag = Path(f).stem
+        m = re.search(r"_scale(\d+)$", tag)
+        scale = int(m.group(1)) if m else 40
+        base = {"library": summary["library"], "scheme": summary["scheme"], "N": summary["N"],
+                "category": summary["category"], "operation": summary["operation"], "ckks_scale_bits": scale}
+        rows.append({**base, "metric": "latency_ms", "n": summary["n_measured"], "mean": summary["mean_ms"],
+                     "std": summary["std_ms"], "ci_low": summary["ci_low_ms"], "ci_high": summary["ci_high_ms"],
+                     "median": summary["median_ms"], "iqr_low": summary["iqr_low_ms"],
+                     "iqr_high": summary["iqr_high_ms"], "flag": summary["flag"]})
+        stats[(summary["library"], summary["operation"], scale)] = summary
+        mem = parse_mem_log(os.path.join(log_dir, f"{tag}_mem.log"))
+        if mem is not None:
+            rows.append({**base, "metric": "peak_memory_mb", "n": 1, "mean": mem,
+                         "flag": "n=1_invocation_not_repeated"})
+        chk = os.path.join(raw_dir, "checks", f"{tag}_check.csv")
+        if os.path.exists(chk):
+            c = [r for r in csv.DictReader(open(chk))]
+            ok = sum(r["correctness"] == "correct" for r in c)
+            rows.append({**base, "metric": "correct_repetitions", "n": len(c), "mean": ok,
+                         "flag": "" if ok == len(c) else "CORRECTNESS_FAILURE"})
+    fields = ["library", "scheme", "N", "category", "operation", "ckks_scale_bits", "metric", "n",
+              "mean", "std", "ci_low", "ci_high", "median", "iqr_low", "iqr_high", "flag"]
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r.get(k, "") for k in fields})
+
+    archived = {}
+    for path in ("../results/final/seal_standard.csv", "../results/final/seal_composite.csv"):
+        for r in csv.DictReader(open(path)):
+            if (r["scheme"], r["N"], r["category"], r["metric"]) == ("CKKS", "8192", "1", "latency_ms") \
+                    and r["mean"] and not r.get("vec_len"):
+                archived[r["operation"]] = r
+    comps = []
+
+    def compare(kind, op, ref_label, ref, new_label, new, margin):
+        t = tost_equivalence(ref[0], ref[1], ref[2], new[0], new[1], new[2], margin) if margin else None
+        comps.append({"comparison": kind, "operation": op, "reference": ref_label, "compared": new_label,
+                      "ref_mean_ms": ref[0], "new_mean_ms": new[0], "ratio": new[0] / ref[0],
+                      "diff_ms": new[0] - ref[0],
+                      "diff_ci90_low": t["ci_low"] if t else "", "diff_ci90_high": t["ci_high"] if t else "",
+                      "margin_pct": margin * 100 if margin else "",
+                      "verdict": t["verdict"] if t else ""})
+
+    msd = lambda s: (s["mean_ms"], s["std_ms"], s["n_measured"])
+    for (lib, op, scale), s30 in sorted(stats.items()):
+        if lib == "SEAL" and scale == 30 and ("SEAL", op, 40) in stats:
+            compare("scale_test", op, "SEAL 2^40", msd(stats[("SEAL", op, 40)]), "SEAL 2^30", msd(s30),
+                    PILOT_SCALE_MARGIN)
+    for (lib, op, scale), s in sorted(stats.items()):
+        if lib == "SEAL" and scale == 40 and op in archived:
+            a = archived[op]
+            # archived n: Standard 100 measured reps, composite rotate 100
+            compare("seal_reproduction", op, "SEAL archived campaign",
+                    (float(a["mean"]), float(a["std"]), 100), "SEAL this session", msd(s), 0.10)
+    for (lib, op, scale), s in sorted(stats.items()):
+        sop = "decrypt" if op == "decrypt_full" else op
+        if lib == "OpenFHE" and ("SEAL", sop, 40) in stats:
+            compare("openfhe_vs_seal" if op != "decrypt_full" else "openfhe_full_api_vs_seal", op,
+                    "SEAL this session", msd(stats[("SEAL", sop, 40)]), "OpenFHE this session", msd(s), None)
+    cpath = os.path.join(os.path.dirname(out_path), "pilot_comparisons.csv")
+    with open(cpath, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(comps[0]) if comps else ["comparison"], lineterminator="\n")
+        w.writeheader(); w.writerows(comps)
+    print(f"Wrote {len(rows)} rows to {out_path} and {len(comps)} comparisons to {cpath}")
+    print(f"{sum(r.get('flag') == 'HIGH_VARIANCE' for r in rows)} HIGH_VARIANCE; "
+          f"{sum(r.get('flag') == 'CORRECTNESS_FAILURE' for r in rows)} cells with a failed correctness check")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
-                              "ckks_error", "config_metadata"])
+                              "ckks_error", "config_metadata", "pilot"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -1718,6 +1823,10 @@ def main():
 
     if args.scenario == "composite_controls":
         aggregate_composite_controls(args)
+        return
+
+    if args.scenario == "pilot":
+        aggregate_pilot(args)
         return
 
     if args.scenario == "composite_checks":

@@ -345,6 +345,11 @@ struct Args {
     int ramp_seconds = 0;         // --ramp-seconds: busy-wait after idle, before reps
     std::string peak_rss_out;   // --peak-rss-out: write VmHWM after the loop
     bool random_inputs = false; // --check-inputs=random: *_check ops only (round 5)
+    int ckks_scale_bits = 0;    // --ckks-scale-bits: CKKS initial scale 2^bits instead of
+                                 // the per-cell value (0 = unset, the default: every
+                                 // earlier result is unchanged). Added for the OpenFHE
+                                 // pilot's scale test -- same primes, other scale -- to
+                                 // check whether the scale value affects latency.
 };
 
 static std::string arg_value(const std::string &a) {
@@ -375,6 +380,7 @@ Args parse_args(int argc, char **argv) {
         else if (a.rfind("--idle-settle-seconds=", 0) == 0) args.idle_settle_seconds = std::stoi(arg_value(a));
         else if (a.rfind("--ramp-seconds=", 0) == 0) args.ramp_seconds = std::stoi(arg_value(a));
         else if (a.rfind("--peak-rss-out=", 0) == 0) args.peak_rss_out = arg_value(a);
+        else if (a.rfind("--ckks-scale-bits=", 0) == 0) args.ckks_scale_bits = std::stoi(arg_value(a));
         else if (a.rfind("--check-inputs=", 0) == 0) {
             std::string v = arg_value(a);
             if (v != "fixed" && v != "random") throw std::runtime_error("--check-inputs must be fixed or random");
@@ -584,7 +590,8 @@ Ctx build_context(const Args &args, const GridRow &grid) {
         int usable_bits = total_bits - 10;  // safety margin
         int default_scale_bits = std::min(40, usable_bits / 2);
         if (default_scale_bits < 1) default_scale_bits = 1;
-        int scale_bits = ckks_scale_bits_override(args.N, args.category, default_scale_bits);
+        int scale_bits = args.ckks_scale_bits > 0 ? args.ckks_scale_bits
+                                                   : ckks_scale_bits_override(args.N, args.category, default_scale_bits);
         c.ckks_scale = std::pow(2.0, scale_bits);
     }
 
