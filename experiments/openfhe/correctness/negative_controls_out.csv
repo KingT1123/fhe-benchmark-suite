@@ -1,0 +1,17 @@
+scheme,N,category,variant,primes_match,input_mode,operation,trials,passed,worst,metric
+CKKS,2048,3,C,yes,timing,add,100,0,0.438254,max_norm_error
+CKKS,2048,3,C,yes,timing,decrypt,100,0,0.302525,max_norm_error
+CKKS,2048,3,C,yes,timing,encrypt,100,0,0.302525,max_norm_error
+CKKS,2048,3,C,yes,timing,keygen,100,0,0.302525,max_norm_error
+BFV,8192,5,B,yes,timing,add,100,100,0,max_mismatching_slots
+BFV,8192,5,B,yes,timing,decrypt,100,100,0,max_mismatching_slots
+BFV,8192,5,B,yes,timing,encrypt,100,100,0,max_mismatching_slots
+BFV,8192,5,B,yes,timing,keygen,100,0,8192,max_mismatching_slots
+BFV,8192,5,B,yes,timing,multiply,100,0,8192,max_mismatching_slots
+BFV,8192,5,B,yes,timing,relinearize,100,0,8192,max_mismatching_slots
+BFV,8192,5,B,yes,full,add,100,100,0,max_mismatching_slots
+BFV,8192,5,B,yes,full,decrypt,100,100,0,max_mismatching_slots
+BFV,8192,5,B,yes,full,encrypt,100,100,0,max_mismatching_slots
+BFV,8192,5,B,yes,full,keygen,100,0,8192,max_mismatching_slots
+BFV,8192,5,B,yes,full,multiply,100,0,8192,max_mismatching_slots
+BFV,8192,5,B,yes,full,relinearize,100,0,8192,max_mismatching_slots
