@@ -1,0 +1,10 @@
+date: 2026-10-18T08:34:51+01:00
+scaling_governor (as found): powersave; enforced performance: yes
+boost: 1
+taskset_core: 0
+reps: 100 warmup: 5 inner_loop: 1000
+run_order_seed: 1449618142
+cpu:  AMD Ryzen 9 6900HX with Radeon Graphics
+kernel: 7.0.0-38-generic
+code commit: 581eab045ff6bd21b04f51cad1d29720b8f42767; uncommitted changes in experiments/{openfhe,seal/src,scripts}: 0
+images: seal-env sha256:3d03656e0bf8c2cef53317b2e21c02af8e2e99fb8827a18ad7715d537d6503d3 openfhe-env sha256:903bb39e603c31e2364bf3eb23bf6fb337484a64b2db31408339a99eb8a30cb3

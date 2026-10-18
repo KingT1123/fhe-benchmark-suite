@@ -1730,7 +1730,8 @@ def aggregate_pilot(args):
       openfhe_vs_seal    OpenFHE vs SEAL, same session: ratio of the means
                          and the difference (no equivalence claim; matched-
                          profile comparison, see the pilot note).
-    Outputs: results/final/pilot.csv and pilot_comparisons.csv."""
+    Outputs: results/final/pilot.csv and pilot_comparisons.csv (with --out=X.csv:
+    X.csv and X_comparisons.csv)."""
     raw_dir = args.raw_dir or "../results/raw/pilot"
     log_dir = args.log_dir or "../results/logs/pilot"
     out_path = args.out or "../results/final/pilot.csv"
@@ -1801,7 +1802,7 @@ def aggregate_pilot(args):
         if lib == "OpenFHE" and ("SEAL", sop, 40) in stats:
             compare("openfhe_vs_seal" if op != "decrypt_full" else "openfhe_full_api_vs_seal", op,
                     "SEAL this session", msd(stats[("SEAL", sop, 40)]), "OpenFHE this session", msd(s), None)
-    cpath = os.path.join(os.path.dirname(out_path), "pilot_comparisons.csv")
+    cpath = out_path[:-len(".csv")] + "_comparisons.csv"
     with open(cpath, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(comps[0]) if comps else ["comparison"], lineterminator="\n")
         w.writeheader(); w.writerows(comps)
