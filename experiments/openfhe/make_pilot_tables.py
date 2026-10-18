@@ -48,7 +48,7 @@ def results_tables(run, prefix, macros):
         return f'{fmt(r["mean"])} [{fmt(r["ci_low"])}, {fmt(r["ci_high"])}] & {cv:.1f}{flag}'
 
     t = [r"\begin{tabular}{@{}lrrrrrc@{}}", r"\toprule",
-         r"Operation & \multicolumn{2}{c}{SEAL 4.1.2} & \multicolumn{2}{c}{OpenFHE 1.5.1} & OpenFHE/SEAL & Correct (OpenFHE) \\",
+         r"Operation & \multicolumn{2}{c}{SEAL 4.1.2} & \multicolumn{2}{c}{OpenFHE 1.5.1} & Ratio O/S & Correct \\",
          r"& mean [95\% CI], ms & CV\% & mean [95\% CI], ms & CV\% & & \\", r"\midrule"]
     diag = {"decrypt_full": "decrypt", "add_inplace": "add"}
     for op in OPS + list(diag):

@@ -1,0 +1,155 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, array, amsmath, amssymb, xcolor, enumitem}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parskip}{4pt}
+\sloppy
+
+% Which pilot run the results tables come from: "pilot" (the reported run);
+% "runone" only to preview the layout before it exists.
+\providecommand{\run}{pilot}
+\newcommand{\tab}[1]{../../experiments/openfhe/pilot_tables/#1}
+\input{\tab{static_numbers.tex}}
+\input{\tab{runone_numbers.tex}}
+\def\previewrun{runone}\ifx\run\previewrun\else\input{\tab{\run_numbers.tex}}\fi
+\newcommand{\R}[1]{\csname\run#1\endcsname}
+
+\title{OpenFHE pilot: CKKS $N{=}8192$, category~1\\[2pt]
+\large Corrected classification, measurement eligibility and pilot results}
+\author{Boungo Tr\'esor}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Scope.} This note answers the review of the correspondence grid (version~2) and reports the authorized pilot. It is not a revision of the SEAL report. The correspondence document (\texttt{docs/comparability/openfhe\_grid\_v2.tex}) has been updated for points~1 and~2; this note summarizes those changes and adds the pilot. All tables are generated from the data by \texttt{experiments/openfhe/make\_pilot\_tables.py}; commands are in Section~\ref{sec:repro}.
+
+\section{Corrected classification (point 1)}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item ``Directly comparable'' is withdrawn. Every operation cell is now an \textbf{exact-parameter comparison} (the primes used by the operation are the same values in both libraries), a \textbf{matched-profile comparison} (same number and nominal sizes of primes, not the same primes) or a \textbf{separate analysis}. No cell is an exact-parameter comparison. The 32 former ``directly comparable'' cells are matched-profile comparisons and are never presented as exact-parameter ones; each carries the list of its remaining differences (\texttt{operations\_v2.csv}, column \texttt{differences}).
+  \item For CKKS, a table now records, per cell, the primes, key switching, initial scales and levels of both libraries. The levels are equal everywhere; the initial scales are equal only at 8192/1 and 16384/1 ($2^{40}$) and differ by 2 to 14 bits elsewhere.
+  \item The statement that the scale cannot affect latency has been removed. It is now an expectation (every timed operation works prime by prime on residue polynomials whose number and size do not depend on the scale), tested in the pilot (Section~\ref{sec:scale}).
+\end{itemize}
+
+\section{Security evaluation and measurement eligibility (point 2)}
+
+\paragraph{Two different counts.} \securityEvaluated\ configurations were \emph{security-evaluated} (Lattice Estimator, actual $QP$); \eligible\ are \emph{eligible for performance measurement}. CKKS $N{=}2048$/category~3 is security-evaluated but excluded, because its decryption fails the correctness criterion. A configuration is eligible only if it meets its category under the default estimator setting and every operation SEAL measured there passes the functional check; the operations to time are exactly those (\texttt{experiments/openfhe/probe/eligible\_v2.csv}).
+
+\paragraph{Repeated correctness check.} Each eligible configuration was rebuilt with the probe's settings (primes verified identical in all \corrConfigs) and every operation to be timed was checked in 100 independent trials, each with new keys and new random inputs: SEAL's timing inputs (BFV/BGV slots in $\{0,1\}$, CKKS uniform in $[-1,1]$) and, for BFV/BGV, full-range inputs. \textbf{All \corrPassed\ of \corrTotal\ checks passed} (Table~\ref{tab:corr}). As a negative control, the same program applied to two configurations known to be incorrect (CKKS 2048/3; BFV 8192/5 multiplication at depth 0) reports them as failing in every trial, so the check does detect incorrect results.
+
+\begin{table}[h!]\centering\footnotesize
+\input{\tab{correctness.tex}}
+\caption{Repeated correctness check (\texttt{experiments/openfhe/correctness/}). Checks: operations $\times$ input modes $\times$ 100 trials. Worst error: largest normalized CKKS error (threshold $10^{-2}$); BFV/BGV results compared exactly.}
+\label{tab:corr}
+\end{table}
+
+\paragraph{Security of the three tightest configurations.} OpenFHE's BFV, BGV and CKKS at $N{=}8192$/category~5 meet 256 bits by 0.9 bits under the estimator's default cost model. The same instances were re-estimated under two other cost models of the same estimator commit, with SEAL's own 8192/5 configuration as a reference (Table~\ref{tab:sens}).
+
+\begin{table}[h!]\centering\footnotesize
+\input{\tab{sensitivity.tex}}
+\caption{Estimated security, bits ($\log_2$ of the cheapest attack). MATZOV: estimator default, used for every verdict so far. BDGL16: classical sieving. ADPS16: core-SVP, a deliberately pessimistic lower bound. Bold: below 256. Inputs, outputs: \texttt{experiments/security/results\_sensitivity*\_N8192\_cat5.csv}.}
+\label{tab:sens}
+\end{table}
+
+These configurations therefore meet category~5 \emph{under the default cost model} (and BDGL16), not under the core-SVP lower bound, under which SEAL's configuration also falls below 256 bits. Their classification is reported with this condition and with their margin (0.9 bits against SEAL's 16.8), not as unconditional. They are not part of the pilot.
+
+\section{Pilot protocol (point 3)}
+
+The OpenFHE harness (\texttt{experiments/openfhe/src/bench\_openfhe.cpp}) reproduces the SEAL harness rule by rule. The configuration is read from \texttt{eligible\_v2.csv} and its primes are verified at run time.
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}L{3.3cm}L{12.7cm}@{}}
+\toprule
+\textbf{Requirement} & \textbf{SEAL campaign and OpenFHE pilot (identical unless stated)} \\
+\midrule
+Cells & One process per (scheme, $N$, category, operation); raw rows only, same CSV format. \\
+Fresh inputs & Every input built before the timer starts, a different ciphertext for every call; same values (encrypt: every slot 0.5; others: uniform in $[-1,1]$, fixed seed). \\
+Repetitions & 100 measured after 5 warm-up; inner loop 1000 calls per repetition (keygen and rotate: one call). \\
+Context and keys & Built once, outside the timing, except for keygen, which times their creation. OpenFHE caches contexts and NTT tables across the process; they are released before every keygen repetition, outside the timing, so that each keygen starts from scratch as in SEAL. \\
+Hardware, threads & Same laptop; process pinned to one core; governor \texttt{performance}; OpenFHE built without OpenMP. Both libraries measured in the \emph{same session}, in randomized order (seed recorded); temperature logged. \\
+Correctness & OpenFHE: every repetition's last result decrypted and checked after the timer stops (threshold $10^{-2}$). \\
+Statistics, raw data & \texttt{aggregate.py} only (new \texttt{--scenario=pilot}, same functions); raw files, CPU state, code commit and image identifiers kept in \texttt{experiments/results/raw/pilot/}. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Same name, different work.} Both libraries' sources were read for each timed operation:
+\begin{center}\footnotesize
+\begin{tabular}{@{}L{2.0cm}L{6.4cm}L{7.6cm}@{}}
+\toprule
+\textbf{Operation} & \textbf{Timed in SEAL / OpenFHE} & \textbf{Same work?} \\
+\midrule
+keygen & context with prime generation + secret, public and relinearization keys / the same steps (\texttt{GenCryptoContext}, \texttt{KeyGen}, \texttt{EvalMultKeyGen}) & Same scope; internal precomputations differ. \\
+encrypt & public-key encryption of an encoded plaintext & No: SEAL encrypts with its special prime and then removes it; OpenFHE encrypts modulo $Q$ directly. Cannot be aligned; stated. \\
+decrypt & $c_0 + c_1 s$ in NTT form / the same computation on OpenFHE's own polynomial arithmetic & Yes. OpenFHE's \texttt{Decrypt} also inverts the NTT, reconstructs the integers and decodes: timed separately as \emph{decrypt, full API}, never compared with SEAL's decrypt. \\
+add & \texttt{add} / \texttt{EvalAdd} & No: \texttt{EvalAdd} first clones its operand into a new ciphertext; SEAL writes into a reused one. \texttt{EvalAddInPlace} is timed as a diagnostic (\emph{add, in place}). \\
+multiply & tensor product, no relinearization, no rescaling & Yes. \\
+relinearize & key switching of the product & Same method (one special prime / hybrid with one prime per digit); different implementations. \\
+rotate & rotation by one slot, key for that step only & Same method; the key sizes are recorded. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Pilot results: CKKS \texorpdfstring{$N{=}8192$}{N=8192}, category 1}
+\label{sec:results}
+
+This is a matched-profile comparison: same prime sizes (60+40+40, key-switching prime 60), three of four primes shared in other roles, same initial scale $2^{40}$, same levels; different error distributions and key-switching implementations.
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{\run_results.tex}}
+\caption{Latency per operation, same session. Ratio O/S: OpenFHE mean / SEAL mean. Correct: OpenFHE repetitions whose result passed the check. CV: coefficient of variation; $^\dagger$ above 5\% (HIGH\_VARIANCE). $^\ast$ OpenFHE diagnostics (see the table of operations), not comparisons with SEAL. Data: \texttt{experiments/results/final/\run.csv}.}
+\label{tab:results}
+\end{table}
+
+% RESULTS-DISCUSSION (written once the reported run exists)
+
+\paragraph{SEAL in this session against the archived SEAL campaign.} \R{ReproEq} of \R{ReproN} operations are equivalent within $\pm$10\% (Table~\ref{tab:repro}), which checks that the session's conditions reproduce those of the SEAL campaign.
+
+\begin{table}[h!]\centering\footnotesize
+\input{\tab{\run_reproduction.tex}}
+\caption{SEAL latency, this session vs the archived campaign (\texttt{seal\_standard.csv}, \texttt{seal\_composite.csv}); TOST with Welch's test.}
+\label{tab:repro}
+\end{table}
+
+\subsection{Does the CKKS scale affect latency?}
+\label{sec:scale}
+
+SEAL was also measured at scale $2^{30}$ on exactly the same primes, in the same session. \R{ScaleEq} of \R{ScaleN} operations are equivalent within $\pm$5\% (Table~\ref{tab:scale}).
+
+\begin{table}[h!]\centering\footnotesize
+\input{\tab{\run_scale.tex}}
+\caption{SEAL latency at scale $2^{30}$ vs $2^{40}$, same primes, same session; 90\% CI of the difference and TOST $\pm$5\% (the HIGH\_VARIANCE threshold).}
+\label{tab:scale}
+\end{table}
+
+% SCALE-DISCUSSION (written once the reported run exists)
+
+\section{An earlier pilot run, kept but not used}
+
+A first complete run (\runoneCells\ cells, all OpenFHE results correct: \runoneCorrectOK/\runoneCorrectN) was made while the laptop was in use, and the CPU stayed at its thermal limit (median \runoneTempMedian\,\textdegree C) throughout. \runoneHighVar\ of \runoneCells\ cells exceeded 5\% variation, against 1 of 6 in the archived SEAL campaign, and the SEAL cells at scale $2^{30}$ slowed down within their own run (up to 20\%) while their fastest repetitions matched those at $2^{40}$. Its scale test was therefore inconclusive and the run was repeated under quiet conditions. Its raw data are kept (\texttt{experiments/results/raw/pilot\_run1/}); it also revealed the cloning in OpenFHE's \texttt{EvalAdd}, which led to the \emph{add, in place} diagnostic.
+
+\section{Proposal for the complete campaign}
+
+% PROPOSAL (written once the reported run exists)
+
+\section{Reproduction}
+\label{sec:repro}
+
+{\footnotesize
+\begin{tabular}{@{}L{5.0cm}L{11.5cm}@{}}
+\toprule
+Step & Command (from the repository root) \\
+\midrule
+Build & \texttt{bash experiments/seal/docker\_build\_and\_run.sh}; \texttt{bash experiments/openfhe/docker\_build.sh} \\
+Repeated correctness check & \texttt{bash experiments/openfhe/correctness/run\_correctness\_docker.sh} (about 2 min) \\
+Cost-model sensitivity & \texttt{cd experiments/security; TARGET=sensitivity bash run\_estimator\_docker.sh full 8192} (about 1 h); \texttt{TARGET=sensitivity\_seal} (about 20 min) \\
+Pilot & \texttt{sudo bash experiments/openfhe/run\_pilot\_docker.sh} (about 3 h 15 min) \\
+Statistics, tables & \texttt{cd experiments/scripts; python3 aggregate.py --scenario=pilot}; \texttt{cd ../openfhe; python3 make\_pilot\_tables.py} \\
+\bottomrule
+\end{tabular}}
+
+\end{document}
