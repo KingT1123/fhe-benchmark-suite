@@ -91,19 +91,33 @@ In SEAL a ciphertext lives modulo the data primes $Q_S$ (all but the last); the 
 \section{Operation-by-operation comparability}
 \label{sec:ops}
 
-Consistent with Section~6 of the SEAL report, comparability is decided per operation:
+Consistent with Section~6 of the SEAL report, comparability is decided per operation, in three tiers:
 \begin{itemize}[leftmargin=*, itemsep=1pt]
-  \item \textbf{decryption, addition and multiplication} (without relinearization) act only on the ciphertext modulus: directly comparable when $Q$ has the same size profile;
-  \item \textbf{encryption} also depends on $P$ in SEAL (SEAL encrypts at the key level, including the special prime, then drops it), and \textbf{key generation, relinearization and rotation} use key switching: directly comparable only when $P$ matches as well;
+  \item \textbf{exact-parameter comparison (E)} -- the primes the operation uses are the same values in both libraries. \emph{No operation cell is in this tier}: no OpenFHE configuration reproduces SEAL's primes;
+  \item \textbf{matched-profile comparison (M)} -- the same number of primes with the same nominal sizes, but not the same primes, and for CKKS possibly another initial scale. This is a comparison under closely related parameters, \emph{not} an exact-parameter comparison; the remaining differences are recorded for every such cell (\texttt{operations\_v2.csv}, column \texttt{differences}, and Table~\ref{tab:ckksdiff});
+  \item \textbf{separate analysis (S)} -- anything else.
+\end{itemize}
+Which primes must match depends on the operation:
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item \textbf{decryption, addition and multiplication} (without relinearization) act only on the ciphertext modulus $Q$;
+  \item \textbf{encryption} also depends on $P$ in SEAL (SEAL encrypts at the key level, including the special prime, then drops it), and \textbf{key generation, relinearization and rotation} use key switching: $P$ must match as well;
   \item no comparison where SEAL has no measurement ($N{=}16384$ categories 3 and 5; multiplication and relinearization at depth 0; rotation outside $N{=}8192$/category~1), where no variant was accepted, or where OpenFHE's operation failed its functional check.
 \end{itemize}
 Key generation is timed with the same boundary in both libraries: context creation, secret and public key, and relinearization keys when the depth is positive (as in SEAL's harness).
 
 {\footnotesize
 \input{../../experiments/openfhe/probe/operations_v2.tex}}
-\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:ops}: \textbf{D} directly comparable; S separate analysis; -- no SEAL measurement; n/a no accepted variant. Data: \texttt{operations\_v2.csv}.}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:ops}: \textbf{E} exact-parameter comparison (none); \textbf{M} matched-profile comparison; S separate analysis; -- no SEAL measurement; n/a no accepted variant. Data: \texttt{operations\_v2.csv}.}
 
-\textbf{32 operation cells are directly comparable}, in ten configurations: CKKS 8192/1 (all seven operations); CKKS 16384/1 (all but rotation, which SEAL did not measure there); CKKS 2048/5 (key generation, encryption, decryption, addition: neither library has a key-switching modulus there); decryption and addition for CKKS 2048/1, 4096/1 (plus multiplication), 4096/3, 4096/5, 8192/5 and BFV and BGV 8192/5. All key-switching operations outside CKKS 8192/1 and 16384/1 are analysed separately.
+\textbf{No operation cell is an exact-parameter comparison. 32 operation cells are matched-profile comparisons}, in ten configurations: CKKS 8192/1 (all seven operations); CKKS 16384/1 (all but rotation, which SEAL did not measure there); CKKS 2048/5 (key generation, encryption, decryption, addition: neither library has a key-switching modulus there); decryption and addition for CKKS 2048/1, 4096/1 (plus multiplication), 4096/3, 4096/5, 8192/5 and BFV and BGV 8192/5. All key-switching operations outside CKKS 8192/1 and 16384/1 are analysed separately. Even in the closest cells, two differences always remain: the primes themselves, and the error distribution (SEAL: centered binomial, $\sigma \approx 3.24$; OpenFHE: discrete Gaussian, $\sigma = 3.19$).
+
+\paragraph{CKKS: what still differs.} Table~\ref{tab:ckksdiff} lists, for every CKKS cell, the parameters that remain different from SEAL's. The initial scales are equal only at 8192/1 and 16384/1 ($2^{40}$); elsewhere OpenFHE's is 2 to 14 bits larger, because with \texttt{FIXEDMANUAL} OpenFHE ties the scale to the scaling-prime size, while SEAL's scale was chosen per configuration. The number of primes in a fresh ciphertext, and hence the number of levels, is the same in every cell.
+
+{\footnotesize\setlength{\tabcolsep}{3pt}
+\input{../../experiments/openfhe/probe/ckks_differences_v2.tex}}
+\vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:ckksdiff}: CKKS cells with an accepted OpenFHE variant (S: SEAL, O: OpenFHE). $Q$, $P$ in nominal bits; Key sw.: OpenFHE's key switching (SEAL: one special prime, or none when the chain has a single prime); Shared: OpenFHE primes also present in SEAL's chain; $\Delta$: OpenFHE scale minus SEAL scale, in bits; Levels: multiplicative levels of a fresh ciphertext; M ops: matched-profile operation cells. Data: \texttt{ckks\_differences\_v2.csv}.}
+
+\paragraph{Does the scale affect latency?} In both libraries a CKKS ciphertext is a pair of polynomials stored as one residue polynomial per prime, and every timed operation (encryption, addition, multiplication, relinearization, rotation) works prime by prime on these residues; the scale only changes the plaintext values before encoding, not the number or size of the residues. The work done should therefore not depend on the scale. This is an expectation from how the libraries work, not yet a measurement, so it is \emph{qualified} here and will be \emph{tested} in the pilot: the same SEAL operations will be timed at $N{=}8192$/category~1 with two different scales on exactly the same primes (SEAL accepts any scale for a fixed chain), and the result reported. Until then, latency results for cells whose scales differ are reported with that difference stated. CKKS approximation errors are compared only where the scales are equal.
 
 \section{Functional validation}
 \label{sec:func}
@@ -120,7 +134,7 @@ Each accepted variant was run on random inputs (all slots used). BFV/BGV: SEAL's
   \item \textbf{CKKS with BV key switching}: relinearization and rotation fail or exceed $10^{-2}$ at several cells (for example 8192/1: error 0.04); with hybrid key switching (variant B) they pass. This is why B is selected at 8192/1 and 16384/1.
   \item \textbf{Rotation with BV and a single prime} gives wrong BFV results at 4096/3 (and BFV/BGV with BV at 8192/5, not selected); SEAL measured rotation only at 8192/1, where it passes.
   \item \textbf{CKKS 2048/3} (17-bit prime, scale $2^{17}$): decryption error about 0.2--0.3, already above the threshold. The cell is kept for security estimation but cannot be measured under the correctness criterion.
-  \item \textbf{CKKS scale}: OpenFHE's scale with \texttt{FIXEDMANUAL} is set by the scaling-prime size, while SEAL's is chosen per configuration. They are equal only at 8192/1 and $N{=}16384$ ($2^{40}$); elsewhere OpenFHE's is 2--14 bits larger. The cost of an operation depends on $N$ and the number of primes, not on the scale value, so this does not affect latency comparability, but CKKS approximation errors will be compared only where the scales are equal.
+  \item \textbf{CKKS scale}: see Table~\ref{tab:ckksdiff} and the discussion of latency in Section~\ref{sec:ops}.
   \item \textbf{BFV/BGV plaintext modulus}: SEAL's $t$ was accepted by OpenFHE in every accepted cell; every operation that SEAL measured is exact.
 \end{itemize}
 Re-running the probe reproduces the primes and every pass/fail result exactly; only the CKKS error magnitudes vary slightly, since OpenFHE draws its own encryption noise.
@@ -139,7 +153,7 @@ Re-running the probe reproduces the primes and every pass/fail result exactly; o
 \section{Scope at \texorpdfstring{$N{=}16384$}{N=16384}}
 \label{sec:scope}
 
-SEAL measured $N{=}16384$ only for category~1 (Standard scenario and storage). Categories 3 and 5 appear in Tables~\ref{tab:grid}--\ref{tab:func} only to record OpenFHE's behaviour; they are not candidates, are not estimated, and must not be presented as comparable. At $N{=}16384$/category~1, CKKS (same size profile) is directly comparable except for rotation, BFV is analysed separately, and BGV is not available.
+SEAL measured $N{=}16384$ only for category~1 (Standard scenario and storage). Categories 3 and 5 appear in Tables~\ref{tab:grid}--\ref{tab:func} only to record OpenFHE's behaviour; they are not candidates, are not estimated, and must not be presented as comparable. At $N{=}16384$/category~1, CKKS (same size profile) is a matched-profile comparison for every operation except rotation, BFV is analysed separately, and BGV is not available.
 
 \section{SEAL \texorpdfstring{$N{=}8192$}{N=8192} security estimates}
 \label{sec:seal8192}
@@ -150,7 +164,7 @@ The three SEAL values at $N{=}8192$ reported up to Version~7 (137.7, 204.1, 272.
 
 \begin{itemize}[leftmargin=*, itemsep=2pt]
   \item Measure the 18 candidates of Table~\ref{tab:sec}, with the same operations, boundaries, repetitions, scenarios, energy/memory protocol and statistics as SEAL.
-  \item Report as \emph{directly comparable} only the 32 operation cells marked \textbf{D} in Table~\ref{tab:ops}; everything else is reported separately with its reason (different $Q$, different $P$, failed functional check), never merged into the direct comparison.
+  \item Report the 32 operation cells marked \textbf{M} in Table~\ref{tab:ops} as \emph{matched-profile comparisons}, always with their remaining differences, and never as exact-parameter comparisons; everything else is reported separately with its reason (different $Q$, different $P$, failed functional check).
   \item CKKS errors are compared only where the scales are equal; CKKS 2048/3 is not measured (fails the correctness criterion).
   \item OpenFHE's security check stays enabled; no configuration is forced.
 \end{itemize}

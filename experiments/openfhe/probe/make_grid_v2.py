@@ -22,13 +22,21 @@ OpenFHE: ciphertext primes Q_O, key-switching primes P_O):
                      key-switching modulus differs (other size, or none);
   separate analysis  the ciphertext modulus itself differs, or no accepted
                      variant passes the functional check.
-Per-operation rule (consistent with the SEAL report, Section 6):
+Per-operation rule (consistent with the SEAL report, Section 6), three tiers:
+  exact-parameter comparison   the primes the operation uses are equal, value
+                               by value (none at present);
+  matched-profile comparison   same number and nominal sizes of those primes,
+                               but not the same primes (and, for CKKS, possibly
+                               another scale): a comparison under closely
+                               related parameters, NOT an exact one; the
+                               remaining differences are listed per row;
+  separate analysis            anything else.
   * decrypt, add and multiply (without relinearization) act only on the
-    ciphertext modulus Q: comparable when Q matches;
+    ciphertext modulus Q: only Q has to match;
   * encrypt also depends on the key-switching modulus in SEAL (SEAL encrypts
     at the key level, including its special prime, then drops it), and key
-    generation, relinearization and rotation all use key switching: these
-    are comparable only when P matches as well;
+    generation, relinearization and rotation all use key switching: P has to
+    match as well;
   * no comparison where SEAL has no measurement (N=16384 categories 3 and 5;
     multiply/relinearize at depth 0; rotation outside N=8192/category 1) or
     where the OpenFHE operation failed its functional check.
@@ -136,7 +144,8 @@ def main():
                              "seal_ckks_log2_scale": "", "openfhe_ckks_log2_scale": ""})
                 for op in OPS:
                     ops_rows.append({"scheme": scheme, "N": N, "category": cat, "operation": op,
-                                     "verdict": "not available", "reason": "no accepted OpenFHE variant"})
+                                     "verdict": "not available", "reason": "no accepted OpenFHE variant",
+                                     "differences": ""})
                 continue
             _, _, v, cls, qe, pe, QO, PO, r, ok = min(cands)
             fails = [op for op in needed if not ok[op]]
@@ -151,21 +160,34 @@ def main():
                          "seal_ckks_log2_scale": sscale.get((N, cat), "") if scheme == "CKKS" else "",
                          "openfhe_ckks_log2_scale": (str(round(float(openfhe_scale(func[key + (v,)]))))
                                                      if scheme == "CKKS" and openfhe_scale(func[key + (v,)]) else "")})
+            ks = {"A": "OpenFHE default key switching", "B": "OpenFHE hybrid, one prime per digit",
+                  "C": "OpenFHE BV (no P)"}[v]
+            diffs = [f"primes not equal ({shared} of OpenFHE's {len(QO) + len(PO)} also in SEAL's chain)" if not (qe and pe)
+                     else "", "error CBD(21) vs Gaussian 3.19"]
+            if scheme == "CKKS":
+                so, oo = grid[-1]["seal_ckks_log2_scale"], grid[-1]["openfhe_ckks_log2_scale"]
+                diffs.append(f"scale 2^{so} vs 2^{oo}" + ("" if str(so) == str(oo) else " (differs)"))
             for op in OPS:
+                ksdiff = (f"key switching: SEAL {'one special prime' if PS else 'none'} vs {ks}"
+                          if op not in Q_ONLY and not pe else "")
+                row_diffs = "; ".join(d for d in diffs + [ksdiff] if d)
                 if (scheme, N, cat, op) not in measured:
                     verdict, why = "no SEAL measurement", "SEAL did not measure this operation here"
                 elif not ok[op]:
                     verdict, why = "separate analysis", "OpenFHE functional check failed"
-                elif cls in ("exact match", "same size profile"):
-                    verdict, why = "directly comparable", cls
+                elif cls == "exact match" or (op in Q_ONLY and qe):
+                    verdict, why = "exact-parameter comparison", "same primes"
+                elif cls == "same size profile":
+                    verdict, why = "matched-profile comparison", cls
                 elif cls == "partially comparable" and op in Q_ONLY:
-                    verdict, why = "directly comparable", "same ciphertext modulus profile"
+                    verdict, why = "matched-profile comparison", "same ciphertext modulus profile"
                 elif cls == "partially comparable":
                     verdict, why = "separate analysis", "key-switching modulus differs"
                 else:
                     verdict, why = "separate analysis", "ciphertext modulus differs"
                 ops_rows.append({"scheme": scheme, "N": N, "category": cat, "operation": op,
-                                 "verdict": verdict, "reason": why})
+                                 "verdict": verdict, "reason": why,
+                                 "differences": row_diffs if "comparison" in verdict else ""})
 
     for name, rows in (("grid_v2.csv", grid), ("operations_v2.csv", ops_rows)):
         with open(name, "w", newline="") as f:
@@ -202,7 +224,7 @@ def main():
     t += [r"\bottomrule", r"\end{longtable}"]
     open("grid_v2.tex", "w").write("% GENERATED by make_grid_v2.py\n" + "\n".join(t) + "\n")
 
-    sym = {"directly comparable": r"\textbf{D}", "separate analysis": "S", "no SEAL measurement": r"--",
+    sym = {"exact-parameter comparison": r"\textbf{E}", "matched-profile comparison": r"\textbf{M}", "separate analysis": "S", "no SEAL measurement": r"--",
            "not available": "n/a"}
     by = defaultdict(dict)
     for o in ops_rows:
@@ -216,7 +238,9 @@ def main():
 
     rejections_table(params)
     functional_table(grid, func, seal, vname)
+    ckks_differences_table(grid, func, seal, ops_rows, compact)
     security_table(grid, vname)
+    eligible_list(grid, params, ops_rows)
 
     from collections import Counter
     print("classes:", Counter(g["class"] for g in grid))
@@ -278,6 +302,88 @@ def functional_table(grid, func, seal, vname):
                  f'{len(QS)}/{nq} & ' + " & ".join(cells) + f" & {err} \\\\")
     t += [r"\bottomrule", r"\end{longtable}"]
     open("functional_v2.tex", "w").write("% GENERATED by make_grid_v2.py\n" + "\n".join(t) + "\n")
+
+
+def ckks_differences_table(grid, func, seal, ops_rows, compact):
+    """Every CKKS cell with an accepted variant: what still differs from SEAL
+    -- primes, key switching, initial scale, levels -- so that a
+    matched-profile comparison is never read as an exact one."""
+    nmp = defaultdict(int)
+    for o in ops_rows:
+        if "comparison" in o["verdict"]:
+            nmp[(o["scheme"], o["N"], o["category"])] += 1
+    rows = []
+    for g in grid:
+        if g["scheme"] != "CKKS" or not g["variant"] or (g["N"] == 16384 and g["category"] in (3, 5)):
+            continue
+        QS, PS, _ = seal[(g["N"], g["category"])]
+        enc = func[("CKKS", g["N"], g["category"], g["variant"])]["encrypt"]["detail"]
+        towers = int(enc.split("towers=")[1].split()[0])
+        rows.append({"N": g["N"], "category": g["category"], "variant": g["variant"], "class": g["class"],
+                     "seal_q_bits": "+".join(str(bits(x)) for x in QS),
+                     "openfhe_q_bits": g["openfhe_q_bits"],
+                     "seal_p_bits": "+".join(str(bits(x)) for x in PS), "openfhe_p_bits": g["openfhe_p_bits"],
+                     "primes_shared_with_seal": g["primes_shared_with_seal"],
+                     "seal_log2_scale": g["seal_ckks_log2_scale"], "openfhe_log2_scale": g["openfhe_ckks_log2_scale"],
+                     "scale_diff_bits": int(g["openfhe_ckks_log2_scale"]) - int(g["seal_ckks_log2_scale"]),
+                     "seal_fresh_primes": len(QS), "openfhe_fresh_primes": towers,
+                     "seal_levels": len(QS) - 1, "openfhe_levels": towers - 1,
+                     "matched_profile_ops": nmp[("CKKS", g["N"], g["category"])]})
+    with open("ckks_differences_v2.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
+        w.writeheader(); w.writerows(rows)
+    ksname = {"A": "hybrid (default)", "B": "hybrid, 1 prime/digit", "C": "BV"}
+    t = [r"\begin{longtable}{@{}lllllrrrrr@{}}", r"\toprule",
+         r"$N$/cat. & $Q$ S / O & $P$ S / O & Key sw. O & Shared & Scale S & Scale O & $\Delta$ & Levels S/O & M ops \\",
+         r"\midrule", r"\endhead"]
+    for r in rows:
+        cq = lambda b: compact([int(x) for x in b.split("+")]) if b else "--"
+        t.append(f'{r["N"]}/{r["category"]} & {cq(r["seal_q_bits"])} / {cq(r["openfhe_q_bits"])} & '
+                 f'{cq(r["seal_p_bits"])} / {cq(r["openfhe_p_bits"])} & {ksname[r["variant"]]} & '
+                 f'{r["primes_shared_with_seal"]} & $2^{{{r["seal_log2_scale"]}}}$ & $2^{{{r["openfhe_log2_scale"]}}}$ & '
+                 f'{r["scale_diff_bits"]:+d} & {r["seal_levels"]}/{r["openfhe_levels"]} & {r["matched_profile_ops"]} \\\\')
+    t += [r"\bottomrule", r"\end{longtable}"]
+    open("ckks_differences_v2.tex", "w").write("% GENERATED by make_grid_v2.py\n" + "\n".join(t) + "\n")
+
+
+def eligible_list(grid, params, ops_rows):
+    """eligible_v2.csv: the configurations eligible for performance
+    measurement, distinct from the security-evaluated candidates. A candidate
+    (security-evaluated, Lattice Estimator verdict "meets category") is
+    eligible only if every operation SEAL measured in that cell passed the
+    functional check; the operations to time are exactly those. Also carries
+    the request settings and expected primes, so the repeated correctness
+    check (../correctness/) rebuilds the same context and can verify it."""
+    sec = {(r["scheme"], int(r["N"]), int(r["category"]), r["variant"]): r
+           for r in csv.DictReader(open("security_v2.csv"))}
+    grid_rows = {(int(r["N"]), int(r["category"])): r for r in csv.DictReader(open("../../config/param_grid.csv"))}
+    timed = defaultdict(list)
+    for o in ops_rows:
+        if o["verdict"] not in ("no SEAL measurement", "not available"):
+            timed[(o["scheme"], o["N"], o["category"])].append(o["operation"])
+    rows, excluded = [], []
+    for g in grid:
+        k = (g["scheme"], g["N"], g["category"], g["variant"])
+        if k not in sec:
+            continue
+        if g["functional_failures"] or sec[k]["verdict"] != "meets category":
+            excluded.append(f'{k[0]} {k[1]}/{k[2]} ({g["functional_failures"] or sec[k]["verdict"]})')
+            continue
+        bits_list = []
+        for tok in grid_rows[(g["N"], g["category"])]["chain"].split("+"):
+            a, _, n = tok.partition("*")
+            bits_list += [int(a)] * (int(n) if n else 1)
+        mid = bits_list[1] if len(bits_list) >= 3 else bits_list[0]
+        p = params[(g["scheme"], g["N"], g["category"])][g["variant"]]
+        rows.append({"scheme": g["scheme"], "N": g["N"], "category": g["category"], "variant": g["variant"],
+                     "depth": grid_rows[(g["N"], g["category"])]["depth"],
+                     "first_mod_bits": max(bits_list[0], mid), "scaling_mod_bits": mid,
+                     "ops": " ".join(timed[(g["scheme"], g["N"], g["category"])]),
+                     "q_primes": p["q_primes"], "p_primes": p["p_primes"]})
+    with open("eligible_v2.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
+        w.writeheader(); w.writerows(rows)
+    print(f"security-evaluated: {len(sec)}; eligible for measurement: {len(rows)}; excluded: {'; '.join(excluded)}")
 
 
 def security_table(grid, vname):
