@@ -1717,7 +1717,9 @@ def aggregate_pilot(args):
     experiments/openfhe/run_pilot_docker.sh). Per cell (file), the same
     latency statistics as every other scenario (aggregate_latency_file:
     warm-up discarded, mean/std/95% CI/median/IQR, HIGH_VARIANCE flag), the
-    peak memory of the process (memory log) and, for OpenFHE, the share of
+    peak memory of the process (memory log, archived in <raw_dir>/memory/;
+    it includes the inputs pre-built for the inner loop, so it is not a
+    per-operation memory measurement) and, for OpenFHE, the share of
     repetitions whose correctness check passed. Then three comparisons, all
     on latency, each as Welch difference with its 90% CI and a TOST verdict:
       scale_test         SEAL at scale 2^30 vs SEAL at 2^40 (same primes,
@@ -1736,7 +1738,7 @@ def aggregate_pilot(args):
     Outputs: results/final/pilot.csv and pilot_comparisons.csv (with --out=X.csv:
     X.csv and X_comparisons.csv)."""
     raw_dir = args.raw_dir or "../results/raw/pilot"
-    log_dir = args.log_dir or "../results/logs/pilot"
+    log_dir = args.log_dir or os.path.join(raw_dir, "memory")  # memory logs archived with the raw data
     out_path = args.out or "../results/final/pilot.csv"
     rows, stats = [], {}
     for f in sorted(glob.glob(os.path.join(raw_dir, "*_ckks_*.csv"))):
