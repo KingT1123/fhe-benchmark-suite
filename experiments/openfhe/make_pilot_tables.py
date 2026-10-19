@@ -86,6 +86,10 @@ def results_tables(run, prefix, macros):
     t += [r"\bottomrule", r"\end{tabular}"]
     write(f"{prefix}_reproduction.tex", t)
 
+    for (kind, op), c in cmp.items():  # OpenFHE/SEAL ratios, e.g. \pilotRatioaddinplace
+        if kind.startswith("openfhe"):
+            macros[f"{prefix}Ratio{op.replace('_', '')}"] = f'{float(c["ratio"]):.2f}'
+            macros[f"{prefix}Speedup{op.replace('_', '')}"] = f'{1 / float(c["ratio"]):.1f}'
     n_hv = sum(r["flag"] == "HIGH_VARIANCE" for r in lat.values())
     n_eq = sum(c["verdict"] == "equivalent_within_margin" for k, c in cmp.items() if k[0] == "scale_test")
     n_sc = sum(1 for k in cmp if k[0] == "scale_test")

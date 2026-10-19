@@ -1,0 +1,47 @@
+nohup: ignoring input
+Pilot: 22 cells, order seed 722225001, governor enforced: 1
+[1/22] 16:19:53 seal_ckks_N8192_cat1_rotate_scale30  (CPU 48 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_rotate_scale30.csv (galois_keygen_ms=5.06041, galois_keys_size_bytes=1638795)
+[2/22] 16:19:54 openfhe_ckks_N8192_cat1_decrypt_full  (CPU 66 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_decrypt_full.csv
+[3/22] 16:32:34 seal_ckks_N8192_cat1_decrypt  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_decrypt.csv
+[4/22] 16:38:35 openfhe_ckks_N8192_cat1_keygen  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_keygen.csv
+[5/22] 16:38:38 seal_ckks_N8192_cat1_add_scale30  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_add_scale30.csv
+[6/22] 16:50:14 openfhe_ckks_N8192_cat1_add_inplace  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_add_inplace.csv
+[7/22] 17:02:14 openfhe_ckks_N8192_cat1_multiply  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_multiply.csv
+[8/22] 17:15:27 seal_ckks_N8192_cat1_rotate  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_rotate.csv (galois_keygen_ms=5.2241, galois_keys_size_bytes=1638795)
+[9/22] 17:15:28 seal_ckks_N8192_cat1_multiply  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_multiply.csv
+[10/22] 17:27:43 openfhe_ckks_N8192_cat1_add  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_add.csv
+[11/22] 17:39:58 seal_ckks_N8192_cat1_encrypt  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_encrypt.csv
+[12/22] 17:45:27 openfhe_ckks_N8192_cat1_decrypt  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_decrypt.csv
+[13/22] 17:51:30 seal_ckks_N8192_cat1_relinearize  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_relinearize.csv
+[14/22] 18:07:10 seal_ckks_N8192_cat1_keygen  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_keygen.csv
+[15/22] 18:07:18 seal_ckks_N8192_cat1_decrypt_scale30  (CPU 77 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_decrypt_scale30.csv
+[16/22] 18:13:19 seal_ckks_N8192_cat1_encrypt_scale30  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_encrypt_scale30.csv
+[17/22] 18:18:48 openfhe_ckks_N8192_cat1_relinearize  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_relinearize.csv
+[18/22] 18:39:01 openfhe_ckks_N8192_cat1_encrypt  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_encrypt.csv
+[19/22] 18:45:06 seal_ckks_N8192_cat1_relinearize_scale30  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_relinearize_scale30.csv
+[20/22] 19:01:57 seal_ckks_N8192_cat1_add  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_add.csv
+[21/22] 19:13:56 openfhe_ckks_N8192_cat1_rotate  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/openfhe_ckks_N8192_cat1_rotate.csv
+[22/22] 19:13:57 seal_ckks_N8192_cat1_multiply_scale30  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/pilot/seal_ckks_N8192_cat1_multiply_scale30.csv
+Pilot complete: 19:26:41. Next: cd experiments/scripts && python3 aggregate.py --scenario=pilot

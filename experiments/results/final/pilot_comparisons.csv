@@ -1,0 +1,23 @@
+comparison,operation,reference,compared,ref_mean_ms,new_mean_ms,ratio,diff_ms,diff_ci90_low,diff_ci90_high,margin_pct,verdict
+scale_test,add,SEAL 2^40,SEAL 2^30,0.056635891,0.05504291,0.9718732949747361,-0.0015929810000000003,-0.0025716442406027973,-0.0006143177593972032,5.0,equivalent_within_margin
+scale_test,decrypt,SEAL 2^40,SEAL 2^30,0.13695471,0.13604148,0.9933318832189122,-0.0009132300000000149,-0.0011299656002401758,-0.000696494399759854,5.0,equivalent_within_margin
+scale_test,encrypt,SEAL 2^40,SEAL 2^30,2.7891438,2.7874211,0.9993823552589866,-0.001722700000000188,-0.0034736889632045313,2.8288963204155335e-05,5.0,equivalent_within_margin
+scale_test,multiply,SEAL 2^40,SEAL 2^30,0.43101551,0.44279965,1.0273404082372812,0.011784139999999999,0.00912775224243776,0.014440527757562237,5.0,equivalent_within_margin
+scale_test,relinearize,SEAL 2^40,SEAL 2^30,1.9331914,2.0742522,1.0729678396045008,0.1410608000000002,0.12763718429383467,0.15448441570616575,5.0,equivalence_not_established
+scale_test,rotate,SEAL 2^40,SEAL 2^30,1.9886177,1.9468498,0.9789965160221595,-0.04176789999999997,-0.06006420664943611,-0.023471593350563823,5.0,equivalent_within_margin
+seal_reproduction,add,SEAL archived campaign,SEAL this session,0.058538171,0.056635891,0.9675035969265251,-0.0019022799999999992,-0.00294575401789824,-0.0008588059821017587,10.0,equivalent_within_margin
+seal_reproduction,decrypt,SEAL archived campaign,SEAL this session,0.14863115,0.13695471,0.9214401557143305,-0.011676439999999982,-0.011857338390044735,-0.01149554160995523,10.0,equivalent_within_margin
+seal_reproduction,encrypt,SEAL archived campaign,SEAL this session,2.9753109,2.7891438,0.9374293624239403,-0.18616710000000003,-0.19679773825868074,-0.17553646174131932,10.0,equivalent_within_margin
+seal_reproduction,keygen,SEAL archived campaign,SEAL this session,65.289162,64.193426,0.9832171838872736,-1.0957360000000023,-1.423687832024816,-0.7677841679751884,10.0,equivalent_within_margin
+seal_reproduction,multiply,SEAL archived campaign,SEAL this session,0.45126305,0.43101551,0.9551314028480727,-0.02024754000000001,-0.022156406730002746,-0.01833867326999727,10.0,equivalent_within_margin
+seal_reproduction,relinearize,SEAL archived campaign,SEAL this session,2.1785712,1.9331914,0.887366637363057,-0.24537980000000004,-0.25838059007315023,-0.23237900992684984,10.0,equivalence_not_established
+seal_reproduction,rotate,SEAL archived campaign,SEAL this session,1.9000145,1.9886177,1.0466329072751814,0.0886032000000001,0.07689381668016937,0.10031258331983084,10.0,equivalent_within_margin
+openfhe_vs_seal,add,SEAL this session,OpenFHE this session,0.056635891,0.20827773,3.677486595911416,0.151641839,,,,
+openfhe_diagnostic_vs_seal,add_inplace,SEAL this session,OpenFHE this session,0.056635891,0.069390111,1.2251967749567143,0.012754220000000004,,,,
+openfhe_vs_seal,decrypt,SEAL this session,OpenFHE this session,0.13695471,0.088700674,0.6476642825938589,-0.048254036000000014,,,,
+openfhe_full_api_vs_seal,decrypt_full,SEAL this session,OpenFHE this session,0.13695471,4.1251947,30.120867694145016,3.98823999,,,,
+openfhe_vs_seal,encrypt,SEAL this session,OpenFHE this session,2.7891438,2.9794207,1.0682205413718717,0.19027689999999975,,,,
+openfhe_vs_seal,keygen,SEAL this session,OpenFHE this session,64.193426,14.625314,0.22783195899218714,-49.568112,,,,
+openfhe_vs_seal,multiply,SEAL this session,OpenFHE this session,0.43101551,0.45313001,1.0513078984095028,0.022114500000000037,,,,
+openfhe_vs_seal,relinearize,SEAL this session,OpenFHE this session,1.9331914,3.9174872,2.0264352510568795,1.9842958000000002,,,,
+openfhe_vs_seal,rotate,SEAL this session,OpenFHE this session,1.9886177,4.4117521,2.218501876957044,2.4231344000000004,,,,
