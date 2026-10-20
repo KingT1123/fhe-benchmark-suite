@@ -22,7 +22,7 @@ clean
 : > "$LOG"
 note() { echo "$*" | tee -a "$LOG"; }
 fails=0; req() { if eval "$1"; then note "  PASS: $2"; else note "  FAIL: $2"; fails=$((fails + 1)); fi; }
-run() { PILOT_NAME="$1" REPS=2 WARMUP=1 INNER_LOOP=5 RUN_ORDER_SEED=1 "${@:2}" bash openfhe/run_pilot_docker.sh; }
+run() { env PILOT_NAME="$1" REPS=2 WARMUP=1 INNER_LOOP=5 RUN_ORDER_SEED=1 "${@:2}" bash openfhe/run_pilot_docker.sh; }
 note "fail-closed tests $(date -Iseconds); code commit $(git -C "$EXP/.." rev-parse --short HEAD)"
 
 note "TEST 1: resume with a truncated cell and a leftover .tmp"
