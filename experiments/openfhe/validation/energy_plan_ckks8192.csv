@@ -1,0 +1,9 @@
+library,operation,latency_ms,inner_loop,source
+seal,keygen,65.2892,1,config/energy_plan.csv (SEAL campaign)
+openfhe,keygen,14.6253,1,"pilot latency, same 50 ms target window (make_energy_plan.py rule)"
+seal,encrypt,2.97531,17,config/energy_plan.csv (SEAL campaign)
+openfhe,encrypt,2.97942,17,"pilot latency, same 50 ms target window (make_energy_plan.py rule)"
+seal,multiply,0.451263,111,config/energy_plan.csv (SEAL campaign)
+openfhe,multiply,0.45313,111,"pilot latency, same 50 ms target window (make_energy_plan.py rule)"
+seal,relinearize,2.17857,23,config/energy_plan.csv (SEAL campaign)
+openfhe,relinearize,3.91749,13,"pilot latency, same 50 ms target window (make_energy_plan.py rule)"

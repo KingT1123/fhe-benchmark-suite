@@ -1,8 +1,8 @@
 scheme,N,category,variant,primes_match,input_mode,operation,trials,passed,worst,metric
-CKKS,2048,3,C,yes,timing,add,100,0,0.438254,max_norm_error
-CKKS,2048,3,C,yes,timing,decrypt,100,0,0.302525,max_norm_error
-CKKS,2048,3,C,yes,timing,encrypt,100,0,0.302525,max_norm_error
-CKKS,2048,3,C,yes,timing,keygen,100,0,0.302525,max_norm_error
+CKKS,2048,3,C,yes,timing,add,100,0,0.440343,max_norm_error
+CKKS,2048,3,C,yes,timing,decrypt,100,0,0.356912,max_norm_error
+CKKS,2048,3,C,yes,timing,encrypt,100,0,0.356912,max_norm_error
+CKKS,2048,3,C,yes,timing,keygen,100,0,0.356912,max_norm_error
 BFV,8192,5,B,yes,timing,add,100,100,0,max_mismatching_slots
 BFV,8192,5,B,yes,timing,decrypt,100,100,0,max_mismatching_slots
 BFV,8192,5,B,yes,timing,encrypt,100,100,0,max_mismatching_slots

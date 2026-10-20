@@ -19,8 +19,10 @@
 //   add         decrypt(x + y) == x + y;
 //   multiply    decrypt(x * y), without relinearization;
 //   relinearize decrypt(relinearize(x * y)) == x * y;
-//   rotate      decrypt(rotate(x, 1)) == x shifted by one slot (the slots
-//               whose source is unambiguous, as in the probe).
+//   rotate      decrypt(rotate(x, 1)) == x rotated by one slot, checked on
+//               the COMPLETE output vector including the wraparound slot:
+//               CKKS one cyclic vector of N/2 slots; BFV/BGV two rows of N/2
+//               slots, each rotated cyclically (as SEAL's rotate_rows).
 // Two input modes:
 //   timing  the inputs of the SEAL timed operations (bench_seal.cpp
 //           fresh_bfv_pair / fresh_ckks_pair): BFV/BGV slots in {0, 1},
@@ -153,14 +155,14 @@ int main(int argc, char **argv) {
                     bad["decrypt"] = err(dec(ca), x, slots);
                     std::vector<double> s(slots), m(slots), rot(slots);
                     for (size_t i = 0; i < slots; i++) { s[i] = x[i] + y[i]; m[i] = x[i] * y[i]; }
-                    for (size_t i = 0; i + 1 < slots; i++) rot[i] = x[i + 1];
+                    for (size_t i = 0; i < slots; i++) rot[i] = x[(i + 1) % slots];
                     if (ops.count("add")) bad["add"] = err(dec(cc->EvalAdd(ca, cb)), s, slots);
                     if (ops.count("multiply") || ops.count("relinearize")) {
                         auto prod = cc->EvalMultNoRelin(ca, cb);
                         if (ops.count("multiply")) bad["multiply"] = err(dec(prod), m, slots);
                         if (ops.count("relinearize")) bad["relinearize"] = err(dec(cc->Relinearize(prod)), m, slots);
                     }
-                    if (ops.count("rotate")) bad["rotate"] = err(dec(cc->EvalRotate(ca, 1)), rot, slots - 1);
+                    if (ops.count("rotate")) bad["rotate"] = err(dec(cc->EvalRotate(ca, 1)), rot, slots);
                 } else {
                     std::vector<int64_t> a(slots), b(slots);
                     for (size_t i = 0; i < slots; i++) {
@@ -179,14 +181,15 @@ int main(int argc, char **argv) {
                     bad["decrypt"] = mism(dec(ca), a, slots);
                     std::vector<int64_t> s(slots), m(slots), rot(slots);
                     for (size_t i = 0; i < slots; i++) { s[i] = a[i] + b[i]; m[i] = mod((__int128)a[i] * b[i]); }
-                    for (size_t i = 0; i + 1 < slots / 2; i++) rot[i] = a[i + 1];
+                    for (size_t r = 0; r < slots; r += slots / 2)
+                        for (size_t i = 0; i < slots / 2; i++) rot[r + i] = a[r + (i + 1) % (slots / 2)];
                     if (ops.count("add")) bad["add"] = mism(dec(cc->EvalAdd(ca, cb)), s, slots);
                     if (ops.count("multiply") || ops.count("relinearize")) {
                         auto prod = cc->EvalMultNoRelin(ca, cb);
                         if (ops.count("multiply")) bad["multiply"] = mism(dec(prod), m, slots);
                         if (ops.count("relinearize")) bad["relinearize"] = mism(dec(cc->Relinearize(prod)), m, slots);
                     }
-                    if (ops.count("rotate")) bad["rotate"] = mism(dec(cc->EvalRotate(ca, 1)), rot, slots / 2 - 1);
+                    if (ops.count("rotate")) bad["rotate"] = mism(dec(cc->EvalRotate(ca, 1)), rot, slots);
                 }
                 auto ok = [&](double w) { return ckks ? w < 1e-2 : w == 0; };
                 bad["encrypt"] = bad["decrypt"];

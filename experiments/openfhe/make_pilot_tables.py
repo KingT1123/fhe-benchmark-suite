@@ -47,23 +47,40 @@ def results_tables(run, prefix, macros):
         flag = r"$^\dagger$" if r["flag"] == "HIGH_VARIANCE" else ""
         return f'{fmt(r["mean"])} [{fmt(r["ci_low"])}, {fmt(r["ci_high"])}] & {cv:.1f}{flag}'
 
+    # (a) equivalent computational boundaries: the same computation is timed
+    # in both libraries, so the OpenFHE/SEAL ratio is meaningful
+    EQUIV = ["keygen", "decrypt", "multiply", "relinearize", "rotate"]
     t = [r"\begin{tabular}{@{}lrrrrrc@{}}", r"\toprule",
          r"Operation & \multicolumn{2}{c}{SEAL 4.1.2} & \multicolumn{2}{c}{OpenFHE 1.5.1} & Ratio O/S & Correct \\",
          r"& mean [95\% CI], ms & CV\% & mean [95\% CI], ms & CV\% & & \\", r"\midrule"]
-    diag = {"decrypt_full": "decrypt", "add_inplace": "add"}
-    for op in OPS + list(diag):
-        s = lat.get(("SEAL", diag.get(op, op), "40"))
-        o = lat.get(("OpenFHE", op, "40"))
-        if not (s and o):
-            continue
-        c = (cmp.get(("openfhe_vs_seal", op)) or cmp.get(("openfhe_full_api_vs_seal", op))
-             or cmp.get(("openfhe_diagnostic_vs_seal", op)))
-        name = {"decrypt_full": r"decrypt, full API$^\ast$", "add_inplace": r"add, in place$^\ast$"}.get(op, op)
-        scell = cell(s) if op not in diag else rf"\multicolumn{{2}}{{c}}{{(as {diag[op]})}}"
-        t.append(f'{name} & {scell} & {cell(o)} & {float(c["ratio"]):.2f} & '
-                 f'{corr[op]["mean"]}/{corr[op]["n"]} \\\\')
+    for op in EQUIV:
+        s, o, c = lat.get(("SEAL", op, "40")), lat.get(("OpenFHE", op, "40")), cmp.get(("openfhe_vs_seal", op))
+        if s and o and c:
+            name = "decrypt (SEAL's boundary)" if op == "decrypt" else op
+            t.append(f'{name} & {cell(s)} & {cell(o)} & {float(c["ratio"]):.2f} & '
+                     f'{corr[op]["mean"]}/{corr[op]["n"]} \\\\')
     t += [r"\bottomrule", r"\end{tabular}"]
     write(f"{prefix}_results.tex", t)
+
+    # (b) end-to-end API costs: each library's own call, which does NOT perform
+    # the same computation -- no ratio is formed
+    API = [("encrypt", "encrypt", "encrypt", "Encrypt",
+            "SEAL also encrypts with its special prime, then removes it"),
+           ("add", "add", "add", "EvalAdd", "EvalAdd first copies its operand into a new ciphertext"),
+           ("add, in place", None, "add_inplace", "EvalAddInPlace", "no copy; SEAL has no separate call timed"),
+           ("decrypt, full API", "decrypt", "decrypt_full", "Decrypt",
+            "OpenFHE also inverts the NTT, reconstructs and decodes; SEAL's decrypt stops before")]
+    t = [r"\begin{tabular}{@{}llrlrL{5.0cm}@{}}", r"\toprule",
+         r"Operation & SEAL call & mean, ms & OpenFHE call & mean, ms & What differs \\", r"\midrule"]
+    for name, sop, oop, ocall, why in API:
+        s = lat.get(("SEAL", sop, "40")) if sop else None
+        o = lat.get(("OpenFHE", oop, "40"))
+        if not o:
+            continue
+        t.append(f'{name} & {"\\texttt{" + sop + "}" if s else "--"} & {fmt(s["mean"]) if s else "--"} & '
+                 f'\\texttt{{{ocall}}} & {fmt(o["mean"])} & {why} \\\\')
+    t += [r"\bottomrule", r"\end{tabular}"]
+    write(f"{prefix}_api.tex", t)
 
     t = [r"\begin{tabular}{@{}lrrrrl@{}}", r"\toprule",
          r"Operation & $2^{40}$, ms & $2^{30}$, ms & ratio & diff.\ 90\% CI, ms & TOST $\pm$5\% \\", r"\midrule"]
@@ -87,7 +104,7 @@ def results_tables(run, prefix, macros):
     write(f"{prefix}_reproduction.tex", t)
 
     for (kind, op), c in cmp.items():  # OpenFHE/SEAL ratios, e.g. \pilotRatioaddinplace
-        if kind.startswith("openfhe"):
+        if kind == "openfhe_vs_seal" and op in EQUIV:  # no ratio for end-to-end API costs
             macros[f"{prefix}Ratio{op.replace('_', '')}"] = f'{float(c["ratio"]):.2f}'
             macros[f"{prefix}Speedup{op.replace('_', '')}"] = f'{1 / float(c["ratio"]):.1f}'
     n_hv = sum(r["flag"] == "HIGH_VARIANCE" for r in lat.values())
@@ -146,15 +163,91 @@ def static_tables(macros):
     write("sensitivity.tex", t)
 
 
+def validation_tables(path, macros):
+    """Tables of the validation session (aggregate.py --scenario=validation)
+    and the summaries of the two test logs. Formatting only."""
+    v = list(csv.DictReader(open(path)))
+    get = lambda item, metric: next((r for r in v if r["item"] == item and r["metric"] == metric), None)
+    t = [r"\begin{tabular}{@{}lrrrr@{}}", r"\toprule",
+         r"Block (scale) & latency, ms [95\% CI] & CV\% & eff.\ frequency, MHz & temperature, \textdegree C \\",
+         r"\midrule"]
+    for b, sc in enumerate([40, 30, 30, 40, 40, 30, 30, 40], start=1):
+        tag = f"seal_ckks_N8192_cat1_relinearize_scale{sc}_b{b}"
+        lat, fr, te = get(tag, "latency_ms"), get(tag, "effective_freq_mhz_mean"), get(tag, "temp_c_mean")
+        if not lat:
+            t.append(f"{b} ($2^{{{sc}}}$) & \\multicolumn{{4}}{{c}}{{invalid -- excluded}} \\\\"); continue
+        cv = 100 * float(lat["std"]) / float(lat["value"])
+        t.append(f'{b} ($2^{{{sc}}}$) & {fmt(lat["value"])} [{fmt(lat["ci_low"])}, {fmt(lat["ci_high"])}] & {cv:.1f} & '
+                 f'{float(fr["value"]):.0f} & {float(te["value"]):.1f} \\\\')
+    t.append(r"\midrule")
+    for sc in (40, 30):
+        r = get(f"pooled scale 2^{sc}", "latency_ms")
+        if r:
+            cv = 100 * float(r["std"]) / float(r["value"])
+            t.append(f'pooled $2^{{{sc}}}$ ({r["n"]} reps) & {fmt(r["value"])} [{fmt(r["ci_low"])}, {fmt(r["ci_high"])}] & {cv:.1f} & & \\\\')
+    t += [r"\bottomrule", r"\end{tabular}"]
+    write("validation_relin.tex", t)
+    ratio, tost, diff = get("scale 2^30 vs 2^40", "ratio"), get("scale 2^30 vs 2^40", "tost_5pct"), get("scale 2^30 vs 2^40", "diff_ms_ci90")
+    if ratio:
+        macros.update({"relinRatio": f'{float(ratio["value"]):.3f}',
+                       "relinTost": "equivalent within $\\pm$5\\%" if tost["value"] == "equivalent_within_margin" else "equivalence not established",
+                       "relinDiffLow": f'{100 * float(diff["ci_low"]) / float(get("pooled scale 2^40", "latency_ms")["value"]):+.1f}',
+                       "relinDiffHigh": f'{100 * float(diff["ci_high"]) / float(get("pooled scale 2^40", "latency_ms")["value"]):+.1f}',
+                       "relinCorrFreq": f'{float(get("blocks", "corr_latency_vs_effective_freq")["value"]):+.2f}',
+                       "relinCorrPos": f'{float(get("blocks", "corr_latency_vs_position")["value"]):+.2f}'})
+    for part in ("A", "B"):
+        f, te, sh = get(f"part {part}", "effective_freq_mhz_median"), get(f"part {part}", "temp_c_median"), get(f"part {part}", "share_below_90pct_max_boost")
+        if f:
+            macros.update({f"freqMedian{part}": f'{float(f["value"]):.0f}', f"tempMedian{part}": f'{float(te["value"]):.0f}',
+                           f"shareBelow{part}": f'{100 * float(sh["value"]):.0f}'})
+    mx = get("max boost frequency", "mhz")
+    if mx:
+        macros["freqMaxBoost"] = f'{float(mx["value"]):.0f}'
+
+    t = [r"\begin{tabular}{@{}llrrrrrr@{}}", r"\toprule",
+         r"Library & Operation & net J/op, inv.\ 1 & inv.\ 2 & inv.\ 2/1 & archived & ratio & memory, MB (archived) \\",
+         r"\midrule"]
+    for r in csv.DictReader(open("validation/energy_plan_ckks8192.csv")):
+        lib, op = r["library"], r["operation"]
+        item = f"{lib} {op}"
+        e1, e2 = get(f"{lib}_ckks_N8192_cat1_{op}_energy1", "energy_net_j_per_op"), get(f"{lib}_ckks_N8192_cat1_{op}_energy2", "energy_net_j_per_op")
+        rep = get(item, "energy_repeatability_ratio_inv2_inv1")
+        arc = get(item, "energy_vs_archived_ratio")
+        mem = get(item, "peak_memory_mb")
+        marc = get(item, "memory_vs_archived_ratio")
+        g = lambda x, nd=4: f'{float(x["value"]):.{nd}f}' if x and x["value"] not in ("",) and not x["value"].startswith("NOT") else "--"
+        arch_val = "--"
+        if arc and e1 and e2:
+            arch_val = f'{(float(e1["value"]) + float(e2["value"])) / 2 / float(arc["value"]):.4f}'
+        memtxt = g(mem, 1) + (f' ({float(mem["value"]) / float(marc["value"]):.1f})' if marc else "")
+        t.append(f'{"SEAL" if lib == "seal" else "OpenFHE"} & {op} & {g(e1)} & {g(e2)} & {g(rep, 3)} & {arch_val} & {g(arc, 3)} & {memtxt} \\\\')
+    t += [r"\bottomrule", r"\end{tabular}"]
+    write("validation_energy.tex", t)
+
+
+def log_result(path):
+    if not os.path.exists(path):
+        return "not run"
+    lines = [l for l in open(path) if l.startswith("RESULT:")]
+    return lines[-1].split("RESULT:", 1)[1].strip() if lines else "incomplete"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", default="pilot")
     ap.add_argument("--prefix", default=None)
+    ap.add_argument("--validation", default="../results/final/validation_v2.csv")
     a = ap.parse_args()
     prefix = a.prefix or a.run.replace("_", "")
     macros = {}
     static_tables(macros)
     results_tables(a.run, prefix, macros)
+    if a.validation and os.path.exists(a.validation):
+        vm = {"FailClosedSummary": log_result("validation/failclosed_tests.log"),
+              "SelfTestSummary": log_result("validation/harness_selftest.log")}
+        validation_tables(a.validation, vm)
+        write("validation_numbers.tex", [f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in vm.items()]
+              + [f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in macros.items() if not k.startswith(prefix)])
     write(f"{prefix}_numbers.tex", [f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in macros.items()
                                     if k.startswith(prefix)])
     write("static_numbers.tex", [f"\\newcommand{{\\{k}}}{{{v}}}" for k, v in macros.items()

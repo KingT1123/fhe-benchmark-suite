@@ -309,6 +309,8 @@
 #include <utility>
 #include <thread>
 #include <cstdint>
+#include <sys/wait.h>
+#include <unistd.h>
 
 using namespace seal;
 using Clock = std::chrono::steady_clock;
@@ -345,6 +347,10 @@ struct Args {
     int ramp_seconds = 0;         // --ramp-seconds: busy-wait after idle, before reps
     std::string peak_rss_out;   // --peak-rss-out: write VmHWM after the loop
     bool random_inputs = false; // --check-inputs=random: *_check ops only (round 5)
+    std::string check_out;      // --check-out: per-repetition correctness check, fail-closed
+                                 // (Standard operations and rotate; see check_result()).
+    int inject_mismatch_at = -1; // --inject-mismatch-at: TESTS ONLY, falsifies the expected
+                                 // value of that repetition to show a wrong result is caught.
     int ckks_scale_bits = 0;    // --ckks-scale-bits: CKKS initial scale 2^bits instead of
                                  // the per-cell value (0 = unset, the default: every
                                  // earlier result is unchanged). Added for the OpenFHE
@@ -381,6 +387,8 @@ Args parse_args(int argc, char **argv) {
         else if (a.rfind("--ramp-seconds=", 0) == 0) args.ramp_seconds = std::stoi(arg_value(a));
         else if (a.rfind("--peak-rss-out=", 0) == 0) args.peak_rss_out = arg_value(a);
         else if (a.rfind("--ckks-scale-bits=", 0) == 0) args.ckks_scale_bits = std::stoi(arg_value(a));
+        else if (a.rfind("--check-out=", 0) == 0) args.check_out = arg_value(a);
+        else if (a.rfind("--inject-mismatch-at=", 0) == 0) args.inject_mismatch_at = std::stoi(arg_value(a));
         else if (a.rfind("--check-inputs=", 0) == 0) {
             std::string v = arg_value(a);
             if (v != "fixed" && v != "random") throw std::runtime_error("--check-inputs must be fixed or random");
@@ -533,6 +541,15 @@ int ckks_scale_bits_override(int N, int category, int default_bits) {
                            // formula unchanged -- both already work well.
 }
 
+int ckks_scale_bits_for(const SEALContext &context, const Args &args) {
+    int total_bits = context.first_context_data()->total_coeff_modulus_bit_count();
+    int usable_bits = total_bits - 10;  // safety margin
+    int default_scale_bits = std::min(40, usable_bits / 2);
+    if (default_scale_bits < 1) default_scale_bits = 1;
+    return args.ckks_scale_bits > 0 ? args.ckks_scale_bits
+                                    : ckks_scale_bits_override(args.N, args.category, default_scale_bits);
+}
+
 Ctx build_context(const Args &args, const GridRow &grid) {
     Ctx c;
     std::vector<int> chain_bits = parse_chain(grid.chain);
@@ -586,13 +603,7 @@ Ctx build_context(const Args &args, const GridRow &grid) {
         // N=4096 category 1 (chain 36+37+36) the nominal sum is 109 bits but
         // the actual usable budget is 73 bits. A fixed 2^40 scale silently
         // assumed enough headroom for every config; it doesn't for small N.
-        int total_bits = c.context->first_context_data()->total_coeff_modulus_bit_count();
-        int usable_bits = total_bits - 10;  // safety margin
-        int default_scale_bits = std::min(40, usable_bits / 2);
-        if (default_scale_bits < 1) default_scale_bits = 1;
-        int scale_bits = args.ckks_scale_bits > 0 ? args.ckks_scale_bits
-                                                   : ckks_scale_bits_override(args.N, args.category, default_scale_bits);
-        c.ckks_scale = std::pow(2.0, scale_bits);
+        c.ckks_scale = std::pow(2.0, ckks_scale_bits_for(*c.context, args));
     }
 
     KeyGenerator keygen(*c.context);
@@ -750,6 +761,120 @@ static long read_vmhwm_kb() {
     return -1;
 }
 
+// ---------- per-repetition correctness check (--check-out), fail-closed ----------
+// When --check-out is given, every timed operation also checks the result of
+// its LAST call, after the timer stops (outside the timed region and outside
+// the RAPL window), by decrypt-and-compare against values tracked in
+// plaintext: CKKS largest error normalized by max(1,|expected|) below
+// CKKS_CORRECTNESS_THRESHOLD; BFV/BGV every slot exact mod t. main() then
+// stops at the first failure (exit code 3, no output file) and writes the
+// output only when every repetition passed. Without --check-out nothing
+// changes (the fresh inputs consume the same random numbers either way).
+struct CheckState { bool on = false; bool inject = false; bool fork = false; double err = 0; };
+static CheckState g_chk;
+
+// With --peak-rss-out (memory measurement) every check runs in a forked child
+// process, so that the objects the check creates (encoders, decryptor,
+// decoded vectors) never count towards the measured process's peak memory.
+// The child returns the error through a pipe; a child that fails in any way
+// yields an error that fails the check.
+template <typename F>
+double run_check(F f) {
+    if (!g_chk.fork) return f();
+    int fd[2];
+    if (pipe(fd) != 0) throw std::runtime_error("pipe() failed for the correctness check");
+    pid_t pid = fork();
+    if (pid < 0) throw std::runtime_error("fork() failed for the correctness check");
+    if (pid == 0) {
+        close(fd[0]);
+        double e = 1e300;
+        try { e = f(); } catch (...) {}
+        ssize_t w = write(fd[1], &e, sizeof e);
+        _exit(w == sizeof e ? 0 : 1);
+    }
+    close(fd[1]);
+    double e = 1e300;
+    ssize_t r = read(fd[0], &e, sizeof e);
+    close(fd[0]);
+    int st = 0;
+    waitpid(pid, &st, 0);
+    return (r == sizeof e && WIFEXITED(st) && WEXITSTATUS(st) == 0) ? e : 1e300;
+}
+
+std::pair<Ciphertext, std::vector<double>> fresh_pair(Ctx &c, const Args &args) {
+    if (args.scheme == "BFV" || args.scheme == "BGV") {
+        auto p = fresh_bfv_pair(c, args);
+        return {std::move(p.first), std::vector<double>(p.second.begin(), p.second.end())};
+    }
+    return fresh_ckks_pair(c, args);
+}
+
+double plain_error(const SEALContext &context, const Args &args, const Plaintext &pt, std::vector<double> expect) {
+    if (g_chk.inject) expect[0] += 1.0;  // TESTS ONLY (--inject-mismatch-at)
+    double w = 0;
+    if (args.scheme == "CKKS") {
+        CKKSEncoder enc(context);
+        std::vector<double> got;
+        enc.decode(pt, got);
+        for (size_t i = 0; i < expect.size(); i++)
+            w = std::max(w, std::abs(got[i] - expect[i]) / std::max(1.0, std::abs(expect[i])));
+    } else {
+        BatchEncoder enc(context);
+        std::vector<uint64_t> got;
+        enc.decode(pt, got);
+        const int64_t t = (int64_t)context.first_context_data()->parms().plain_modulus().value();
+        for (size_t i = 0; i < expect.size(); i++) {
+            int64_t e = std::llround(expect[i]);
+            if ((int64_t)got[i] != ((e % t) + t) % t) w += 1;
+        }
+    }
+    return w;
+}
+
+double ct_error(Ctx &c, const Args &args, const Ciphertext &ct, const std::vector<double> &expect) {
+    Plaintext pt;
+    c.decryptor->decrypt(ct, pt);
+    return plain_error(*c.context, args, pt, expect);
+}
+
+bool check_passes(const Args &args, double err) {
+    return args.scheme == "CKKS" ? err < CKKS_CORRECTNESS_THRESHOLD : err == 0;
+}
+
+// Expected result of a rotation by one slot, on the complete vector including
+// the wraparound slot: CKKS rotate_vector, one cyclic vector of N/2 slots;
+// BFV/BGV rotate_rows, two rows of N/2 slots each rotated cyclically.
+std::vector<double> rotated_expect(const Args &args, const std::vector<double> &x) {
+    std::vector<double> e(x.size());
+    const size_t row = args.scheme == "CKKS" ? x.size() : x.size() / 2;
+    for (size_t r = 0; r < x.size(); r += row)
+        for (size_t i = 0; i < row; i++) e[r + i] = x[r + (i + 1) % row];
+    return e;
+}
+
+// keygen: the keys just generated must work (constant input through
+// encrypt -> decrypt with them).
+double keygen_error(const SEALContext &context, const KeyGenerator &keygen, const PublicKey &pk, const Args &args) {
+    Encryptor encryptor(context, pk);
+    Decryptor decryptor(context, keygen.secret_key());
+    Plaintext pt, out;
+    std::vector<double> expect;
+    if (args.scheme == "CKKS") {
+        CKKSEncoder enc(context);
+        expect.assign(enc.slot_count(), 0.5);
+        enc.encode(expect, std::pow(2.0, ckks_scale_bits_for(context, args)), pt);
+    } else {
+        BatchEncoder enc(context);
+        std::vector<uint64_t> ones(enc.slot_count(), 1);
+        expect.assign(enc.slot_count(), 1.0);
+        enc.encode(ones, pt);
+    }
+    Ciphertext ct;
+    encryptor.encrypt(pt, ct);
+    decryptor.decrypt(ct, out);
+    return plain_error(context, args, out, expect);
+}
+
 // ---------- timed operations ----------
 // Each returns elapsed time in milliseconds for ONE iteration.
 
@@ -761,7 +886,8 @@ double time_keygen(const Args &args, const GridRow &grid) {
     // something this harness re-measures per batch size.
     // Full context + key generation from scratch, mirrors real-world cost.
     std::vector<int> chain_bits = parse_chain(grid.chain);
-    uint64_t e0 = rapl_now();
+    uint64_t e0 = rapl_now(), e1 = 0;
+    Clock::time_point t1;
     auto t0 = Clock::now();
     if (args.scheme == "BFV" || args.scheme == "BGV") {
         EncryptionParameters parms(args.scheme == "BFV" ? scheme_type::bfv : scheme_type::bgv);
@@ -772,6 +898,8 @@ double time_keygen(const Args &args, const GridRow &grid) {
         KeyGenerator keygen(context);
         PublicKey pk; keygen.create_public_key(pk);
         if (grid.depth > 0) { RelinKeys rk; keygen.create_relin_keys(rk); }
+        t1 = Clock::now(); e1 = rapl_now();
+        if (g_chk.on) g_chk.err = run_check([&] { return keygen_error(context, keygen, pk, args); });  // untimed
     } else {
         EncryptionParameters parms(scheme_type::ckks);
         parms.set_poly_modulus_degree(args.N);
@@ -780,9 +908,10 @@ double time_keygen(const Args &args, const GridRow &grid) {
         KeyGenerator keygen(context);
         PublicKey pk; keygen.create_public_key(pk);
         if (grid.depth > 0) { RelinKeys rk; keygen.create_relin_keys(rk); }
+        t1 = Clock::now(); e1 = rapl_now();
+        if (g_chk.on) g_chk.err = run_check([&] { return keygen_error(context, keygen, pk, args); });  // untimed
     }
-    auto t1 = Clock::now();
-    g_last_window_uj = rapl_delta(e0, rapl_now());
+    g_last_window_uj = rapl_delta(e0, e1);
     return std::chrono::duration<double, std::milli>(t1 - t0).count();
 }
 
@@ -816,6 +945,11 @@ double time_encrypt(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     for (int k = 0; k < total; k++) c.encryptor->encrypt(pts[k], ct);
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    if (g_chk.on) {
+        bool ckks = args.scheme == "CKKS";
+        size_t n = ckks ? c.ckks_encoder->slot_count() : c.batch_encoder->slot_count();
+        g_chk.err = run_check([&] { return ct_error(c, args, ct, std::vector<double>(n, ckks ? 0.5 : 1.0)); });
+    }
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -823,13 +957,15 @@ double time_decrypt(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     int total = batch_size * inner_loop;
     std::vector<Ciphertext> cts;
     cts.reserve(total);
-    for (int k = 0; k < total; k++) cts.push_back(fresh_ciphertext(c, args));
+    std::vector<double> last;
+    for (int k = 0; k < total; k++) { auto p = fresh_pair(c, args); cts.push_back(std::move(p.first)); last = std::move(p.second); }
     Plaintext pt;
     uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
     for (int k = 0; k < total; k++) c.decryptor->decrypt(cts[k], pt);
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    if (g_chk.on) g_chk.err = run_check([&] { return plain_error(*c.context, args, pt, last); });
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -837,9 +973,10 @@ double time_add(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     int total = batch_size * inner_loop;
     std::vector<Ciphertext> as, bs;
     as.reserve(total); bs.reserve(total);
+    std::vector<double> xa, xb;
     for (int k = 0; k < total; k++) {
-        as.push_back(fresh_ciphertext(c, args));
-        bs.push_back(fresh_ciphertext(c, args));
+        auto pa = fresh_pair(c, args); as.push_back(std::move(pa.first)); xa = std::move(pa.second);
+        auto pb = fresh_pair(c, args); bs.push_back(std::move(pb.first)); xb = std::move(pb.second);
     }
     Ciphertext result;
     uint64_t e0 = rapl_now();
@@ -847,6 +984,10 @@ double time_add(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     for (int k = 0; k < total; k++) c.evaluator->add(as[k], bs[k], result);
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    if (g_chk.on) {
+        for (size_t i = 0; i < xa.size(); i++) xa[i] += xb[i];
+        g_chk.err = run_check([&] { return ct_error(c, args, result, xa); });
+    }
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -854,9 +995,10 @@ double time_multiply(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     int total = batch_size * inner_loop;
     std::vector<Ciphertext> as, bs;
     as.reserve(total); bs.reserve(total);
+    std::vector<double> xa, xb;
     for (int k = 0; k < total; k++) {
-        as.push_back(fresh_ciphertext(c, args));
-        bs.push_back(fresh_ciphertext(c, args));
+        auto pa = fresh_pair(c, args); as.push_back(std::move(pa.first)); xa = std::move(pa.second);
+        auto pb = fresh_pair(c, args); bs.push_back(std::move(pb.first)); xb = std::move(pb.second);
     }
     Ciphertext result;
     uint64_t e0 = rapl_now();
@@ -864,6 +1006,10 @@ double time_multiply(Ctx &c, const Args &args, int batch_size, int inner_loop) {
     for (int k = 0; k < total; k++) c.evaluator->multiply(as[k], bs[k], result);
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    if (g_chk.on) {
+        for (size_t i = 0; i < xa.size(); i++) xa[i] *= xb[i];
+        g_chk.err = run_check([&] { return ct_error(c, args, result, xa); });
+    }
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -871,9 +1017,14 @@ double time_relinearize(Ctx &c, const Args &args, int batch_size, int inner_loop
     int total = batch_size * inner_loop;
     std::vector<Ciphertext> products;
     products.reserve(total);
+    std::vector<double> xab;
     for (int k = 0; k < total; k++) {
-        Ciphertext a = fresh_ciphertext(c, args);
-        Ciphertext b = fresh_ciphertext(c, args);
+        auto pa = fresh_pair(c, args);
+        auto pb = fresh_pair(c, args);
+        Ciphertext a = std::move(pa.first);
+        Ciphertext b = std::move(pb.first);
+        xab = std::move(pa.second);
+        for (size_t i = 0; i < xab.size(); i++) xab[i] *= pb.second[i];
         Ciphertext product;
         c.evaluator->multiply(a, b, product);  // untimed setup step
         products.push_back(std::move(product));
@@ -884,6 +1035,7 @@ double time_relinearize(Ctx &c, const Args &args, int batch_size, int inner_loop
         c.evaluator->relinearize_inplace(products[k], c.relin_keys);
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    if (g_chk.on) g_chk.err = run_check([&] { return ct_error(c, args, products.back(), xab); });
     return std::chrono::duration<double, std::milli>(t1 - t0).count() / inner_loop;
 }
 
@@ -965,7 +1117,8 @@ double time_rotate(Ctx &c, const Args &args) {
     // Isolated single rotate-by-1 -- same timed-region convention as every
     // other operation (setup, here one fully-packed fresh ciphertext,
     // happens before t0).
-    Ciphertext ct = fresh_ciphertext(c, args);
+    auto in = fresh_pair(c, args);
+    Ciphertext ct = std::move(in.first);
     Ciphertext rotated;
     auto t0 = Clock::now();
     if (args.scheme == "CKKS") {
@@ -974,6 +1127,7 @@ double time_rotate(Ctx &c, const Args &args) {
         c.evaluator->rotate_rows(ct, 1, c.galois_keys, rotated);
     }
     auto t1 = Clock::now();
+    if (g_chk.on) g_chk.err = run_check([&] { return ct_error(c, args, rotated, rotated_expect(args, in.second)); });
     return std::chrono::duration<double, std::milli>(t1 - t0).count();
 }
 
@@ -1616,10 +1770,50 @@ ConfigMetadataRow measure_config_metadata(const Args &args, const GridRow &grid)
 
 // ---------- main ----------
 
+// Writes content to path through a temporary file renamed into place, so an
+// existing output file is always complete.
+void write_atomically(const std::string &path, const std::string &content) {
+    const std::string tmp = path + ".tmp";
+    {
+        std::ofstream f(tmp);
+        if (!(f << content) || !f.flush()) throw std::runtime_error("Cannot write " + tmp);
+    }
+    if (std::rename(tmp.c_str(), path.c_str()) != 0) throw std::runtime_error("Cannot rename " + tmp);
+}
+
+// Fail-closed bookkeeping for one repetition: records its check row and,
+// on a failed check, keeps the rows so far as <out>.invalid and returns false.
+bool record_check(const Args &args, int i, std::ostringstream &rows, std::ostringstream &chk) {
+    if (!g_chk.on) return true;
+    const bool ok = check_passes(args, g_chk.err);
+    chk << "SEAL," << args.scheme << "," << args.N << "," << args.category << "," << args.operation << "," << i
+        << "," << g_chk.err << "," << (args.scheme == "CKKS" ? "max_norm_error" : "mismatching_slots") << ","
+        << (ok ? "correct" : "MISMATCH") << "\n";
+    if (!ok) {
+        std::ofstream inv(args.out + ".invalid");
+        inv << rows.str() << "# INVALID: repetition " << i << " failed its correctness check (error " << g_chk.err
+            << "); the cell has no output file\n" << chk.str();
+        std::cerr << "ERROR: repetition " << i << " of " << args.operation << " failed its correctness check (error "
+                  << g_chk.err << ") -- cell invalid, no output written (" << args.out << ".invalid kept)" << std::endl;
+    }
+    return ok;
+}
+
 int main(int argc, char **argv) {
     try {
         Args args = parse_args(argc, argv);
         GridRow grid = load_grid_row(args.grid_path, args.N, args.category);
+        g_chk.on = !args.check_out.empty();
+        g_chk.fork = g_chk.on && !args.peak_rss_out.empty();
+        if (g_chk.on) {
+            static const std::vector<std::string> checked = {"keygen", "encrypt", "decrypt", "add", "multiply",
+                                                             "relinearize", "rotate"};
+            if (args.fill_pct_set || std::find(checked.begin(), checked.end(), args.operation) == checked.end())
+                throw std::runtime_error("--check-out is implemented for the Standard operations and rotate only");
+            std::remove(args.check_out.c_str());
+        }
+        std::remove(args.out.c_str());  // a stale file never survives a new attempt
+
         if (!args.rapl_dir.empty()) {
             g_rapl_energy_path = args.rapl_dir + "/energy_uj";
             std::ifstream mf(args.rapl_dir + "/max_energy_range_uj");
@@ -1838,20 +2032,23 @@ int main(int argc, char **argv) {
             std::size_t galois_keys_size_bytes = serialized_size(
                 [&](std::ostream &os) { return c.galois_keys.save(os, compr_mode_type::none); });
 
-            std::ofstream out(args.out);
-            if (!out.is_open()) throw std::runtime_error("Cannot open output file: " + args.out);
+            std::ostringstream out, chk;  // written only when the whole cell is valid
             out << "library,scheme,N,category,operation,galois_keygen_ms,galois_keys_size_bytes,"
                    "iteration,latency_ms,status\n";
+            chk << "library,scheme,N,category,operation,iteration,error,metric,correctness\n";
 
             int total = args.warmup + args.reps;
             for (int i = 0; i < total; i++) {
+                g_chk.inject = (i == args.inject_mismatch_at);
                 double ms = time_rotate(c, args);
                 std::string status = (i < args.warmup) ? "warmup" : "measured";
                 out << "SEAL," << args.scheme << "," << args.N << "," << args.category << ","
                     << args.operation << "," << galois_keygen_ms << "," << galois_keys_size_bytes
                     << "," << i << "," << ms << "," << status << "\n";
+                if (!record_check(args, i, out, chk)) return 3;
             }
-            out.close();
+            if (g_chk.on) write_atomically(args.check_out, chk.str());
+            write_atomically(args.out, out.str());
             std::cerr << "OK: wrote " << total << " rows to " << args.out
                       << " (galois_keygen_ms=" << galois_keygen_ms
                       << ", galois_keys_size_bytes=" << galois_keys_size_bytes << ")" << std::endl;
@@ -2065,11 +2262,11 @@ int main(int argc, char **argv) {
             return 0;
         }
 
-        std::ofstream out(args.out);
-        if (!out.is_open()) throw std::runtime_error("Cannot open output file: " + args.out);
+        std::ostringstream out, chk;  // written only when the whole cell is valid
         const bool energy = !g_rapl_energy_path.empty();
         out << "library,scheme,N,category,operation,batch_size,iteration,latency_ms,status"
             << (energy ? ",inner_loop,energy_uj,idle_power_w" : "") << "\n";
+        chk << "library,scheme,N,category,operation,iteration,error,metric,correctness\n";
 
         // Idle package power, same process, just before the reps (round-3
         // protocol): context/keys for non-keygen ops are built lazily inside
@@ -2095,6 +2292,7 @@ int main(int argc, char **argv) {
 
         int total = args.warmup + args.reps;
         for (int i = 0; i < total; i++) {
+            g_chk.inject = (i == args.inject_mismatch_at);
             double ms;
             if (args.operation == "keygen")            ms = time_keygen(args, grid);
             else {
@@ -2118,8 +2316,10 @@ int main(int argc, char **argv) {
                 << status;
             if (energy) out << "," << ops_per_window << "," << g_last_window_uj << "," << idle_w;
             out << "\n";
+            if (!record_check(args, i, out, chk)) return 3;
         }
-        out.close();
+        if (g_chk.on) write_atomically(args.check_out, chk.str());
+        write_atomically(args.out, out.str());
         if (!args.peak_rss_out.empty()) {
             std::ofstream mo(args.peak_rss_out);
             mo << "Maximum resident set size (kbytes): " << read_vmhwm_kb() << "\n";

@@ -24,7 +24,7 @@
   \item \emph{Actual primes:} OpenFHE's ciphertext primes $Q$ and key-switching primes $P$ are exported and compared value by value with SEAL's (Section~\ref{sec:classes}). Where only the prime sizes agree, the cell is called a \emph{same size profile}, never an exact match. There is no exact match.
   \item \emph{Revised classes, operation by operation:} four configuration classes and a per-operation verdict in which key generation, encryption, relinearization and rotation require the key-switching modulus to match too (Section~\ref{sec:ops}).
   \item \emph{Functional validation:} key generation, encryption, decryption, addition, multiplication, relinearization, rotation (and CKKS rescaling) for every accepted variant, with unsupported operations recorded; CKKS scale, levels, rescaling policy and error; BFV/BGV with SEAL's plaintext modulus (Section~\ref{sec:func}).
-  \item \emph{Security validation:} the 18 candidates, with their actual $QP$ and OpenFHE's real distributions, all meet their category; security-check rejections are separated from parameter-generation failures; OpenFHE's check was never bypassed (Sections~\ref{sec:requests} and~\ref{sec:sec}).
+  \item \emph{Security validation:} the 18 candidates, with their actual $QP$ and OpenFHE's real distributions, all meet their category under the default cost model; security-check rejections are separated from parameter-generation failures; OpenFHE's check was never bypassed (Sections~\ref{sec:requests} and~\ref{sec:sec}).
   \item \emph{Same conditions:} pinned OpenFHE build in the same base image as SEAL, single-threaded, same compiler and flags (Section~\ref{sec:env}). $N{=}16384$ categories 3 and 5 are not presented as comparable (Section~\ref{sec:scope}).
   \item \emph{SEAL $N{=}8192$ estimates:} re-run with SEAL's exact primes and archived; they reproduce the historical values (Section~\ref{sec:seal8192}).
 \end{enumerate}
@@ -148,7 +148,7 @@ Re-running the probe reproduces the primes and every pass/fail result exactly; o
 \input{../../experiments/openfhe/probe/security_v2.tex}}
 \vspace{-6pt}\noindent{\footnotesize \addtocounter{table}{-1}\refstepcounter{table}Table~\thetable\label{tab:sec}: Var.: as in Table~\ref{tab:grid}. Shared primes: how many of OpenFHE's primes also appear in SEAL's chain. Cost: $\log_2$ of the cheapest attack's cost; target and margin in bits. Inputs: \texttt{experiments/security/openfhe\_candidates.csv}; outputs, one row per attack: \texttt{results\_openfhe\_N\{2048,4096,8192,16384\}.csv}; summary: \texttt{security\_v2.csv}.}
 
-\textbf{All 18 candidates meet their category.} The tightest are the three at $N{=}8192$/category~5 (0.9 bits above 256): their $\log QP = 114$ (SEAL's 54-bit prime size for $Q$ plus OpenFHE's 60-bit key-switching prime) is exactly the 256-bit limit for $N{=}8192$ in Table~5.2 of the 2024/2025 guidelines, whereas SEAL's 108 bits stay below it. The candidates with no key-switching modulus (BV, $N \le 4096$) have very large margins because their $\log QP$ is small. Two kinds of rejection are therefore kept apart: \emph{security rejections} are made by OpenFHE's own check when a configuration is requested (Section~\ref{sec:requests}); the Lattice Estimator rejected none of the configurations that OpenFHE accepted.
+\textbf{All 18 candidates meet their category under the estimator's default cost model} (for the three tightest, this holds under BDGL16 too but not under the core-SVP lower bound; see the cost-model sensitivity in the pilot note). The tightest are the three at $N{=}8192$/category~5 (0.9 bits above 256): their $\log QP = 114$ (SEAL's 54-bit prime size for $Q$ plus OpenFHE's 60-bit key-switching prime) is exactly the 256-bit limit for $N{=}8192$ in Table~5.2 of the 2024/2025 guidelines, whereas SEAL's 108 bits stay below it. The candidates with no key-switching modulus (BV, $N \le 4096$) have very large margins because their $\log QP$ is small. Two kinds of rejection are therefore kept apart: \emph{security rejections} are made by OpenFHE's own check when a configuration is requested (Section~\ref{sec:requests}); the Lattice Estimator rejected none of the configurations that OpenFHE accepted.
 
 \section{Scope at \texorpdfstring{$N{=}16384$}{N=16384}}
 \label{sec:scope}
@@ -163,9 +163,10 @@ The three SEAL values at $N{=}8192$ reported up to Version~7 (137.7, 204.1, 272.
 \section{Proposed rules for the OpenFHE campaign}
 
 \begin{itemize}[leftmargin=*, itemsep=2pt]
-  \item Measure the 18 candidates of Table~\ref{tab:sec}, with the same operations, boundaries, repetitions, scenarios, energy/memory protocol and statistics as SEAL.
+  \item Measure the \textbf{17 configurations eligible for measurement} (\texttt{probe/eligible\_v2.csv}): the 18 security-evaluated candidates of Table~\ref{tab:sec} minus CKKS 2048/3, which fails the correctness criterion. Same operations, boundaries, repetitions, scenarios, energy/memory protocol and statistics as SEAL.
   \item Report the 32 operation cells marked \textbf{M} in Table~\ref{tab:ops} as \emph{matched-profile comparisons}, always with their remaining differences, and never as exact-parameter comparisons; everything else is reported separately with its reason (different $Q$, different $P$, failed functional check).
-  \item CKKS errors are compared only where the scales are equal; CKKS 2048/3 is not measured (fails the correctness criterion).
+  \item CKKS errors are compared only where the scales are equal.
+  \item The three $N{=}8192$/category~5 configurations meet category~5 \emph{under the estimator's default cost model} (also under BDGL16) but not under the core-SVP lower bound (ADPS16), under which SEAL's own 8192/5 configuration also falls below 256 bits; their classification is stated with this condition wherever they appear.
   \item OpenFHE's security check stays enabled; no configuration is forced.
 \end{itemize}
 

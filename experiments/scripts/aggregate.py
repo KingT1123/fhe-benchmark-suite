@@ -1741,11 +1741,30 @@ def aggregate_pilot(args):
     log_dir = args.log_dir or os.path.join(raw_dir, "memory")  # memory logs archived with the raw data
     out_path = args.out or "../results/final/pilot.csv"
     rows, stats = [], {}
+    # Fail-closed: only cells that validate_cell.py accepts enter the
+    # statistics. Repetition counts come from the session's cpu_state.txt.
+    # Sessions recorded with "protocol: fail-closed v2" carry correctness
+    # checks for every library and all are required; the two earlier pilot
+    # runs had per-repetition checks for OpenFHE only, so there only
+    # OpenFHE's are required (stated in the output).
+    from validate_cell import validate
+    state = open(os.path.join(raw_dir, "cpu_state.txt")).read()
+    m_r = re.search(r"reps:\s*(\d+)\s+warmup:\s*(\d+)", state)
+    n_reps, n_warm = (int(m_r.group(1)), int(m_r.group(2))) if m_r else (100, 5)
+    checks_all = "protocol: fail-closed v2" in state
+    excluded = []
     for f in sorted(glob.glob(os.path.join(raw_dir, "*_ckks_*.csv"))):
+        tag = Path(f).stem
+        chk = os.path.join(raw_dir, "checks", f"{tag}_check.csv")
+        need_check = checks_all or tag.startswith("openfhe_")
+        ok, why = validate(f, n_reps + n_warm, n_warm, chk if need_check else None)
+        if not ok:
+            excluded.append((tag, why))
+            continue
         summary = aggregate_latency_file(f)
         if summary is None:
+            excluded.append((tag, "no measured rows"))
             continue
-        tag = Path(f).stem
         m = re.search(r"_scale(\d+)$", tag)
         scale = int(m.group(1)) if m else 40
         base = {"library": summary["library"], "scheme": summary["scheme"], "N": summary["N"],
@@ -1814,8 +1833,200 @@ def aggregate_pilot(args):
         w = csv.DictWriter(f, fieldnames=list(comps[0]) if comps else ["comparison"], lineterminator="\n")
         w.writeheader(); w.writerows(comps)
     print(f"Wrote {len(rows)} rows to {out_path} and {len(comps)} comparisons to {cpath}")
+    print("Correctness checks required for: " + ("every library" if checks_all else
+          "OpenFHE only (session recorded before the fail-closed protocol; SEAL cells had no per-repetition checks)"))
+    for tag, why in excluded:
+        print(f"EXCLUDED (invalid cell, not in the statistics): {tag}: {why}")
     print(f"{sum(r.get('flag') == 'HIGH_VARIANCE' for r in rows)} HIGH_VARIANCE; "
           f"{sum(r.get('flag') == 'CORRECTNESS_FAILURE' for r in rows)} cells with a failed correctness check")
+
+
+# ---------- validation session after the pilot (run_validation_session.sh) ----------
+
+def _stats(values):
+    """mean, std, 95% CI, median -- the same formulas as aggregate_latency_file."""
+    n = len(values)
+    mean = statistics.mean(values)
+    std = statistics.stdev(values) if n > 1 else 0.0
+    margin = t_critical(n) * std / math.sqrt(n) if n > 1 else 0.0
+    return {"n": n, "mean": mean, "std": std, "ci_low": mean - margin, "ci_high": mean + margin,
+            "median": statistics.median(values)}
+
+
+def _pearson(x, y):
+    if len(x) < 3 or statistics.pstdev(x) == 0 or statistics.pstdev(y) == 0:
+        return float("nan")
+    mx, my = statistics.mean(x), statistics.mean(y)
+    return sum((a - mx) * (b - my) for a, b in zip(x, y)) / (len(x) * statistics.pstdev(x) * statistics.pstdev(y))
+
+
+def aggregate_validation(args):
+    """--scenario=validation reads experiments/results/raw/validation_v2/
+    (run_validation_session.sh). Fail-closed: every cell must pass
+    validate_cell.py (with its correctness checks) or it is excluded, and the
+    analysis that needs it is reported as missing. Outputs
+    results/final/validation_v2.csv (long format: part, item, metric, value
+    columns) and prints a summary.
+      A. relinearize, SEAL, scale 2^30 vs 2^40, 8 alternating blocks: per
+         block mean latency, effective core frequency and temperature (from
+         thermal_log.csv over the block's own time window, cell_times.csv);
+         pooled per scale (all measured repetitions of its 4 blocks): TOST
+         +/-5% (Welch); correlation of block latency with block frequency and
+         with block position.
+      B. energy: per invocation, net J/op with the pooled idle baseline of the
+         SEAL campaign (pooled_idle_baseline, the same correction) and gross
+         J/op; repeatability = invocation 2 vs 1 (TOST +/-10%); SEAL vs the
+         archived campaign (seal_standard.csv energy_net_j_per_op, TOST
+         +/-10%). Memory: VmHWM of the 3 inner-loop-1 invocations; SEAL vs the
+         archived campaign.
+      Thermal: per part, median effective frequency and temperature and the
+         share of samples below 90% of the maximum boost frequency."""
+    from validate_cell import validate
+    from datetime import datetime
+    raw = args.raw_dir or "../results/raw/validation_v2"
+    out_path = args.out or "../results/final/validation_v2.csv"
+    state = open(os.path.join(raw, "cpu_state.txt")).read()
+    rb, wb = map(int, re.search(r"A: relinearize blocks: (\d+) measured \+ (\d+) warm-up", state).groups())
+    er, ew = map(int, re.search(r"B: energy: (\d+) reps \+ (\d+) warm-up", state).groups())
+    mr, mw = map(int, re.search(r"memory: 3 x \((\d+) reps \+ (\d+) warm-up\)", state).groups())
+    fmax = float(re.search(r"max boost frequency \(amd_pstate_max_freq, kHz\): (\d+)", state).group(1))
+    times = {r["tag"]: (datetime.fromisoformat(r["start"]), datetime.fromisoformat(r["end"]))
+             for r in csv.DictReader(open(os.path.join(raw, "cell_times.csv"))) if r["exit_code"] == "0"}
+    therm = [(datetime.fromisoformat(r["timestamp"]), float(r["effective_freq_khz"] or "nan"), float(r["temp_millic"] or "nan") / 1000)
+             for r in csv.DictReader(open(os.path.join(raw, "thermal_log.csv")))]
+
+    def window(tag):
+        if tag not in times:
+            return [], []
+        a, b = times[tag]
+        sel = [(f, t) for ts, f, t in therm if a <= ts <= b and not math.isnan(f)]
+        return [f for f, _ in sel], [t for _, t in sel]
+
+    out, excluded = [], []
+    put = lambda part, item, metric, value, **kw: out.append({"part": part, "item": item, "metric": metric,
+                                                             "value": value, **kw})
+
+    def valid(tag, rows, warm):
+        ok, why = validate(os.path.join(raw, tag + ".csv"), rows, warm, os.path.join(raw, "checks", tag + "_check.csv"))
+        if not ok:
+            excluded.append((tag, why))
+        return ok
+
+    def measured(tag):
+        return [r for r in csv.DictReader(open(os.path.join(raw, tag + ".csv"))) if r["status"] == "measured"]
+
+    # ---- A
+    blocks = []
+    for b, scale in enumerate([40, 30, 30, 40, 40, 30, 30, 40], start=1):
+        tag = f"seal_ckks_N8192_cat1_relinearize_scale{scale}_b{b}"
+        if not valid(tag, rb + wb, wb):
+            continue
+        lat = [float(r["latency_ms"]) for r in measured(tag)]
+        f, t = window(tag)
+        st = _stats(lat)
+        blocks.append((b, scale, st["mean"], statistics.mean(f) if f else float("nan"), lat))
+        put("A", tag, "latency_ms", st["mean"], std=st["std"], ci_low=st["ci_low"], ci_high=st["ci_high"], n=st["n"])
+        if f:
+            put("A", tag, "effective_freq_mhz_mean", statistics.mean(f) / 1000, n=len(f))
+            put("A", tag, "temp_c_mean", statistics.mean(t), n=len(t))
+    pooled = {s: [x for b in blocks if b[1] == s for x in b[4]] for s in (40, 30)}
+    if all(len(v) == 4 * rb for v in pooled.values()):
+        s40, s30 = _stats(pooled[40]), _stats(pooled[30])
+        for s, st in ((40, s40), (30, s30)):
+            put("A", f"pooled scale 2^{s}", "latency_ms", st["mean"], std=st["std"], ci_low=st["ci_low"],
+                ci_high=st["ci_high"], n=st["n"])
+        tt = tost_equivalence(s40["mean"], s40["std"], s40["n"], s30["mean"], s30["std"], s30["n"], 0.05)
+        put("A", "scale 2^30 vs 2^40", "ratio", s30["mean"] / s40["mean"])
+        put("A", "scale 2^30 vs 2^40", "diff_ms_ci90", tt["diff"], ci_low=tt["ci_low"], ci_high=tt["ci_high"])
+        put("A", "scale 2^30 vs 2^40", "tost_5pct", tt["verdict"])
+        bl = [b[2] for b in blocks]
+        put("A", "blocks", "corr_latency_vs_effective_freq", _pearson(bl, [b[3] for b in blocks]))
+        put("A", "blocks", "corr_latency_vs_position", _pearson(bl, [float(b[0]) for b in blocks]))
+    else:
+        put("A", "scale 2^30 vs 2^40", "tost_5pct", "NOT COMPUTED: invalid or missing blocks")
+
+    # ---- B energy and memory
+    base_w = pooled_idle_baseline()
+    put("B", "idle baseline (SEAL campaign, pooled median)", "watts", base_w)
+    archived = {}
+    for r in csv.DictReader(open("../results/final/seal_standard.csv")):
+        if (r["library"], r["scheme"], r["N"], r["category"]) == ("SEAL", "CKKS", "8192", "1") and r["mean"]:
+            archived[(r["operation"], r["metric"])] = r
+    plan = list(csv.DictReader(open("../openfhe/validation/energy_plan_ckks8192.csv")))
+    for p in plan:
+        lib, op = p["library"], p["operation"]
+        nets, own_idle = {}, []
+        for k in (1, 2):
+            tag = f"{lib}_ckks_N8192_cat1_{op}_energy{k}"
+            if not valid(tag, er + ew, ew):
+                continue
+            rows = measured(tag)
+            if "energy_uj" not in rows[0]:
+                excluded.append((tag, "no energy columns (RAPL counter not read)"))
+                continue
+            net = [(int(r["energy_uj"]) / 1e6 - base_w * float(r["latency_ms"]) * int(r["inner_loop"]) / 1000)
+                   / int(r["inner_loop"]) for r in rows]
+            gross = [int(r["energy_uj"]) / 1e6 / int(r["inner_loop"]) for r in rows]
+            power = [int(r["energy_uj"]) / 1e6 / (float(r["latency_ms"]) * int(r["inner_loop"]) / 1000) for r in rows]
+            own_idle.append(float(rows[0]["idle_power_w"]))
+            nets[k] = _stats(net)
+            for m, v in (("energy_net_j_per_op", net), ("energy_pkg_j_per_op", gross), ("package_power_w", power)):
+                st = _stats(v)
+                put("B", tag, m, st["mean"], std=st["std"], ci_low=st["ci_low"], ci_high=st["ci_high"], n=st["n"])
+            put("B", tag, "idle_power_w_own_reading", rows[0]["idle_power_w"])
+        item = f"{lib} {op}"
+        if len(nets) == 2:
+            a, b = nets[1], nets[2]
+            tt = tost_equivalence(a["mean"], a["std"], a["n"], b["mean"], b["std"], b["n"], 0.10)
+            put("B", item, "energy_repeatability_ratio_inv2_inv1", b["mean"] / a["mean"])
+            put("B", item, "energy_repeatability_tost_10pct", tt["verdict"])
+            if lib == "seal" and (op, "energy_net_j_per_op") in archived:
+                ar = archived[(op, "energy_net_j_per_op")]
+                pooled_net = [x for x in (nets[1]["mean"], nets[2]["mean"])]
+                both = _stats(pooled_net)
+                put("B", item, "energy_vs_archived_ratio", both["mean"] / float(ar["mean"]))
+                t2 = tost_equivalence(float(ar["mean"]), float(ar["std"]), 30, a["mean"], a["std"], a["n"], 0.10)
+                put("B", item, "energy_vs_archived_tost_10pct_invocation1", t2["verdict"])
+        else:
+            put("B", item, "energy_repeatability_tost_10pct", "NOT COMPUTED: invalid or missing invocation")
+        peaks = []
+        for k in (1, 2, 3):
+            tag = f"{lib}_ckks_N8192_cat1_{op}_mem{k}"
+            pk = os.path.join(raw, "memory", f"{tag}_peak.log")
+            if valid(tag, mr + mw, mw) and os.path.exists(pk):
+                v = parse_mem_log(pk)
+                if v is not None:
+                    peaks.append(v)
+        if len(peaks) == 3:
+            st = _stats(peaks)
+            put("B", item, "peak_memory_mb", st["mean"], std=st["std"], n=3)
+            if lib == "seal" and (op, "peak_memory_mb") in archived:
+                put("B", item, "memory_vs_archived_ratio", st["mean"] / float(archived[(op, "peak_memory_mb")]["mean"]))
+        else:
+            put("B", item, "peak_memory_mb", "NOT COMPUTED: invalid or missing invocation")
+
+    # ---- thermal summary per part
+    for part, prefix in (("A", "seal_ckks_N8192_cat1_relinearize"), ("B", "")):
+        f, t = [], []
+        for tag in times:
+            if (part == "A") == tag.startswith(prefix + "_scale"):
+                ff, tt_ = window(tag); f += ff; t += tt_
+        if f:
+            put("thermal", f"part {part}", "effective_freq_mhz_median", statistics.median(f) / 1000, n=len(f))
+            put("thermal", f"part {part}", "temp_c_median", statistics.median(t), n=len(t))
+            put("thermal", f"part {part}", "share_below_90pct_max_boost", sum(x < 0.9 * fmax for x in f) / len(f), n=len(f))
+    put("thermal", "max boost frequency", "mhz", fmax / 1000)
+
+    fields = ["part", "item", "metric", "value", "n", "std", "ci_low", "ci_high"]
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=fields, lineterminator="\n")
+        w.writeheader()
+        for r in out:
+            w.writerow({k: r.get(k, "") for k in fields})
+    print(f"Wrote {len(out)} rows to {out_path}")
+    for tag, why in excluded:
+        print(f"EXCLUDED (invalid cell): {tag}: {why}")
 
 
 def main():
@@ -1823,7 +2034,7 @@ def main():
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
-                              "ckks_error", "config_metadata", "pilot"])
+                              "ckks_error", "config_metadata", "pilot", "validation"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -1835,6 +2046,10 @@ def main():
 
     if args.scenario == "pilot":
         aggregate_pilot(args)
+        return
+
+    if args.scenario == "validation":
+        aggregate_validation(args)
         return
 
     if args.scenario == "composite_checks":

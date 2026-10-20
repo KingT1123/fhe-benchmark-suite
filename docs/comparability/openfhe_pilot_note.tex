@@ -90,7 +90,7 @@ decrypt & $c_0 + c_1 s$ in NTT form / the same computation on OpenFHE's own poly
 add & \texttt{add} / \texttt{EvalAdd} & No: \texttt{EvalAdd} first clones its operand into a new ciphertext; SEAL writes into a reused one. \texttt{EvalAddInPlace} is timed as a diagnostic (\emph{add, in place}). \\
 multiply & tensor product, no relinearization, no rescaling & Yes. \\
 relinearize & key switching of the product & Same method (one special prime / hybrid with one prime per digit); different implementations. \\
-rotate & rotation by one slot, key for that step only & Same method; the key sizes are recorded. \\
+rotate & rotation by one slot, key for that step only & Same method; the key sizes are recorded. Checked on the complete rotated vector, wraparound slot included. \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -100,10 +100,18 @@ rotate & rotation by one slot, key for that step only & Same method; the key siz
 
 This is a matched-profile comparison: same prime sizes (60+40+40, key-switching prime 60), three of four primes shared in other roles, same initial scale $2^{40}$, same levels; different error distributions and key-switching implementations.
 
+Results are presented in two separate tables. Table~\ref{tab:results} compares \emph{equivalent computational boundaries}: the same computation is timed in both libraries, so a ratio is meaningful. Table~\ref{tab:api} lists \emph{end-to-end API costs}: each library's own call, which does not perform the same computation in the two libraries; no ratio is formed and none is interpreted.
+
 \begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
 \input{\tab{\run_results.tex}}
-\caption{Latency per operation, same session. Ratio O/S: OpenFHE mean / SEAL mean. Correct: OpenFHE repetitions whose result passed the check. CV: coefficient of variation; $^\dagger$ above 5\% (HIGH\_VARIANCE). $^\ast$ OpenFHE diagnostics (see the table of operations), not comparisons with SEAL. Data: \texttt{experiments/results/final/\run.csv}.}
+\caption{Equivalent computational boundaries: latency per operation, same session. Ratio O/S: OpenFHE mean / SEAL mean. Correct: OpenFHE repetitions whose result passed the check. CV: coefficient of variation; $^\dagger$ above 5\% (HIGH\_VARIANCE). Data: \texttt{experiments/results/final/\run.csv}.}
 \label{tab:results}
+\end{table}
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{\run_api.tex}}
+\caption{End-to-end API costs (mean latency, ms), same session: each library's own call. The two calls of a row do not perform the same computation, so they are not compared by a ratio. All OpenFHE repetitions passed their checks.}
+\label{tab:api}
 \end{table}
 
 \paragraph{What the pilot shows.}
@@ -111,9 +119,9 @@ This is a matched-profile comparison: same prime sizes (60+40+40, key-switching 
   \item \textbf{Correctness and stability.} Every OpenFHE repetition passed its check (\R{CorrectOK}/\R{CorrectN}). \R{HighVar} of \R{Cells} cells exceed 5\% variation: three are \emph{add} (both libraries, and SEAL at both scales), which was also flagged in the archived SEAL campaign and takes only a few hundredths of a millisecond; the fourth is OpenFHE's rotation, timed one call per repetition.
   \item \textbf{Same work, comparable cost.} Multiplication costs about the same in both libraries (ratio \R{Ratiomultiply}); decryption up to SEAL's boundary is faster in OpenFHE (ratio \R{Ratiodecrypt}).
   \item \textbf{Key switching.} Relinearization and rotation are about twice as slow in OpenFHE (ratios \R{Ratiorelinearize} and \R{Ratiorotate}), as in the first run. Both libraries use the same method here (one special prime; hybrid key switching with one prime per digit) with different implementations; at the pilot stage this is recorded as an observation of the matched-profile comparison, not explained further.
-  \item \textbf{Consistent across runs.} The ratios of the earlier, noisier run (Section~\ref{sec:run1}) are close to these: relinearization \runoneRatiorelinearize\ and \pilotRatiorelinearize, rotation \runoneRatiorotate\ and \pilotRatiorotate, multiplication \runoneRatiomultiply\ and \pilotRatiomultiply, key generation \runoneRatiokeygen\ and \pilotRatiokeygen, addition \runoneRatioadd\ and \pilotRatioadd. The main findings therefore do not depend on one session.
+  \item \textbf{Consistent across runs.} The ratios of the earlier, noisier run (Section~\ref{sec:run1}) are close to these: relinearization \runoneRatiorelinearize\ and \pilotRatiorelinearize, rotation \runoneRatiorotate\ and \pilotRatiorotate, multiplication \runoneRatiomultiply\ and \pilotRatiomultiply, key generation \runoneRatiokeygen\ and \pilotRatiokeygen. The main findings therefore do not depend on one session.
   \item \textbf{Key generation} (context creation included in both) is \R{Speedupkeygen} times faster in OpenFHE.
-  \item \textbf{Same name, different work.} \emph{Encryption} (ratio \R{Ratioencrypt}) does not compute the same thing in the two libraries (SEAL's extra special-prime step), so its ratio is a library-level cost, not a comparison of one computation. \emph{Addition} is \R{Ratioadd} times slower with OpenFHE's \texttt{EvalAdd} but only \R{Ratioaddinplace} times with \texttt{EvalAddInPlace}: most of the gap is the copy \texttt{EvalAdd} makes, not the addition. OpenFHE's full \texttt{Decrypt} costs \R{Ratiodecryptfull} times SEAL's decrypt because it also decodes; it is never compared with SEAL's decrypt.
+  \item \textbf{End-to-end API costs} (Table~\ref{tab:api}) are reported as each library's cost of its own call, not as comparisons: OpenFHE's \texttt{EvalAdd} includes a copy of its operand (its in-place variant shows the cost of the addition itself); OpenFHE's \texttt{Decrypt} includes decoding, which SEAL's decrypt does not; and the two encryptions differ by SEAL's special-prime step.
 \end{itemize}
 
 \paragraph{SEAL in this session against the archived SEAL campaign.} \R{ReproEq} of \R{ReproN} operations are equivalent within $\pm$10\% (Table~\ref{tab:repro}), which checks that the session's conditions reproduce those of the SEAL campaign. Relinearization ran faster in this session than in the archived campaign; since both libraries' relinearization were measured in this same session, Table~\ref{tab:results} is not affected.
