@@ -1,0 +1,26 @@
+harness self-test 2026-10-20T22:44:59+01:00; code commit 80a5fdc
+  CKKS 2048/1: operations keygen encrypt decrypt add -- done (cumulative: 20 passed, 0 failed)
+  CKKS 2048/5: operations keygen encrypt decrypt add -- done (cumulative: 40 passed, 0 failed)
+  CKKS 4096/1: operations keygen encrypt decrypt add multiply relinearize -- done (cumulative: 68 passed, 0 failed)
+  BFV 4096/3: operations keygen encrypt decrypt add -- done (cumulative: 88 passed, 0 failed)
+  CKKS 4096/3: operations keygen encrypt decrypt add -- done (cumulative: 108 passed, 0 failed)
+  CKKS 4096/5: operations keygen encrypt decrypt add -- done (cumulative: 128 passed, 0 failed)
+  BFV 8192/1: operations keygen encrypt decrypt add multiply relinearize rotate -- done (cumulative: 160 passed, 0 failed)
+  BGV 8192/1: operations keygen encrypt decrypt add multiply relinearize rotate -- done (cumulative: 192 passed, 0 failed)
+  CKKS 8192/1: operations keygen encrypt decrypt add multiply relinearize rotate -- done (cumulative: 224 passed, 0 failed)
+  BFV 8192/3: operations keygen encrypt decrypt add multiply relinearize -- done (cumulative: 252 passed, 0 failed)
+  BGV 8192/3: operations keygen encrypt decrypt add multiply relinearize -- done (cumulative: 280 passed, 0 failed)
+  CKKS 8192/3: operations keygen encrypt decrypt add multiply relinearize -- done (cumulative: 308 passed, 0 failed)
+  BFV 8192/5: operations keygen encrypt decrypt add -- done (cumulative: 328 passed, 0 failed)
+  BGV 8192/5: operations keygen encrypt decrypt add -- done (cumulative: 348 passed, 0 failed)
+  CKKS 8192/5: operations keygen encrypt decrypt add -- done (cumulative: 368 passed, 0 failed)
+  BFV 16384/1: operations keygen encrypt decrypt add multiply relinearize -- done (cumulative: 396 passed, 0 failed)
+  CKKS 16384/1: operations keygen encrypt decrypt add multiply relinearize -- done (cumulative: 424 passed, 0 failed)
+fault injection (each must exit with code 3 and leave no output file):
+  ofhe CKKS: exit 3, no output file -- as required
+  seal CKKS: exit 3, no output file -- as required
+  ofhe BFV: exit 3, no output file -- as required
+  seal BFV: exit 3, no output file -- as required
+  ofhe BGV: exit 3, no output file -- as required
+  seal BGV: exit 3, no output file -- as required
+RESULT: 430 passed, 0 failed

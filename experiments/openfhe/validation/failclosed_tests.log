@@ -1,0 +1,25 @@
+fail-closed tests 2026-10-20T22:49:48+01:00; code commit fe2e67d
+TEST 1: resume with a truncated cell and a leftover .tmp
+       existing openfhe_ckks_N8192_cat1_rotate is NOT valid: leftover openfhe_ckks_N8192_cat1_rotate.csv.tmp (interrupted or failed attempt)
+       moved the invalid/partial files of openfhe_ckks_N8192_cat1_rotate to results/raw/_fc1/invalid/20261020T225001
+       existing seal_ckks_N8192_cat1_add is NOT valid: 1 data rows, expected 3
+       moved the invalid/partial files of seal_ckks_N8192_cat1_add to results/raw/_fc1/invalid/20261020T225002
+  PASS: session completes (exit 0)
+  PASS: both damaged cells detected
+  PASS: the 20 valid cells skipped
+  PASS: damaged files kept in invalid/
+TEST 2: wrong result injected into openfhe add
+    ERROR: repetition 1 of add failed its correctness check (error 0.411231) -- cell invalid, no output written (/work/results/raw/_fc2/openfhe_ckks_N8192_cat1_add.csv.invalid kept)
+    STOPPED: openfhe_ckks_N8192_cat1_add failed (exit code 3). No further cell is run. Fix the cause, then re-run this script to resume.
+  PASS: session stops with a non-zero exit (2)
+  PASS: no output file for the failed cell
+  PASS: no cell runs after the failure
+TEST 3: resume the stopped session without injection
+  PASS: session completes (exit 0)
+  PASS: all 22 cells present and valid
+TEST 4: aggregation of a session with a truncated cell and a MISMATCH row
+    EXCLUDED (invalid cell, not in the statistics): openfhe_ckks_N8192_cat1_rotate: check row 0: MISMATCH
+    EXCLUDED (invalid cell, not in the statistics): seal_ckks_N8192_cat1_add: 2 data rows, expected 3
+  PASS: both invalid cells excluded
+  PASS: no statistics row for them
+RESULT: all tests passed
