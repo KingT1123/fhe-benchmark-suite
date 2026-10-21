@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+SEAL,CKKS,8192,1,relinearize,0,7.53117e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,1,5.75182e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,2,6.37319e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,3,7.84896e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,4,9.44278e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,5,6.12818e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,6,8.41016e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,7,5.9965e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,8,7.03316e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,9,9.07565e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,10,6.60632e-09,max_norm_error,correct
+SEAL,CKKS,8192,1,relinearize,11,9.2575e-09,max_norm_error,correct

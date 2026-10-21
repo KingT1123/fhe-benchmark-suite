@@ -1,0 +1,107 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, array, amsmath, amssymb, xcolor, enumitem}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parskip}{4pt}
+\sloppy
+\newcommand{\tab}[1]{../../experiments/openfhe/pilot_tables/#1}
+\input{\tab{validation_numbers.tex}}
+
+\title{OpenFHE pilot: targeted corrections and additional validation\\[2pt]\large Summary of the changes made after the review of \texttt{openfhe-pilot-v1}}
+\author{Boungo Tr\'esor}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent This short summary accompanies the new commit (tag \texttt{openfhe-pilot-v2}; \texttt{openfhe-pilot-v1} is unchanged). It lists, point by point, what was corrected and the validation results. No complete report and no new full pilot: the pilot note (\texttt{openfhe\_pilot\_note.pdf}) and the correspondence grid were updated only where the review required it. Every number below is generated from the archived data (Section~\ref{sec:repro}).
+
+\section{Fail-closed experimental pipeline}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Harnesses.} Both \texttt{bench\_openfhe} and \texttt{bench\_seal} now check \emph{every} repetition's result by decrypt-and-compare after the timer stops (OpenFHE always; SEAL whenever \texttt{--check-out} is given, which every session script does). The rows are kept in memory and the output files are written only when every repetition ran and passed, through a temporary file renamed into place. A failed check stops the program at once (exit code 3, no output file; the rows so far are kept as \texttt{<cell>.invalid} for diagnosis); any other error gives exit code 1 and no output file. During memory measurements each check runs in a forked child process, so that it does not add to the measured peak memory.
+  \item \textbf{One definition of a valid cell} (\texttt{scripts/validate\_cell.py}): exact number of rows, iterations in order, warm-up/measured statuses, finite positive latencies, consistent identity columns, energy columns well formed, no leftover temporary or invalid file, and a correctness-check file with one ``correct'' row per repetition.
+  \item \textbf{Session scripts} (\texttt{openfhe/session\_lib.sh}): a failed invocation or a cell that does not validate \emph{stops the whole session} (non-zero exit; nothing runs after it). On resume, an existing cell is skipped only if it validates; an invalid or partial one is moved to \texttt{invalid/} (kept, never deleted) and measured again.
+  \item \textbf{Aggregation}: \texttt{aggregate.py} includes only cells that validate; excluded cells are listed with the reason.
+\end{itemize}
+\textbf{Tests} (re-runnable, logs in the repository): \FailClosedSummary. Harness self-test over the \eligible\ eligible configurations, both harnesses, every operation to be timed and both modes, plus fault injection in each harness and scheme: \SelfTestSummary.
+
+\section{Complete rotation check}
+
+The rotation check now compares the \emph{complete} rotated vector, including the wraparound slot: CKKS one cyclic vector of $N/2$ slots; BFV/BGV two rows of $N/2$ slots, each rotated cyclically (SEAL's \texttt{rotate\_rows}), in both harnesses and in the repeated correctness check. The repeated correctness check (100 independent trials per operation, new keys and inputs each time) was re-run: \textbf{\corrPassed\ of \corrTotal\ checks passed}, among them every rotation; the negative control still fails as required. The full check also confirmed that OpenFHE's BFV/BGV rotation follows SEAL's row semantics.
+
+\section{Relinearization scale test and thermal conditions}
+
+SEAL's relinearization at CKKS $N{=}8192$/category~1 was repeated in an independent session at scale $2^{40}$ and $2^{30}$ on the same primes, in 8 blocks of 25 measured repetitions alternating the scales in counterbalanced order (A B B A A B B A), so that a drift during the session affects both scales alike. The effective frequency of the measured core (hardware APERF/MPERF counters, \texttt{cpuinfo\_avg\_freq}), the frequency requested by the driver, the CPU temperature and both fan speeds were logged every second for the whole session.
+
+\begin{table}[h!]\centering\footnotesize
+\input{\tab{validation_relin.tex}}
+\caption{Relinearization, scale $2^{30}$ vs $2^{40}$, per block and pooled. Frequency and temperature: means over each block's own time window. Data: \texttt{experiments/results/final/validation\_v2.csv}.}
+\label{tab:relin}
+\end{table}
+
+\textbf{Result: equivalence is now established.} Pooled over 100 measured repetitions per scale, relinearization at $2^{30}$ costs \relinRatio\ times its cost at $2^{40}$ (90\% CI of the difference: \relinDiffLow\ to \relinDiffHigh\,\%), \relinTost\ (TOST). All eight blocks have a coefficient of variation below 1\%, and block means lie between \blockLatMin\ and \blockLatMax\,ms (a \blockLatSpread\,\% spread) whatever the scale. Together with the five operations already equivalent in the pilot, the scale value is shown not to change the cost of any measured CKKS operation at $N{=}8192$/category~1. The transient seen in the pilot (a slow start of one cell) did not recur; within this session the small residual drift follows the core frequency (block latency vs block mean frequency: $r = \relinCorrFreq$) and affects both scales alike thanks to the alternation.
+
+\paragraph{Thermal conditions.} The CPU temperature stayed at its limit throughout (median \tempMedianA\,\textdegree C; the original SEAL campaign also ran at about 95\,\textdegree C under the same load), and the effective frequency of the measured core settled at a steady median of \freqMedianA\,MHz, about \freqShareOfMax\% of the maximum boost frequency (\freqMaxBoost\,MHz): the processor runs thermally/power limited at a stable reduced frequency rather than oscillating. Across the eight blocks the mean frequency varied by only \blockFreqSpread\% (\blockFreqMin--\blockFreqMax\,MHz). Thermal conditions therefore shift \emph{absolute} latencies between sessions (SEAL's relinearization took \relinHere\,ms here against \relinPilot\,ms in the pilot and \relinArchived\,ms in the archived campaign), but within a session they are stable and common to both libraries. Hence the rule kept for the campaign: libraries are compared only within the same session, in randomized order, with the thermal log recorded.
+
+\section{Separation of equivalent computations and end-to-end API costs}
+
+The pilot note now presents two separate tables. \emph{Equivalent computational boundaries} (key generation, decryption up to SEAL's boundary, multiplication, relinearization, rotation), with an OpenFHE/SEAL ratio. \emph{End-to-end API costs} (encryption, addition, addition in place, full decryption): each library's own call, with no ratio, since the two calls do not perform the same computation (SEAL's special-prime step in encryption; the copy in OpenFHE's \texttt{EvalAdd}; the decoding in OpenFHE's \texttt{Decrypt}).
+
+\section{Final methodological corrections}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Grid, Section 9}: the campaign measures the \eligible\ configurations eligible for measurement, not the 18 security-evaluated candidates (CKKS 2048/3 excluded).
+  \item \textbf{Security of the three $N{=}8192$/category~5 configurations}: stated wherever they appear as meeting category~5 under the estimator's default cost model (and BDGL16), not under the core-SVP lower bound.
+  \item \textbf{BFV/BGV timing boundaries}: verified in both libraries' sources and implemented in \texttt{bench\_openfhe}; Table~\ref{tab:bfvbgv}. They pass the self-test for every eligible BFV/BGV configuration.
+  \item \textbf{Energy and memory}: limited validation below.
+\end{itemize}
+
+\begin{table}[h!]\centering\footnotesize
+\begin{tabular}{@{}L{2.0cm}L{6.9cm}L{7.1cm}@{}}
+\toprule
+\textbf{Operation} & \textbf{SEAL / OpenFHE (BFV, BGV)} & \textbf{Boundary} \\
+\midrule
+keygen & context (prime generation) + secret, public and relinearization keys; OpenFHE's caches released before every repetition & Same scope. \\
+encrypt & SEAL: encryption with the special prime, then modulus switch, plaintext added (BFV scaled by $\Delta$). OpenFHE: encryption modulo $Q$; BFV scales the plaintext by $Q/t$ & Different work: end-to-end API cost. \\
+decrypt & SEAL: $c_0 + c_1 s$, inverse NTT, then BFV scale-and-round by $t/q$ / BGV reduction mod $t$, to the plaintext polynomial, before batch decoding. OpenFHE: scheme-level decryption to the plaintext polynomial mod $t$ (\texttt{SchemeBase::Decrypt} to a \texttt{NativePoly}): same steps, BFV scale-and-round by the HPS method, BGV successive modulus reductions & Same boundary, different algorithms; the value is checked against the encoded input. Full API \texttt{Decrypt} (also decodes): API cost. \\
+add & \texttt{add} / \texttt{EvalAdd} (copies its operand) and \texttt{EvalAddInPlace} & As for CKKS: API cost. \\
+multiply & BFV: tensor product with scaling by $t/Q$ (SEAL: BEHZ; OpenFHE: HPS-based, its default); BGV: tensor product (no rescaling) & Same computation; BFV by different algorithms. \\
+relinearize & key switching of the product & Same method where the key-switching modulus matches (grid classification); otherwise separate analysis. \\
+rotate & \texttt{rotate\_rows} by 1 / \texttt{EvalRotate} by 1, key for that step only & Same semantics (two rows of $N/2$ slots), checked on the complete vector. \\
+\bottomrule
+\end{tabular}
+\caption{BFV/BGV timing boundaries in the two libraries (sources: SEAL 4.1.2; OpenFHE 1.5.1, \texttt{bfvrns-pke.cpp}, \texttt{bgvrns-pke.cpp}, \texttt{rns-leveledshe.cpp}).}
+\label{tab:bfvbgv}
+\end{table}
+
+\paragraph{Energy and memory: limited validation.} The dedicated energy/memory procedure of the SEAL campaign (RAPL around the timed window only, idle correction with the campaign's pooled idle baseline, memory at inner loop 1 from the process's own peak) was applied to both libraries for CKKS $N{=}8192$/category~1, key generation, encryption, multiplication and relinearization. Each energy measurement was made twice, to test repeatability, and SEAL's values were compared with the archived campaign.
+
+\begin{table}[h!]\centering\footnotesize
+\input{\tab{validation_energy.tex}}
+\caption{Energy (net of idle, J per operation) and peak memory, two independent energy invocations and three memory invocations per cell. Archived: the SEAL campaign's values for the same cells.}
+\label{tab:energy}
+\end{table}
+
+\textbf{Result.} (i) \emph{Repeatability}: the two independent energy invocations agree within $\pm$10\% (TOST) for \energyRepEq\ of \energyRepN\ cells, net and gross; memory is repeatable over three invocations (standard deviation at most \memStdMax\,MB), and SEAL's peak memory reproduces the archived campaign within \memArchivedMaxDev\%. (ii) \emph{Idle correction}: the machine's idle power in this session was \idleSession\,W (median of the session's own readings), against \idleCampaign\,W in the SEAL campaign, which ran with other programs open. Subtracting the campaign's baseline from this session would be wrong (it over-subtracts and destabilizes the net values); the idle baseline must be measured in the same session, as now done by \texttt{aggregate.py}. (iii) \emph{Absolute values}: SEAL's gross energy per operation is \grossLowerMin--\grossLowerMax\% lower than in the archived campaign, consistent with the different background load and core frequency. Energy is therefore reproducible within a session, but its absolute level depends on the machine's state; as for latency, energy comparisons are made only within one session, with that session's idle baseline, and the background state is controlled and recorded (other programs closed, as here).
+
+\section{Reproduction}
+\label{sec:repro}
+{\footnotesize
+\begin{tabular}{@{}L{5.2cm}L{11.3cm}@{}}
+\toprule
+Step & Command (from the repository root) \\
+\midrule
+Build & \texttt{bash experiments/seal/docker\_build\_and\_run.sh}; \texttt{bash experiments/openfhe/docker\_build.sh} \\
+Fail-closed tests & \texttt{bash experiments/openfhe/validation/failclosed\_tests.sh} \\
+Harness self-test & \texttt{bash experiments/openfhe/validation/harness\_selftest.sh} \\
+Repeated correctness & \texttt{bash experiments/openfhe/correctness/run\_correctness\_docker.sh} \\
+Validation session & \texttt{sudo bash experiments/openfhe/run\_validation\_session.sh} \\
+Statistics, tables & \texttt{cd experiments/scripts; python3 aggregate.py --scenario=validation}; \texttt{cd ../openfhe; python3 make\_pilot\_tables.py} \\
+\bottomrule
+\end{tabular}}
+
+\end{document}

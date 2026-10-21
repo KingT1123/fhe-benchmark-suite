@@ -1873,12 +1873,16 @@ def aggregate_validation(args):
          pooled per scale (all measured repetitions of its 4 blocks): TOST
          +/-5% (Welch); correlation of block latency with block frequency and
          with block position.
-      B. energy: per invocation, net J/op with the pooled idle baseline of the
-         SEAL campaign (pooled_idle_baseline, the same correction) and gross
-         J/op; repeatability = invocation 2 vs 1 (TOST +/-10%); SEAL vs the
-         archived campaign (seal_standard.csv energy_net_j_per_op, TOST
-         +/-10%). Memory: VmHWM of the 3 inner-loop-1 invocations; SEAL vs the
-         archived campaign.
+      B. energy: per invocation, gross J/op (package energy of the timed
+         window) and net J/op = gross minus idle power x window, with the idle
+         baseline of THIS SESSION (median of its own per-invocation idle
+         readings, the same pooling rule as pooled_idle_baseline applied to
+         the session); the net with the SEAL campaign's baseline is also
+         written, to show why a baseline from another session must not be
+         used. Repeatability = invocation 2 vs 1 (TOST +/-10%, on net with the
+         session baseline, and on gross); SEAL vs the archived campaign
+         (gross and net, each with its own session's baseline). Memory: VmHWM
+         of the 3 inner-loop-1 invocations; SEAL vs the archived campaign.
       Thermal: per part, median effective frequency and temperature and the
          share of samples below 90% of the maximum boost frequency."""
     from validate_cell import validate
@@ -1946,8 +1950,16 @@ def aggregate_validation(args):
         put("A", "scale 2^30 vs 2^40", "tost_5pct", "NOT COMPUTED: invalid or missing blocks")
 
     # ---- B energy and memory
-    base_w = pooled_idle_baseline()
-    put("B", "idle baseline (SEAL campaign, pooled median)", "watts", base_w)
+    campaign_w = pooled_idle_baseline()
+    own = []
+    for f in glob.glob(os.path.join(raw, "*_energy[12].csv")):
+        if validate(f, er + ew, ew, f[:-4].replace(raw, os.path.join(raw, "checks")) + "_check.csv")[0]:
+            m = [r for r in csv.DictReader(open(f)) if r["status"] == "measured"]
+            if m and m[0].get("idle_power_w"):
+                own.append(float(m[0]["idle_power_w"]))
+    base_w = statistics.median(own) if own else float("nan")
+    put("B", "idle baseline, this session (median of its readings)", "watts", base_w, n=len(own))
+    put("B", "idle baseline, SEAL campaign (pooled median)", "watts", campaign_w)
     archived = {}
     for r in csv.DictReader(open("../results/final/seal_standard.csv")):
         if (r["library"], r["scheme"], r["N"], r["category"]) == ("SEAL", "CKKS", "8192", "1") and r["mean"]:
@@ -1955,7 +1967,7 @@ def aggregate_validation(args):
     plan = list(csv.DictReader(open("../openfhe/validation/energy_plan_ckks8192.csv")))
     for p in plan:
         lib, op = p["library"], p["operation"]
-        nets, own_idle = {}, []
+        nets, grosses, own_idle = {}, {}, []
         for k in (1, 2):
             tag = f"{lib}_ckks_N8192_cat1_{op}_energy{k}"
             if not valid(tag, er + ew, ew):
@@ -1966,11 +1978,15 @@ def aggregate_validation(args):
                 continue
             net = [(int(r["energy_uj"]) / 1e6 - base_w * float(r["latency_ms"]) * int(r["inner_loop"]) / 1000)
                    / int(r["inner_loop"]) for r in rows]
+            net_campaign = [(int(r["energy_uj"]) / 1e6 - campaign_w * float(r["latency_ms"]) * int(r["inner_loop"]) / 1000)
+                            / int(r["inner_loop"]) for r in rows]
             gross = [int(r["energy_uj"]) / 1e6 / int(r["inner_loop"]) for r in rows]
             power = [int(r["energy_uj"]) / 1e6 / (float(r["latency_ms"]) * int(r["inner_loop"]) / 1000) for r in rows]
             own_idle.append(float(rows[0]["idle_power_w"]))
             nets[k] = _stats(net)
-            for m, v in (("energy_net_j_per_op", net), ("energy_pkg_j_per_op", gross), ("package_power_w", power)):
+            grosses[k] = _stats(gross)
+            for m, v in (("energy_net_j_per_op", net), ("energy_pkg_j_per_op", gross), ("package_power_w", power),
+                         ("energy_net_j_per_op_campaign_baseline", net_campaign)):
                 st = _stats(v)
                 put("B", tag, m, st["mean"], std=st["std"], ci_low=st["ci_low"], ci_high=st["ci_high"], n=st["n"])
             put("B", tag, "idle_power_w_own_reading", rows[0]["idle_power_w"])
@@ -1980,13 +1996,15 @@ def aggregate_validation(args):
             tt = tost_equivalence(a["mean"], a["std"], a["n"], b["mean"], b["std"], b["n"], 0.10)
             put("B", item, "energy_repeatability_ratio_inv2_inv1", b["mean"] / a["mean"])
             put("B", item, "energy_repeatability_tost_10pct", tt["verdict"])
-            if lib == "seal" and (op, "energy_net_j_per_op") in archived:
-                ar = archived[(op, "energy_net_j_per_op")]
-                pooled_net = [x for x in (nets[1]["mean"], nets[2]["mean"])]
-                both = _stats(pooled_net)
-                put("B", item, "energy_vs_archived_ratio", both["mean"] / float(ar["mean"]))
-                t2 = tost_equivalence(float(ar["mean"]), float(ar["std"]), 30, a["mean"], a["std"], a["n"], 0.10)
-                put("B", item, "energy_vs_archived_tost_10pct_invocation1", t2["verdict"])
+            ga, gb = grosses[1], grosses[2]
+            tg = tost_equivalence(ga["mean"], ga["std"], ga["n"], gb["mean"], gb["std"], gb["n"], 0.10)
+            put("B", item, "gross_repeatability_ratio_inv2_inv1", gb["mean"] / ga["mean"])
+            put("B", item, "gross_repeatability_tost_10pct", tg["verdict"])
+            if lib == "seal" and (op, "energy_pkg_j_per_op") in archived:
+                put("B", item, "gross_vs_archived_ratio",
+                    (ga["mean"] + gb["mean"]) / 2 / float(archived[(op, "energy_pkg_j_per_op")]["mean"]))
+                put("B", item, "net_vs_archived_ratio",
+                    (a["mean"] + b["mean"]) / 2 / float(archived[(op, "energy_net_j_per_op")]["mean"]))
         else:
             put("B", item, "energy_repeatability_tost_10pct", "NOT COMPUTED: invalid or missing invocation")
         peaks = []

@@ -1,0 +1,173 @@
+part,item,metric,value,n,std,ci_low,ci_high
+A,seal_ckks_N8192_cat1_relinearize_scale40_b1,latency_ms,1.8421872,25,0.009436183691867536,1.8382921348102192,1.8460822651897806
+A,seal_ckks_N8192_cat1_relinearize_scale40_b1,effective_freq_mhz_mean,4353.465772200772,259,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b1,temp_c_mean,94.81129343629344,259,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b2,latency_ms,1.8416096,25,0.004631871903813122,1.8396976572480148,1.843521542751985
+A,seal_ckks_N8192_cat1_relinearize_scale30_b2,effective_freq_mhz_mean,4371.42391372549,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b2,temp_c_mean,95.09656862745098,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b3,latency_ms,1.835848,25,0.0038082662284387044,1.8342760249617658,1.837419975038234
+A,seal_ckks_N8192_cat1_relinearize_scale30_b3,effective_freq_mhz_mean,4387.70059375,256,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b3,temp_c_mean,95.13134765625,256,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b4,latency_ms,1.8239292,25,0.004037989309875247,1.822262399934296,1.825596000065704
+A,seal_ckks_N8192_cat1_relinearize_scale40_b4,effective_freq_mhz_mean,4397.372140625,256,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b4,temp_c_mean,95.1171875,256,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b5,latency_ms,1.8325932,25,0.002937292857944759,1.8313807450990816,1.8338056549009185
+A,seal_ckks_N8192_cat1_relinearize_scale40_b5,effective_freq_mhz_mean,4398.450125490196,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b5,temp_c_mean,95.10980392156863,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b6,latency_ms,1.8305324,25,0.003924996050953429,1.8289122412592083,1.8321525587407919
+A,seal_ckks_N8192_cat1_relinearize_scale30_b6,effective_freq_mhz_mean,4397.28469140625,256,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b6,temp_c_mean,95.119140625,256,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b7,latency_ms,1.840634,25,0.0028885867363355,1.839441649997948,1.8418263500020522
+A,seal_ckks_N8192_cat1_relinearize_scale30_b7,effective_freq_mhz_mean,4397.9198588235295,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale30_b7,temp_c_mean,95.08235294117647,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b8,latency_ms,1.8210712,25,0.0037120752506740197,1.8195389306458958,1.8226034693541042
+A,seal_ckks_N8192_cat1_relinearize_scale40_b8,effective_freq_mhz_mean,4400.707090196079,255,,,
+A,seal_ckks_N8192_cat1_relinearize_scale40_b8,temp_c_mean,95.13088235294117,255,,,
+A,pooled scale 2^40,latency_ms,1.8299452,100,0.009980568846766728,1.827964838610777,1.8319255613892231
+A,pooled scale 2^30,latency_ms,1.837156,100,0.005835115918109749,1.8359981864080814,1.8383138135919186
+A,scale 2^30 vs 2^40,ratio,1.0039404458669035,,,,
+A,scale 2^30 vs 2^40,diff_ms_ci90,0.007210799999999962,,,0.0052980562817993545,0.00912354371820057
+A,scale 2^30 vs 2^40,tost_5pct,equivalent_within_margin,,,,
+A,blocks,corr_latency_vs_effective_freq,-0.6798448152878032,,,,
+A,blocks,corr_latency_vs_position,-0.579678537022619,,,,
+B,"idle baseline, this session (median of its readings)",watts,5.8250150000000005,16,,,
+B,"idle baseline, SEAL campaign (pooled median)",watts,13.538350000000001,,,,
+B,seal_ckks_N8192_cat1_keygen_energy1,energy_net_j_per_op,0.6299653734023666,30,0.12342578518735141,0.5838774277792226,0.6760533190255106
+B,seal_ckks_N8192_cat1_keygen_energy1,energy_pkg_j_per_op,1.0015098,30,0.12471158852698548,0.9549417275191726,1.0480778724808275
+B,seal_ckks_N8192_cat1_keygen_energy1,package_power_w,15.69638621971012,30,1.8943048013001733,14.989041182014303,16.403731257405937
+B,seal_ckks_N8192_cat1_keygen_energy1,energy_net_j_per_op_campaign_baseline,0.13797580260633324,30,0.12189978185711188,0.09245767599141398,0.18349392922125252
+B,seal_ckks_N8192_cat1_keygen_energy1,idle_power_w_own_reading,6.12261,,,,
+B,seal_ckks_N8192_cat1_keygen_energy2,energy_net_j_per_op,0.6251188819715999,30,0.10278680473825352,0.5867376583045795,0.6635001056386204
+B,seal_ckks_N8192_cat1_keygen_energy2,energy_pkg_j_per_op,0.9963775333333333,30,0.10329669266552913,0.9578059143852093,1.0349491522814573
+B,seal_ckks_N8192_cat1_keygen_energy2,package_power_w,15.632133943732999,30,1.6036809012242703,15.033309653814095,16.2309582336519
+B,seal_ckks_N8192_cat1_keygen_energy2,energy_net_j_per_op_campaign_baseline,0.13350772739066658,30,0.10231681225268456,0.0953020018019878,0.17171345297934534
+B,seal_ckks_N8192_cat1_keygen_energy2,idle_power_w_own_reading,6.04459,,,,
+B,seal keygen,energy_repeatability_ratio_inv2_inv1,0.9923067336152281,,,,
+B,seal keygen,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal keygen,gross_repeatability_ratio_inv2_inv1,0.9948754703482017,,,,
+B,seal keygen,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal keygen,gross_vs_archived_ratio,0.764641171832113,,,,
+B,seal keygen,net_vs_archived_ratio,1.4289943742651396,,,,
+B,seal keygen,peak_memory_mb,15.147135416666666,3,0.10113592306839263,,
+B,seal keygen,memory_vs_archived_ratio,0.9977699631186208,,,,
+B,openfhe_ckks_N8192_cat1_keygen_energy1,energy_net_j_per_op,0.19806222377498334,30,0.013696702897055789,0.19294779085987027,0.2031766566900964
+B,openfhe_ckks_N8192_cat1_keygen_energy1,energy_pkg_j_per_op,0.2758488333333333,30,0.013905432520851475,0.2706564594957717,0.2810412071708949
+B,openfhe_ckks_N8192_cat1_keygen_energy1,package_power_w,20.657410182944894,30,1.0120791949431167,20.279493600667937,21.03532676522185
+B,openfhe_ckks_N8192_cat1_keygen_energy1,energy_net_j_per_op_campaign_baseline,0.09505919665183332,30,0.013543357673881219,0.09000202378409616,0.10011636951957048
+B,openfhe_ckks_N8192_cat1_keygen_energy1,idle_power_w_own_reading,5.85989,,,,
+B,openfhe_ckks_N8192_cat1_keygen_energy2,energy_net_j_per_op,0.19971746430303333,30,0.022798737033019024,0.19120427598456988,0.2082306526214968
+B,openfhe_ckks_N8192_cat1_keygen_energy2,energy_pkg_j_per_op,0.27836693333333334,30,0.023436615876007788,0.2696155571403897,0.287118309526277
+B,openfhe_ckks_N8192_cat1_keygen_energy2,package_power_w,20.60795560676573,30,1.565989576416374,20.02320548883264,21.192705724698822
+B,openfhe_ckks_N8192_cat1_keygen_energy2,energy_net_j_per_op_campaign_baseline,0.09557186086633332,30,0.022038083827054952,0.08734270512292157,0.10380101660974507
+B,openfhe_ckks_N8192_cat1_keygen_energy2,idle_power_w_own_reading,5.951,,,,
+B,openfhe keygen,energy_repeatability_ratio_inv2_inv1,1.0083571743086683,,,,
+B,openfhe keygen,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe keygen,gross_repeatability_ratio_inv2_inv1,1.009128550480245,,,,
+B,openfhe keygen,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe keygen,peak_memory_mb,13.334635416666666,3,0.10491269311710254,,
+B,seal_ckks_N8192_cat1_encrypt_energy1,energy_net_j_per_op,0.03910830370114,30,0.0022988116825675754,0.038249913311618054,0.03996669409066194
+B,seal_ckks_N8192_cat1_encrypt_energy1,energy_pkg_j_per_op,0.0542529,30,0.0023522898791373875,0.05337454052369613,0.055131259476303866
+B,seal_ckks_N8192_cat1_encrypt_energy1,package_power_w,20.864458498560527,30,0.8261138436014991,20.555982519698905,21.17293447742215
+B,seal_ckks_N8192_cat1_encrypt_energy1,energy_net_j_per_op_campaign_baseline,0.019054218914599998,30,0.0022294437641643223,0.018221730931503963,0.019886706897696033
+B,seal_ckks_N8192_cat1_encrypt_energy1,idle_power_w_own_reading,6.13267,,,,
+B,seal_ckks_N8192_cat1_encrypt_energy2,energy_net_j_per_op,0.038413640609404706,30,0.001900680382764741,0.03770391489046462,0.039123366328344795
+B,seal_ckks_N8192_cat1_encrypt_energy2,energy_pkg_j_per_op,0.053559596078431373,30,0.001967515830752783,0.052824913593059575,0.05429427856380317
+B,seal_ckks_N8192_cat1_encrypt_energy2,package_power_w,20.596214216672173,30,0.6635580569995646,20.348437566093256,20.84399086725109
+B,seal_ckks_N8192_cat1_encrypt_energy2,energy_net_j_per_op_campaign_baseline,0.018357756044698036,30,0.001816746332180451,0.017679371815329085,0.019036140274066988
+B,seal_ckks_N8192_cat1_encrypt_energy2,idle_power_w_own_reading,5.18349,,,,
+B,seal encrypt,energy_repeatability_ratio_inv2_inv1,0.9822374527659444,,,,
+B,seal encrypt,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal encrypt,gross_repeatability_ratio_inv2_inv1,0.98722088733379,,,,
+B,seal encrypt,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal encrypt,gross_vs_archived_ratio,0.9314240320473828,,,,
+B,seal encrypt,net_vs_archived_ratio,1.8817091117983733,,,,
+B,seal encrypt,peak_memory_mb,16.565104166666668,3,0.10278213995763483,,
+B,seal encrypt,memory_vs_archived_ratio,0.9991361030393467,,,,
+B,openfhe_ckks_N8192_cat1_encrypt_energy1,energy_net_j_per_op,0.04299077020687735,30,0.0038698242048150976,0.04154575410062436,0.044435786313130346
+B,openfhe_ckks_N8192_cat1_encrypt_energy1,energy_pkg_j_per_op,0.058222798039215685,30,0.0040080835013086005,0.05672615506318816,0.05971944101524321
+B,openfhe_ckks_N8192_cat1_encrypt_energy1,package_power_w,22.256061243978547,30,1.322867162528277,21.762094527374714,22.75002796058238
+B,openfhe_ckks_N8192_cat1_encrypt_energy1,energy_net_j_per_op_campaign_baseline,0.022820910833099017,30,0.003697717864294352,0.021440160290571452,0.02420166137562658
+B,openfhe_ckks_N8192_cat1_encrypt_energy1,idle_power_w_own_reading,5.58212,,,,
+B,openfhe_ckks_N8192_cat1_encrypt_energy2,energy_net_j_per_op,0.04162605330689206,30,0.002264721459580025,0.04078039241583711,0.042471714197947
+B,openfhe_ckks_N8192_cat1_encrypt_energy2,energy_pkg_j_per_op,0.05688206078431372,30,0.0023904822025268,0.0559894400600792,0.057774681508548247
+B,openfhe_ckks_N8192_cat1_encrypt_energy2,package_power_w,21.714889323280676,30,0.755242837021163,21.432877013194375,21.996901633366978
+B,openfhe_ckks_N8192_cat1_encrypt_energy2,energy_net_j_per_op_campaign_baseline,0.02142444070403039,30,0.002118345728190874,0.02063343740934861,0.022215443998712166
+B,openfhe_ckks_N8192_cat1_encrypt_energy2,idle_power_w_own_reading,5.79014,,,,
+B,openfhe encrypt,energy_repeatability_ratio_inv2_inv1,0.9682555838516478,,,,
+B,openfhe encrypt,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe encrypt,gross_repeatability_ratio_inv2_inv1,0.9769722977930584,,,,
+B,openfhe encrypt,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe encrypt,peak_memory_mb,13.377604166666666,3,0.04976956993129269,,
+B,seal_ckks_N8192_cat1_multiply_energy1,energy_net_j_per_op,0.006223871635170381,30,0.0004544275331965784,0.006054185605562934,0.0063935576647778285
+B,seal_ckks_N8192_cat1_multiply_energy1,energy_pkg_j_per_op,0.008608714714714714,30,0.00046219136590290436,0.008436129622329962,0.008781299807099466
+B,seal_ckks_N8192_cat1_multiply_energy1,package_power_w,21.023913959100028,30,1.0528822370702051,20.630761270494418,21.41706664770564
+B,seal_ckks_N8192_cat1_multiply_energy1,energy_net_j_per_op_campaign_baseline,0.0030659237852580477,30,0.00044449469506956156,0.002899946738362653,0.0032319008321534423
+B,seal_ckks_N8192_cat1_multiply_energy1,idle_power_w_own_reading,5.94222,,,,
+B,seal_ckks_N8192_cat1_multiply_energy2,energy_net_j_per_op,0.0064280443897828795,30,0.0008284098907066729,0.006118711052841901,0.006737377726723858
+B,seal_ckks_N8192_cat1_multiply_energy2,energy_pkg_j_per_op,0.00881827987987988,30,0.0008426051511215766,0.008503645945587097,0.009132913814172664
+B,seal_ckks_N8192_cat1_multiply_energy2,package_power_w,21.479749896477596,30,1.9015730884931974,20.76969083574018,22.18980895721501
+B,seal_ckks_N8192_cat1_multiply_energy2,energy_net_j_per_op_campaign_baseline,0.0032629560485498794,30,0.0008099063965390204,0.00296053202988257,0.003565380067217189
+B,seal_ckks_N8192_cat1_multiply_energy2,idle_power_w_own_reading,5.36827,,,,
+B,seal multiply,energy_repeatability_ratio_inv2_inv1,1.0328047823895887,,,,
+B,seal multiply,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal multiply,gross_repeatability_ratio_inv2_inv1,1.0243433743723624,,,,
+B,seal multiply,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal multiply,gross_vs_archived_ratio,0.8715561026987922,,,,
+B,seal multiply,net_vs_archived_ratio,1.5429455739497338,,,,
+B,seal multiply,peak_memory_mb,17.907552083333332,3,0.14460161575392522,,
+B,seal multiply,memory_vs_archived_ratio,1.002040072859745,,,,
+B,openfhe_ckks_N8192_cat1_multiply_energy1,energy_net_j_per_op,0.007013098096384083,30,0.0005717307045094726,0.006799610342747214,0.007226585850020952
+B,openfhe_ckks_N8192_cat1_multiply_energy1,energy_pkg_j_per_op,0.009563949249249248,30,0.0005873574882445182,0.009344626358667922,0.009783272139830575
+B,openfhe_ckks_N8192_cat1_multiply_energy1,package_power_w,21.833905233353857,30,1.2020113089916133,21.38506683412375,22.282743632583962
+B,openfhe_ckks_N8192_cat1_multiply_energy1,energy_net_j_per_op_campaign_baseline,0.0036353266267509154,30,0.0005521549264959361,0.0034291485887561154,0.0038415046647457154
+B,openfhe_ckks_N8192_cat1_multiply_energy1,idle_power_w_own_reading,6.18466,,,,
+B,openfhe_ckks_N8192_cat1_multiply_energy2,energy_net_j_per_op,0.006947331559321936,30,0.0006125559390867431,0.006718599412559326,0.007176063706084547
+B,openfhe_ckks_N8192_cat1_multiply_energy2,energy_pkg_j_per_op,0.009491936936936937,30,0.0006236152152113303,0.009259075188601303,0.009724798685272571
+B,openfhe_ckks_N8192_cat1_multiply_energy2,package_power_w,21.723725980857935,30,1.324126609747599,21.229288978933486,22.218162982782385
+B,openfhe_ckks_N8192_cat1_multiply_energy2,energy_net_j_per_op_campaign_baseline,0.0035778305845869363,30,0.0005985451274800278,0.0033543301608592348,0.003801331008314638
+B,openfhe_ckks_N8192_cat1_multiply_energy2,idle_power_w_own_reading,5.25031,,,,
+B,openfhe multiply,energy_repeatability_ratio_inv2_inv1,0.9906223275137053,,,,
+B,openfhe multiply,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe multiply,gross_repeatability_ratio_inv2_inv1,0.9924704418190045,,,,
+B,openfhe multiply,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe multiply,peak_memory_mb,14.005208333333334,3,0.10128668477653335,,
+B,seal_ckks_N8192_cat1_relinearize_energy1,energy_net_j_per_op,0.026256475137181375,30,0.00252311546853798,0.025314328337480006,0.027198621936882744
+B,seal_ckks_N8192_cat1_relinearize_energy1,energy_pkg_j_per_op,0.03666191884057971,30,0.002567735687846478,0.035703110577165055,0.03762072710399437
+B,seal_ckks_N8192_cat1_relinearize_energy1,package_power_w,20.518211646359482,30,1.3362466614775361,20.019248942741246,21.01717434997772
+B,seal_ckks_N8192_cat1_relinearize_energy1,energy_net_j_per_op_campaign_baseline,0.01247785429106304,30,0.0024649909373563508,0.011557411548001077,0.013398297034125003
+B,seal_ckks_N8192_cat1_relinearize_energy1,idle_power_w_own_reading,5.99187,,,,
+B,seal_ckks_N8192_cat1_relinearize_energy2,energy_net_j_per_op,0.02602655501819913,30,0.0015557856949257884,0.025445615092233375,0.026607494944164884
+B,seal_ckks_N8192_cat1_relinearize_energy2,energy_pkg_j_per_op,0.03643528985507247,30,0.0016002378757618088,0.03583775121199026,0.037032828498154674
+B,seal_ckks_N8192_cat1_relinearize_energy2,package_power_w,20.387347609062783,30,0.8064826261566755,20.08620204726709,20.688493170858475
+B,seal_ckks_N8192_cat1_relinearize_energy2,energy_net_j_per_op_campaign_baseline,0.012243576137805797,30,0.0014999530055315928,0.011683484480691545,0.01280366779492005
+B,seal_ckks_N8192_cat1_relinearize_energy2,idle_power_w_own_reading,5.62946,,,,
+B,seal relinearize,energy_repeatability_ratio_inv2_inv1,0.9912432983566534,,,,
+B,seal relinearize,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal relinearize,gross_repeatability_ratio_inv2_inv1,0.9938184090556549,,,,
+B,seal relinearize,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,seal relinearize,gross_vs_archived_ratio,0.908637635006903,,,,
+B,seal relinearize,net_vs_archived_ratio,1.8148844819874042,,,,
+B,seal relinearize,peak_memory_mb,18.196614583333332,3,0.03275975423283626,,
+B,seal relinearize,memory_vs_archived_ratio,0.9967902995720399,,,,
+B,openfhe_ckks_N8192_cat1_relinearize_energy1,energy_net_j_per_op,0.054517824390003584,30,0.0018362363507471707,0.053832162468096294,0.055203486311910875
+B,openfhe_ckks_N8192_cat1_relinearize_energy1,energy_pkg_j_per_op,0.07529361025641025,30,0.0019493261325179813,0.07456571991598511,0.07602150059683539
+B,openfhe_ckks_N8192_cat1_relinearize_energy1,package_power_w,21.108765243210012,30,0.43527150123026925,20.94623219349472,21.271298292925305
+B,openfhe_ckks_N8192_cat1_relinearize_energy1,energy_net_j_per_op_campaign_baseline,0.027007063254476917,30,0.001698160904266397,0.02637295955162116,0.027641166957332673
+B,openfhe_ckks_N8192_cat1_relinearize_energy1,idle_power_w_own_reading,5.38234,,,,
+B,openfhe_ckks_N8192_cat1_relinearize_energy2,energy_net_j_per_op,0.05603509839711436,30,0.005753732386737562,0.05388661941464273,0.058183577379585995
+B,openfhe_ckks_N8192_cat1_relinearize_energy2,energy_pkg_j_per_op,0.07687384102564103,30,0.005919151737086064,0.07466359344261073,0.07908408860867133
+B,openfhe_ckks_N8192_cat1_relinearize_energy2,package_power_w,21.477594063867446,30,1.4600075438672344,20.9324182872743,22.022769840460594
+B,openfhe_ckks_N8192_cat1_relinearize_energy2,energy_net_j_per_op_campaign_baseline,0.02844097153690769,30,0.0055371889713138785,0.02637335119462982,0.030508591879185563
+B,openfhe_ckks_N8192_cat1_relinearize_energy2,idle_power_w_own_reading,5.52932,,,,
+B,openfhe relinearize,energy_repeatability_ratio_inv2_inv1,1.0278307878952886,,,,
+B,openfhe relinearize,energy_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe relinearize,gross_repeatability_ratio_inv2_inv1,1.0209875813345826,,,,
+B,openfhe relinearize,gross_repeatability_tost_10pct,equivalent_within_margin,,,,
+B,openfhe relinearize,peak_memory_mb,14.770833333333334,3,0.08781101718795503,,
+thermal,part A,effective_freq_mhz_median,4395.492,2047,,,
+thermal,part A,temp_c_median,95.125,2047,,,
+thermal,part A,share_below_90pct_max_boost,0.9247679531021006,2047,,,
+thermal,part B,effective_freq_mhz_median,4397.015,2428,,,
+thermal,part B,temp_c_median,95.125,2428,,,
+thermal,part B,share_below_90pct_max_boost,0.85667215815486,2428,,,
+thermal,max boost frequency,mhz,4936.631,,,,

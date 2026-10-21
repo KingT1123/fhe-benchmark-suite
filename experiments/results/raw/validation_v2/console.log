@@ -1,0 +1,100 @@
+nohup: ignoring input
+== A. relinearization scale test, 8 alternating blocks ==
+[A 1/8] 23:25:48 seal_ckks_N8192_cat1_relinearize_scale40_b1  (CPU 53 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale40_b1.csv
+[A 2/8] 23:30:09 seal_ckks_N8192_cat1_relinearize_scale30_b2  (CPU 92 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale30_b2.csv
+[A 3/8] 23:34:26 seal_ckks_N8192_cat1_relinearize_scale30_b3  (CPU 93 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale30_b3.csv
+[A 4/8] 23:38:44 seal_ckks_N8192_cat1_relinearize_scale40_b4  (CPU 93 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale40_b4.csv
+[A 5/8] 23:43:02 seal_ckks_N8192_cat1_relinearize_scale40_b5  (CPU 92 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale40_b5.csv
+[A 6/8] 23:47:20 seal_ckks_N8192_cat1_relinearize_scale30_b6  (CPU 93 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale30_b6.csv
+[A 7/8] 23:51:38 seal_ckks_N8192_cat1_relinearize_scale30_b7  (CPU 92 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale30_b7.csv
+[A 8/8] 23:55:55 seal_ckks_N8192_cat1_relinearize_scale40_b8  (CPU 92 °C)
+OK: wrote 30 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_scale40_b8.csv
+== B. energy/memory validation ==
+[B 1/40] 00:00:12 seal_ckks_N8192_cat1_keygen_energy2  (CPU 94 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_keygen_energy2.csv
+[B 2/40] 00:00:27 openfhe_ckks_N8192_cat1_encrypt_mem3  (CPU 70 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_encrypt_mem3.csv (all 12 checks correct)
+[B 3/40] 00:00:28 openfhe_ckks_N8192_cat1_encrypt_mem2  (CPU 72 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_encrypt_mem2.csv (all 12 checks correct)
+[B 4/40] 00:00:28 openfhe_ckks_N8192_cat1_relinearize_energy2  (CPU 74 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_relinearize_energy2.csv (all 32 checks correct)
+[B 5/40] 00:00:45 openfhe_ckks_N8192_cat1_multiply_mem1  (CPU 92 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[B 6/40] 00:00:46 openfhe_ckks_N8192_cat1_encrypt_energy2  (CPU 90 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_encrypt_energy2.csv (all 32 checks correct)
+[B 7/40] 00:01:00 seal_ckks_N8192_cat1_relinearize_mem1  (CPU 88 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_mem1.csv
+[B 8/40] 00:01:01 seal_ckks_N8192_cat1_encrypt_mem3  (CPU 86 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_encrypt_mem3.csv
+[B 9/40] 00:01:01 seal_ckks_N8192_cat1_multiply_mem1  (CPU 83 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_multiply_mem1.csv
+[B 10/40] 00:01:02 openfhe_ckks_N8192_cat1_relinearize_mem2  (CPU 82 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[B 11/40] 00:01:02 openfhe_ckks_N8192_cat1_encrypt_mem1  (CPU 82 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_encrypt_mem1.csv (all 12 checks correct)
+[B 12/40] 00:01:03 seal_ckks_N8192_cat1_encrypt_energy1  (CPU 81 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_encrypt_energy1.csv
+[B 13/40] 00:01:17 seal_ckks_N8192_cat1_multiply_energy2  (CPU 87 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_multiply_energy2.csv
+[B 14/40] 00:01:53 seal_ckks_N8192_cat1_relinearize_mem3  (CPU 93 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_mem3.csv
+[B 15/40] 00:01:53 openfhe_ckks_N8192_cat1_keygen_energy1  (CPU 90 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_keygen_energy1.csv (all 32 checks correct)
+[B 16/40] 00:02:06 openfhe_ckks_N8192_cat1_keygen_mem2  (CPU 81 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_keygen_mem2.csv (all 12 checks correct)
+[B 17/40] 00:02:07 seal_ckks_N8192_cat1_encrypt_energy2  (CPU 82 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_encrypt_energy2.csv
+[B 18/40] 00:02:21 openfhe_ckks_N8192_cat1_keygen_mem1  (CPU 87 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_keygen_mem1.csv (all 12 checks correct)
+[B 19/40] 00:02:22 openfhe_ckks_N8192_cat1_relinearize_energy1  (CPU 86 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_relinearize_energy1.csv (all 32 checks correct)
+[B 20/40] 00:02:39 openfhe_ckks_N8192_cat1_relinearize_mem3  (CPU 92 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_relinearize_mem3.csv (all 12 checks correct)
+[B 21/40] 00:02:40 seal_ckks_N8192_cat1_keygen_energy1  (CPU 89 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_keygen_energy1.csv
+[B 22/40] 00:02:54 openfhe_ckks_N8192_cat1_encrypt_energy1  (CPU 68 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_encrypt_energy1.csv (all 32 checks correct)
+[B 23/40] 00:03:08 seal_ckks_N8192_cat1_multiply_energy1  (CPU 88 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_multiply_energy1.csv
+[B 24/40] 00:03:44 seal_ckks_N8192_cat1_relinearize_mem2  (CPU 93 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_mem2.csv
+[B 25/40] 00:03:45 openfhe_ckks_N8192_cat1_multiply_mem2  (CPU 89 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_multiply_mem2.csv (all 12 checks correct)
+[B 26/40] 00:03:45 seal_ckks_N8192_cat1_relinearize_energy1  (CPU 87 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_energy1.csv
+[B 27/40] 00:04:04 seal_ckks_N8192_cat1_relinearize_energy2  (CPU 93 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_relinearize_energy2.csv
+[B 28/40] 00:04:23 seal_ckks_N8192_cat1_keygen_mem3  (CPU 92 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_keygen_mem3.csv
+[B 29/40] 00:04:24 seal_ckks_N8192_cat1_multiply_mem3  (CPU 82 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_multiply_mem3.csv
+[B 30/40] 00:04:24 openfhe_ckks_N8192_cat1_multiply_energy1  (CPU 80 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[B 31/40] 00:05:02 seal_ckks_N8192_cat1_keygen_mem1  (CPU 93 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_keygen_mem1.csv
+[B 32/40] 00:05:03 seal_ckks_N8192_cat1_encrypt_mem2  (CPU 83 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_encrypt_mem2.csv
+[B 33/40] 00:05:04 seal_ckks_N8192_cat1_keygen_mem2  (CPU 81 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_keygen_mem2.csv
+[B 34/40] 00:05:05 openfhe_ckks_N8192_cat1_keygen_energy2  (CPU 77 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_keygen_energy2.csv (all 32 checks correct)
+[B 35/40] 00:05:18 openfhe_ckks_N8192_cat1_multiply_energy2  (CPU 80 °C)
+OK: wrote 32 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_multiply_energy2.csv (all 32 checks correct)
+[B 36/40] 00:05:56 seal_ckks_N8192_cat1_multiply_mem2  (CPU 93 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_multiply_mem2.csv
+[B 37/40] 00:05:56 openfhe_ckks_N8192_cat1_relinearize_mem1  (CPU 90 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_relinearize_mem1.csv (all 12 checks correct)
+[B 38/40] 00:05:57 seal_ckks_N8192_cat1_encrypt_mem1  (CPU 88 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/seal_ckks_N8192_cat1_encrypt_mem1.csv
+[B 39/40] 00:05:57 openfhe_ckks_N8192_cat1_multiply_mem3  (CPU 85 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_multiply_mem3.csv (all 12 checks correct)
+[B 40/40] 00:05:58 openfhe_ckks_N8192_cat1_keygen_mem3  (CPU 84 °C)
+OK: wrote 12 rows to /work/results/raw/validation_v2/openfhe_ckks_N8192_cat1_keygen_mem3.csv (all 12 checks correct)
+Validation session complete: 00:05:59. Next: cd experiments/scripts && python3 aggregate.py --scenario=validation

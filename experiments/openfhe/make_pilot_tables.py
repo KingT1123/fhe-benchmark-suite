@@ -16,6 +16,7 @@ Outputs: pilot_tables/<prefix>_*.tex and pilot_tables/<prefix>_numbers.tex
 """
 import argparse
 import csv
+import statistics
 import os
 from collections import defaultdict
 
@@ -179,6 +180,17 @@ def validation_tables(path, macros):
         cv = 100 * float(lat["std"]) / float(lat["value"])
         t.append(f'{b} ($2^{{{sc}}}$) & {fmt(lat["value"])} [{fmt(lat["ci_low"])}, {fmt(lat["ci_high"])}] & {cv:.1f} & '
                  f'{float(fr["value"]):.0f} & {float(te["value"]):.1f} \\\\')
+    bl = [get(f"seal_ckks_N8192_cat1_relinearize_scale{sc}_b{b}", "latency_ms") for b, sc in
+          enumerate([40, 30, 30, 40, 40, 30, 30, 40], start=1)]
+    bf = [get(f"seal_ckks_N8192_cat1_relinearize_scale{sc}_b{b}", "effective_freq_mhz_mean") for b, sc in
+          enumerate([40, 30, 30, 40, 40, 30, 30, 40], start=1)]
+    if all(bl) and all(bf):
+        lv, fv = [float(x["value"]) for x in bl], [float(x["value"]) for x in bf]
+        macros.update({"blockLatMin": fmt(min(lv)), "blockLatMax": fmt(max(lv)),
+                       "blockLatSpread": f"{100 * (max(lv) - min(lv)) / min(lv):.1f}",
+                       "blockFreqMin": f"{min(fv):.0f}", "blockFreqMax": f"{max(fv):.0f}",
+                       "blockFreqSpread": f"{100 * (max(fv) - min(fv)) / min(fv):.1f}",
+                       "freqShareOfMax": f"{100 * statistics.median(fv) / float(get('max boost frequency', 'mhz')['value']):.0f}"})
     t.append(r"\midrule")
     for sc in (40, 30):
         r = get(f"pooled scale 2^{sc}", "latency_ms")
@@ -204,24 +216,47 @@ def validation_tables(path, macros):
     if mx:
         macros["freqMaxBoost"] = f'{float(mx["value"]):.0f}'
 
-    t = [r"\begin{tabular}{@{}llrrrrrr@{}}", r"\toprule",
-         r"Library & Operation & net J/op, inv.\ 1 & inv.\ 2 & inv.\ 2/1 & archived & ratio & memory, MB (archived) \\",
+    t = [r"\begin{tabular}{@{}llrrcrrc@{}}", r"\toprule",
+         r"& & \multicolumn{3}{c}{net J/op (session idle baseline)} & gross & SEAL gross & memory, MB \\",
+         r"Library & Operation & inv.\ 1 & inv.\ 2 & 2/1, TOST $\pm$10\% & 2/1 & vs archived & (vs archived) \\",
          r"\midrule"]
+    ok = lambda r: r is not None and r["value"] != "" and not r["value"].startswith("NOT")
     for r in csv.DictReader(open("validation/energy_plan_ckks8192.csv")):
         lib, op = r["library"], r["operation"]
         item = f"{lib} {op}"
-        e1, e2 = get(f"{lib}_ckks_N8192_cat1_{op}_energy1", "energy_net_j_per_op"), get(f"{lib}_ckks_N8192_cat1_{op}_energy2", "energy_net_j_per_op")
-        rep = get(item, "energy_repeatability_ratio_inv2_inv1")
-        arc = get(item, "energy_vs_archived_ratio")
-        mem = get(item, "peak_memory_mb")
-        marc = get(item, "memory_vs_archived_ratio")
-        g = lambda x, nd=4: f'{float(x["value"]):.{nd}f}' if x and x["value"] not in ("",) and not x["value"].startswith("NOT") else "--"
-        arch_val = "--"
-        if arc and e1 and e2:
-            arch_val = f'{(float(e1["value"]) + float(e2["value"])) / 2 / float(arc["value"]):.4f}'
-        memtxt = g(mem, 1) + (f' ({float(mem["value"]) / float(marc["value"]):.1f})' if marc else "")
-        t.append(f'{"SEAL" if lib == "seal" else "OpenFHE"} & {op} & {g(e1)} & {g(e2)} & {g(rep, 3)} & {arch_val} & {g(arc, 3)} & {memtxt} \\\\')
+        e1 = get(f"{lib}_ckks_N8192_cat1_{op}_energy1", "energy_net_j_per_op")
+        e2 = get(f"{lib}_ckks_N8192_cat1_{op}_energy2", "energy_net_j_per_op")
+        rep, rept = get(item, "energy_repeatability_ratio_inv2_inv1"), get(item, "energy_repeatability_tost_10pct")
+        grep_ = get(item, "gross_repeatability_ratio_inv2_inv1")
+        garc = get(item, "gross_vs_archived_ratio")
+        mem, marc = get(item, "peak_memory_mb"), get(item, "memory_vs_archived_ratio")
+        f4 = lambda x: f'{float(x["value"]):.4f}' if ok(x) else "--"
+        verdict = ("equiv." if rept and rept["value"] == "equivalent_within_margin" else "not est.") if rept else ""
+        memtxt = (f'{float(mem["value"]):.1f}' if ok(mem) else "--") + (f' ({float(marc["value"]):.3f})' if ok(marc) else "")
+        t.append(f'{"SEAL" if lib == "seal" else "OpenFHE"} & {op} & {f4(e1)} & {f4(e2)} & '
+                 f'{float(rep["value"]):.3f}, {verdict} & {float(grep_["value"]):.3f} & '
+                 f'{(format(float(garc["value"]), ".3f")) if ok(garc) else "--"} & {memtxt} \\\\')
     t += [r"\bottomrule", r"\end{tabular}"]
+    sb, cb = get("idle baseline, this session (median of its readings)", "watts"), get("idle baseline, SEAL campaign (pooled median)", "watts")
+    if sb and cb:
+        macros.update({"idleSession": f'{float(sb["value"]):.1f}', "idleCampaign": f'{float(cb["value"]):.1f}'})
+    plan_rows = list(csv.DictReader(open("validation/energy_plan_ckks8192.csv")))
+    garcs = [float(get(f"seal {x['operation']}", "gross_vs_archived_ratio")["value"]) for x in plan_rows if x["library"] == "seal"]
+    marcs = [float(get(f"seal {x['operation']}", "memory_vs_archived_ratio")["value"]) for x in plan_rows if x["library"] == "seal"]
+    msds = [float(get(f"{x['library']} {x['operation']}", "peak_memory_mb")["std"]) for x in plan_rows]
+    macros.update({"grossLowerMin": f"{100 * (1 - max(garcs)):.0f}", "grossLowerMax": f"{100 * (1 - min(garcs)):.0f}",
+                   "memArchivedMaxDev": f"{100 * max(abs(1 - m) for m in marcs):.1f}",
+                   "memStdMax": f"{max(msds):.2f}"})
+    p40 = get("pooled scale 2^40", "latency_ms")
+    pil = next((float(r["mean"]) for r in csv.DictReader(open("../results/final/pilot.csv"))
+                if (r["library"], r["operation"], r["ckks_scale_bits"], r["metric"]) == ("SEAL", "relinearize", "40", "latency_ms")), None)
+    arc = next((float(r["mean"]) for r in csv.DictReader(open("../results/final/seal_standard.csv"))
+                if (r["scheme"], r["N"], r["category"], r["operation"], r["metric"]) == ("CKKS", "8192", "1", "relinearize", "latency_ms")), None)
+    if p40 and pil and arc:
+        macros.update({"relinHere": f'{float(p40["value"]):.2f}', "relinPilot": f"{pil:.2f}", "relinArchived": f"{arc:.2f}"})
+    reps = [get(f"{x['library']} {x['operation']}", "energy_repeatability_tost_10pct") for x in csv.DictReader(open("validation/energy_plan_ckks8192.csv"))]
+    macros["energyRepEq"] = sum(1 for x in reps if x and x["value"] == "equivalent_within_margin")
+    macros["energyRepN"] = len(reps)
     write("validation_energy.tex", t)
 
 
