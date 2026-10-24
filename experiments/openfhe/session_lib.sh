@@ -82,12 +82,20 @@ cell_valid() {
 quarantine() {
     local q="$SESSION_DIR/invalid/$(date +%Y%m%dT%H%M%S)"
     mkdir -p "$q"
-    for f in "$SESSION_DIR/$1".csv* "$SESSION_DIR/checks/$1"_check.csv* "$SESSION_DIR/memory/$1"_mem*.log; do
+    for f in "$SESSION_DIR/$1".csv* "$SESSION_DIR/checks/$1"_check.csv* "$SESSION_DIR/memory/$1"_mem*.log "$SESSION_DIR/meta/$1".meta; do
         [ -e "$f" ] && mv "$f" "$q/"
     done
     echo "   moved the invalid/partial files of $1 to ${q#$EXP/}"
 }
 
+# Configuration card (campaign runs): when CELL_META is set (a text that
+# fully describes the experimental configuration of the cell -- code commit,
+# image identifiers, harness arguments, repetition counts), it is written to
+# <session>/meta/<tag>.meta after a successful cell. On resume a valid cell is
+# reused ONLY if its card is identical to the current CELL_META; a valid cell
+# with a different or missing card stops the session (exit 4) with an
+# explanation -- it is never silently reused, nor deleted.
+#
 # run_cell LIB TAG ROWS WARMUP ARGS... : resume-aware, fail-closed.
 # LIB = seal | openfhe. ARGS are the harness arguments without --out/--check-out.
 # With RUN_DIRECT=1 the harness is started directly under taskset, without
@@ -97,7 +105,17 @@ quarantine() {
 run_cell() {
     local lib="$1" tag="$2" rows="$3" warmup="$4"; shift 4
     if [ -e "$SESSION_DIR/$tag.csv" ] || compgen -G "$SESSION_DIR/$tag.csv.*" >/dev/null; then
-        if cell_valid "$tag" "$rows" "$warmup"; then echo "   SKIPPED (valid, already complete): $tag"; return 0; fi
+        if cell_valid "$tag" "$rows" "$warmup"; then
+            if [ -n "${CELL_META:-}" ]; then
+                if [ ! -f "$SESSION_DIR/meta/$tag.meta" ] || [ "$(cat "$SESSION_DIR/meta/$tag.meta")" != "$CELL_META" ]; then
+                    echo "STOPPED: $tag exists and is valid, but was measured under a DIFFERENT (or unrecorded) configuration:" >&2
+                    { diff <(cat "$SESSION_DIR/meta/$tag.meta" 2>/dev/null) <(echo "$CELL_META") || true; } | sed 's/^/     /' >&2
+                    echo "   It is not reused. Move this session directory aside (keep it) or start a new session name." >&2
+                    exit 4
+                fi
+            fi
+            echo "   SKIPPED (valid, same configuration, already complete): $tag"; return 0
+        fi
         echo "   existing $tag is NOT valid: $(python3 "$EXP/scripts/validate_cell.py" "$SESSION_DIR/$tag.csv" --rows "$rows" --warmup "$warmup" --check "$SESSION_DIR/checks/${tag}_check.csv")"
         quarantine "$tag"
     fi
@@ -128,5 +146,6 @@ run_cell() {
         quarantine "$tag"; exit 2
     fi
     [ -f "$LOG_DIR/${tag}_mem.log" ] && cp "$LOG_DIR/${tag}_mem.log" "$SESSION_DIR/memory/"
+    if [ -n "${CELL_META:-}" ]; then mkdir -p "$SESSION_DIR/meta"; echo "$CELL_META" > "$SESSION_DIR/meta/$tag.meta"; fi
     return 0
 }

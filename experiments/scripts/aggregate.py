@@ -2047,12 +2047,142 @@ def aggregate_validation(args):
         print(f"EXCLUDED (invalid cell): {tag}: {why}")
 
 
+# ---------- OpenFHE Standard campaign (run_standard_campaign.sh) ----------
+
+EQUIVALENT_OPS = ("keygen", "decrypt", "multiply", "relinearize", "rotate")   # same computation in both libraries
+API_COST_OPS = ("encrypt", "add", "add_inplace", "decrypt_full")              # each library's own call; no ratio
+
+
+def aggregate_openfhe_standard(args):
+    """--scenario=openfhe_standard reads experiments/results/raw/standard_campaign/
+    (one directory per session; directories starting with "_" are dry runs
+    and are skipped -- or --raw-dir pointing at one session directory).
+    Fail-closed: a cell enters the statistics only if validate_cell.py accepts
+    it WITH its correctness checks and its configuration card
+    (meta/<tag>.meta) exists and repeats the session manifest's configuration
+    lines; every other cell is listed, with the reason, in
+    openfhe_standard_excluded.csv (nothing is dropped silently).
+    Outputs (results/final/):
+      openfhe_standard.csv              per cell: latency statistics (same
+                                         formulas as every scenario), session
+      openfhe_standard_comparisons.csv  OpenFHE vs SEAL, SAME SESSION only, per
+                                         configuration and operation: for the
+                                         equivalent computational boundaries OF A
+                                         MATCHED-PROFILE (or exact-parameter) CELL the
+                                         ratio of means and Welch 90% CI of the
+                                         difference; for end-to-end API costs and for
+                                         cells requiring separate analysis both means
+                                         and NO ratio; each row carries the
+                                         configuration's comparability class from
+                                         probe/operations_v2.csv (matched-profile
+                                         comparison or separate analysis) and its
+                                         listed remaining differences
+      openfhe_standard_excluded.csv     excluded cells and reasons
+      openfhe_standard_sessions.csv     per session: cells valid/excluded, code
+                                         commit, seed, effective-frequency and
+                                         temperature medians, share of samples
+                                         below 90% of max boost"""
+    from validate_cell import validate
+    root = args.raw_dir or "../results/raw/standard_campaign"
+    out_path = args.out or "../results/final/openfhe_standard.csv"
+    if os.path.exists(os.path.join(root, "manifest.txt")):
+        sessions = [root]
+    else:
+        sessions = sorted(d for d in glob.glob(os.path.join(root, "*"))
+                          if os.path.isdir(d) and not os.path.basename(d).startswith("_"))
+    cls = {(r["scheme"], r["N"], r["category"], r["operation"]): r
+           for r in csv.DictReader(open("../openfhe/probe/operations_v2.csv"))}
+    rows, comps, excluded, sess_rows = [], [], [], []
+    for sd in sessions:
+        sname = os.path.basename(sd)
+        man = open(os.path.join(sd, "manifest.txt")).read().splitlines()
+        reps, warm = map(int, re.search(r"repetitions: (\d+) measured \+ (\d+) warm-up", "\n".join(man)).groups())
+        card_head = "\n".join(man[3:9])                     # code commit .. param_grid sha256
+        listed = [l.strip() for l in man[man.index(next(l for l in man if l.startswith("cells ("))) + 1:]]
+        stats, n_ok = {}, 0
+        for cell in listed:
+            lib, sch, N, cat, op = cell.split(",")
+            tag = f"{lib}_{sch.lower()}_N{N}_cat{cat}_{op}"
+            ok, why = validate(os.path.join(sd, tag + ".csv"), reps + warm, warm,
+                               os.path.join(sd, "checks", tag + "_check.csv"))
+            card = os.path.join(sd, "meta", tag + ".meta")
+            if ok and (not os.path.exists(card) or not open(card).read().startswith(card_head)):
+                ok, why = False, "configuration card missing or different from the session manifest"
+            if not ok:
+                excluded.append({"session": sname, "cell": tag, "reason": why})
+                continue
+            n_ok += 1
+            st = aggregate_latency_file(os.path.join(sd, tag + ".csv"))
+            stats[(lib, sch, N, cat, op)] = st
+            rows.append({"session": sname, "library": st["library"], "scheme": sch, "N": N, "category": cat,
+                         "operation": op, "n": st["n_measured"], "mean_ms": st["mean_ms"], "std_ms": st["std_ms"],
+                         "ci_low_ms": st["ci_low_ms"], "ci_high_ms": st["ci_high_ms"], "median_ms": st["median_ms"],
+                         "iqr_low_ms": st["iqr_low_ms"], "iqr_high_ms": st["iqr_high_ms"], "flag": st["flag"]})
+        for (lib, sch, N, cat, op), o in sorted(stats.items()):
+            if lib != "openfhe":
+                continue
+            sop = {"decrypt_full": "decrypt", "add_inplace": "add"}.get(op, op)
+            sref = stats.get(("seal", sch, N, cat, sop))
+            c = cls.get((sch, N, cat, sop), {})
+            base = {"session": sname, "scheme": sch, "N": N, "category": cat, "operation": op,
+                    "seal_operation": sop, "boundary": "equivalent computation" if op in EQUIVALENT_OPS else "end-to-end API cost",
+                    "comparability_class": c.get("verdict", ""), "class_reason": c.get("reason", ""),
+                    "remaining_differences": c.get("differences", ""),
+                    "openfhe_mean_ms": o["mean_ms"], "seal_mean_ms": sref["mean_ms"] if sref else ""}
+            if sref is None:
+                base["note"] = "SEAL counterpart missing or excluded in this session"
+            elif c.get("verdict") not in ("matched-profile comparison", "exact-parameter comparison"):
+                base["note"] = "configuration requires separate analysis: values per library, no ratio"
+            elif op in EQUIVALENT_OPS:
+                t = tost_equivalence(sref["mean_ms"], sref["std_ms"], sref["n_measured"],
+                                     o["mean_ms"], o["std_ms"], o["n_measured"], 0.05)
+                base.update({"ratio_openfhe_over_seal": o["mean_ms"] / sref["mean_ms"],
+                             "diff_ms": t["diff"], "diff_ci90_low": t["ci_low"], "diff_ci90_high": t["ci_high"]})
+            else:
+                base["note"] = "API costs of different computations: no ratio"
+            comps.append(base)
+        # session conditions
+        therm = [r for r in csv.DictReader(open(os.path.join(sd, "thermal_log.csv")))]
+        f = [float(r["effective_freq_khz"]) / 1000 for r in therm if r["effective_freq_khz"]]
+        te = [float(r["temp_millic"]) / 1000 for r in therm if r["temp_millic"]]
+        state = open(os.path.join(sd, "cpu_state.txt")).read()
+        m = re.search(r"max boost frequency \(amd_pstate_max_freq, kHz\): (\d+)", state)
+        fmax = float(m.group(1)) / 1000 if m else float("nan")
+        sess_rows.append({"session": sname, "cells_listed": len(listed), "cells_valid": n_ok,
+                          "cells_excluded": len(listed) - n_ok,
+                          "code_commit": next((l.split(": ")[1].split(";")[0] for l in man if l.startswith("code commit")), ""),
+                          "run_order_seed": next((l.split(": ")[1] for l in man if l.startswith("run_order_seed")), ""),
+                          "effective_freq_mhz_median": statistics.median(f) if f else "",
+                          "temp_c_median": statistics.median(te) if te else "",
+                          "share_below_90pct_max_boost": (sum(x < 0.9 * fmax for x in f) / len(f)) if f else ""})
+
+    def dump(path, data, fields=None):
+        fields = fields or (list(data[0]) if data else ["empty"])
+        with open(path, "w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=fields, lineterminator="\n", extrasaction="ignore")
+            w.writeheader()
+            for r in data:
+                w.writerow({k: r.get(k, "") for k in fields})
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    stem = out_path[:-len(".csv")]
+    dump(out_path, rows)
+    dump(stem + "_comparisons.csv", comps,
+         ["session", "scheme", "N", "category", "operation", "seal_operation", "boundary", "comparability_class",
+          "class_reason", "remaining_differences", "openfhe_mean_ms", "seal_mean_ms", "ratio_openfhe_over_seal",
+          "diff_ms", "diff_ci90_low", "diff_ci90_high", "note"])
+    dump(stem + "_excluded.csv", excluded, ["session", "cell", "reason"])
+    dump(stem + "_sessions.csv", sess_rows)
+    print(f"{len(sessions)} session(s); {len(rows)} valid cells; {len(excluded)} excluded; {len(comps)} comparisons")
+    for e in excluded:
+        print(f"EXCLUDED: {e['session']}/{e['cell']}: {e['reason']}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
-                              "ckks_error", "config_metadata", "pilot", "validation"])
+                              "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -2068,6 +2198,10 @@ def main():
 
     if args.scenario == "validation":
         aggregate_validation(args)
+        return
+
+    if args.scenario == "openfhe_standard":
+        aggregate_openfhe_standard(args)
         return
 
     if args.scenario == "composite_checks":
