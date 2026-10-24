@@ -52,11 +52,11 @@ DOCKER_EXTRA=()
 source "$SCRIPT_DIR/session_lib.sh"
 
 G=(git -c safe.directory='*' -C "$EXP/..")
-DIRTY=$("${G[@]}" status --porcelain -- experiments/openfhe experiments/seal/src experiments/scripts experiments/config | wc -l)
+DIRTY=$("${G[@]}" status --porcelain --untracked-files=no -- experiments/openfhe experiments/seal/src experiments/scripts experiments/config | wc -l)
 if [ "$DIRTY" -ne 0 ] && [ "$DRY" != 1 ]; then
-    echo "ERROR: uncommitted changes in experiments/{openfhe,seal/src,scripts,config} -- commit them first," >&2
+    echo "ERROR: uncommitted changes to tracked files in experiments/{openfhe,seal/src,scripts,config} -- commit them first," >&2
     echo "so that every measurement is traceable to one code version:" >&2
-    "${G[@]}" status --porcelain -- experiments/openfhe experiments/seal/src experiments/scripts experiments/config >&2
+    "${G[@]}" status --porcelain --untracked-files=no -- experiments/openfhe experiments/seal/src experiments/scripts experiments/config >&2
     exit 1
 fi
 for f in "$EXP/seal/build/bench_seal" "$EXP/openfhe/build/bench_openfhe"; do

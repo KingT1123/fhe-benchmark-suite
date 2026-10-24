@@ -60,7 +60,7 @@ session_start() {  # $1 = scenario name for run_metadata.csv, $2 = seed
         echo "run_order_seed: $2"
         echo "cpu: $(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2-)"
         echo "kernel: $(uname -r)"
-        echo "code commit: $("${G[@]}" rev-parse HEAD 2>/dev/null || echo unknown); uncommitted changes in experiments/{openfhe,seal/src,scripts}: $("${G[@]}" status --porcelain -- experiments/openfhe experiments/seal/src experiments/scripts 2>/dev/null | wc -l)"
+        echo "code commit: $("${G[@]}" rev-parse HEAD 2>/dev/null || echo unknown); uncommitted changes in experiments/{openfhe,seal/src,scripts}: $("${G[@]}" status --porcelain --untracked-files=no -- experiments/openfhe experiments/seal/src experiments/scripts 2>/dev/null | wc -l)"
         echo "images: seal-env $(docker image inspect -f '{{.Id}}' seal-env) openfhe-env $(docker image inspect -f '{{.Id}}' openfhe-env)"
     } > "$SESSION_DIR/cpu_state.txt"
 }
