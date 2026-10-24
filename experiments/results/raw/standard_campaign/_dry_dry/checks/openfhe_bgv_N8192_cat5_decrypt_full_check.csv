@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,BGV,8192,5,decrypt_full,0,0,mismatching_slots,correct
+OpenFHE,BGV,8192,5,decrypt_full,1,0,mismatching_slots,correct
+OpenFHE,BGV,8192,5,decrypt_full,2,0,mismatching_slots,correct

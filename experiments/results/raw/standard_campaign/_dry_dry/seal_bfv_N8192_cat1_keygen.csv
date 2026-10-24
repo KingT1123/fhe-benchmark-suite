@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BFV,8192,1,keygen,1,0,70.7064,warmup
+SEAL,BFV,8192,1,keygen,1,1,65.2798,measured
+SEAL,BFV,8192,1,keygen,1,2,66.6589,measured

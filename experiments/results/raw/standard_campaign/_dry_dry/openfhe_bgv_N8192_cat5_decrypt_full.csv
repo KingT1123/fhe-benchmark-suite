@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+OpenFHE,BGV,8192,5,decrypt_full,1,0,0.446854,warmup
+OpenFHE,BGV,8192,5,decrypt_full,1,1,0.426692,measured
+OpenFHE,BGV,8192,5,decrypt_full,1,2,0.435332,measured

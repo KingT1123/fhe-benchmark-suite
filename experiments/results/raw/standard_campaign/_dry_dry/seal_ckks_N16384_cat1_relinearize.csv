@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,CKKS,16384,1,relinearize,1,0,17.2981,warmup
+SEAL,CKKS,16384,1,relinearize,1,1,17.1778,measured
+SEAL,CKKS,16384,1,relinearize,1,2,17.3012,measured

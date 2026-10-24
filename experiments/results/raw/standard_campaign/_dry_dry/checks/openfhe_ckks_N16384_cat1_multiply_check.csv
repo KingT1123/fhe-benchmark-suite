@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,CKKS,16384,1,multiply,0,2.12753e-07,max_norm_error,correct
+OpenFHE,CKKS,16384,1,multiply,1,2.19993e-07,max_norm_error,correct
+OpenFHE,CKKS,16384,1,multiply,2,2.38261e-07,max_norm_error,correct

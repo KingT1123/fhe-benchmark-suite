@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+SEAL,BGV,8192,5,add,0,0,mismatching_slots,correct
+SEAL,BGV,8192,5,add,1,0,mismatching_slots,correct
+SEAL,BGV,8192,5,add,2,0,mismatching_slots,correct

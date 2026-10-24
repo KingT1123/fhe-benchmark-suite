@@ -1,0 +1,13 @@
+date: 2026-10-24T01:15:58+01:00
+scenario: openfhe_standard_campaign_dry
+protocol: fail-closed v2 (every cell validated; correctness checks for every library)
+scaling_governor (as found): performance; enforced performance: NO
+boost: 1
+max boost frequency (amd_pstate_max_freq, kHz): 4936631
+taskset_core: 0
+run_order_seed: 2027230807
+cpu:  AMD Ryzen 9 6900HX with Radeon Graphics
+kernel: 7.0.0-38-generic
+code commit: a82bac77f4cfcc07d4c9ed7ad99ce082c8b79bce; uncommitted changes in experiments/{openfhe,seal/src,scripts}: 0
+images: seal-env sha256:3d03656e0bf8c2cef53317b2e21c02af8e2e99fb8827a18ad7715d537d6503d3 openfhe-env sha256:903bb39e603c31e2364bf3eb23bf6fb337484a64b2db31408339a99eb8a30cb3
+repetitions: 2 measured + 1 warm-up; inner loop 5

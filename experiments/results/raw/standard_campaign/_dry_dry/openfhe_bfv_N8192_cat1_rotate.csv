@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,galois_keygen_ms,galois_keys_size_bytes,iteration,latency_ms,status
+OpenFHE,BFV,8192,1,rotate,7.786419,1181199,0,3.10335,warmup
+OpenFHE,BFV,8192,1,rotate,7.786419,1181199,1,2.6713,measured
+OpenFHE,BFV,8192,1,rotate,7.786419,1181199,2,2.68067,measured

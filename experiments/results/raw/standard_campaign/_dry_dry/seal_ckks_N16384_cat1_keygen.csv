@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,CKKS,16384,1,keygen,1,0,297.352,warmup
+SEAL,CKKS,16384,1,keygen,1,1,264.749,measured
+SEAL,CKKS,16384,1,keygen,1,2,263.131,measured

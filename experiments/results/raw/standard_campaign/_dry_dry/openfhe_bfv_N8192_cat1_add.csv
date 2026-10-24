@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+OpenFHE,BFV,8192,1,add,1,0,0.085734,warmup
+OpenFHE,BFV,8192,1,add,1,1,0.0823756,measured
+OpenFHE,BFV,8192,1,add,1,2,0.0825018,measured

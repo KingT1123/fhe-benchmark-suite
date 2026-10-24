@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BFV,8192,1,encrypt,1,0,2.22012,warmup
+SEAL,BFV,8192,1,encrypt,1,1,2.1918,measured
+SEAL,BFV,8192,1,encrypt,1,2,2.20467,measured

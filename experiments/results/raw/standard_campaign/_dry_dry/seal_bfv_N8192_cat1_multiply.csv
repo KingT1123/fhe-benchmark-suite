@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,BFV,8192,1,multiply,1,0,8.10109,warmup
+SEAL,BFV,8192,1,multiply,1,1,8.14515,measured
+SEAL,BFV,8192,1,multiply,1,2,8.06497,measured

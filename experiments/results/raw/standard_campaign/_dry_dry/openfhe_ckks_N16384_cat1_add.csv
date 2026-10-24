@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+OpenFHE,CKKS,16384,1,add,1,0,1.74051,warmup
+OpenFHE,CKKS,16384,1,add,1,1,1.81077,measured
+OpenFHE,CKKS,16384,1,add,1,2,1.68225,measured

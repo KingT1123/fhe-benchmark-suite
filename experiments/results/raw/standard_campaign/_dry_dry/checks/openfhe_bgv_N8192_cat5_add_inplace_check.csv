@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,BGV,8192,5,add_inplace,0,0,mismatching_slots,correct
+OpenFHE,BGV,8192,5,add_inplace,1,0,mismatching_slots,correct
+OpenFHE,BGV,8192,5,add_inplace,2,0,mismatching_slots,correct

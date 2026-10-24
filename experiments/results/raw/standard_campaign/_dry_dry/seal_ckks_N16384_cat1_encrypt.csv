@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,CKKS,16384,1,encrypt,1,0,11.8843,warmup
+SEAL,CKKS,16384,1,encrypt,1,1,11.3199,measured
+SEAL,CKKS,16384,1,encrypt,1,2,11.5454,measured

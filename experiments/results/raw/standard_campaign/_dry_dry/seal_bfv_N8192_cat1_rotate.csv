@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,galois_keygen_ms,galois_keys_size_bytes,iteration,latency_ms,status
+SEAL,BFV,8192,1,rotate,5.24852,1638795,0,2.29478,warmup
+SEAL,BFV,8192,1,rotate,5.24852,1638795,1,1.86305,measured
+SEAL,BFV,8192,1,rotate,5.24852,1638795,2,1.97627,measured

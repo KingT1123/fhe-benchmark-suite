@@ -1,0 +1,61 @@
+scenario: openfhe_standard_campaign
+session: dry (DRY RUN)
+run_order_seed: 2027230807
+code commit: a82bac77f4cfcc07d4c9ed7ad99ce082c8b79bce; uncommitted changes in experiments/{openfhe,seal/src,scripts,config}: 0
+bench_openfhe sha256: 0146f0db8f20adf2b852dd6f3f4a1441feb81081bc5349b78a919fff0d671d51
+bench_seal sha256: f6d5834972e7df208faa6c508d28b31951f9676229ceb0f819b7d054ef6490c0
+images: seal-env sha256:3d03656e0bf8c2cef53317b2e21c02af8e2e99fb8827a18ad7715d537d6503d3 openfhe-env sha256:903bb39e603c31e2364bf3eb23bf6fb337484a64b2db31408339a99eb8a30cb3
+eligible_v2.csv sha256: e55e26a197adeedc55392238f9224e94489532b3f1f8b0c2a289fa9e31ed58aa
+param_grid.csv sha256: e68b159e8a4c733e3a2ee3fd87e0fac6859180ef54e366068df3ac4047a551a1
+repetitions: 2 measured + 1 warm-up; inner loop 5 (keygen, rotate: 1); taskset core 0
+cells (50, in execution order):
+  seal,BFV,8192,1,keygen
+  openfhe,BGV,8192,5,add
+  seal,BFV,8192,1,decrypt
+  openfhe,CKKS,2048,1,keygen
+  openfhe,BFV,8192,1,multiply
+  openfhe,BGV,8192,5,decrypt
+  seal,CKKS,2048,1,decrypt
+  openfhe,CKKS,16384,1,add_inplace
+  openfhe,BGV,8192,5,add_inplace
+  openfhe,CKKS,2048,1,decrypt_full
+  seal,CKKS,2048,1,keygen
+  seal,CKKS,16384,1,relinearize
+  openfhe,BFV,8192,1,decrypt
+  openfhe,BFV,8192,1,relinearize
+  seal,BGV,8192,5,decrypt
+  openfhe,CKKS,2048,1,encrypt
+  openfhe,CKKS,16384,1,decrypt_full
+  openfhe,CKKS,2048,1,add_inplace
+  openfhe,BFV,8192,1,encrypt
+  seal,BGV,8192,5,add
+  seal,CKKS,16384,1,encrypt
+  openfhe,CKKS,16384,1,add
+  seal,BFV,8192,1,add
+  openfhe,CKKS,16384,1,decrypt
+  openfhe,CKKS,2048,1,add
+  seal,CKKS,16384,1,multiply
+  openfhe,BFV,8192,1,add_inplace
+  seal,CKKS,2048,1,encrypt
+  openfhe,BGV,8192,5,decrypt_full
+  seal,BFV,8192,1,multiply
+  openfhe,BGV,8192,5,encrypt
+  openfhe,BFV,8192,1,rotate
+  seal,BGV,8192,5,keygen
+  seal,CKKS,2048,1,add
+  openfhe,CKKS,16384,1,keygen
+  seal,BGV,8192,5,encrypt
+  openfhe,CKKS,16384,1,multiply
+  openfhe,BFV,8192,1,add
+  openfhe,BFV,8192,1,keygen
+  openfhe,CKKS,16384,1,encrypt
+  seal,CKKS,16384,1,keygen
+  seal,CKKS,16384,1,add
+  openfhe,CKKS,2048,1,decrypt
+  openfhe,CKKS,16384,1,relinearize
+  seal,BFV,8192,1,rotate
+  seal,BFV,8192,1,relinearize
+  openfhe,BGV,8192,5,keygen
+  seal,BFV,8192,1,encrypt
+  seal,CKKS,16384,1,decrypt
+  openfhe,BFV,8192,1,decrypt_full

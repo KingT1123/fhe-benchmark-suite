@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,BFV,8192,1,rotate,0,0,mismatching_slots,correct
+OpenFHE,BFV,8192,1,rotate,1,0,mismatching_slots,correct
+OpenFHE,BFV,8192,1,rotate,2,0,mismatching_slots,correct

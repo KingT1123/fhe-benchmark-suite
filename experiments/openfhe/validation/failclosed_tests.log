@@ -1,9 +1,9 @@
-fail-closed tests 2026-10-20T22:49:48+01:00; code commit fe2e67d
+fail-closed tests 2026-10-24T01:16:39+01:00; code commit a82bac7
 TEST 1: resume with a truncated cell and a leftover .tmp
        existing openfhe_ckks_N8192_cat1_rotate is NOT valid: leftover openfhe_ckks_N8192_cat1_rotate.csv.tmp (interrupted or failed attempt)
-       moved the invalid/partial files of openfhe_ckks_N8192_cat1_rotate to results/raw/_fc1/invalid/20261020T225001
+       moved the invalid/partial files of openfhe_ckks_N8192_cat1_rotate to results/raw/_fc1/invalid/20261024T011652
        existing seal_ckks_N8192_cat1_add is NOT valid: 1 data rows, expected 3
-       moved the invalid/partial files of seal_ckks_N8192_cat1_add to results/raw/_fc1/invalid/20261020T225002
+       moved the invalid/partial files of seal_ckks_N8192_cat1_add to results/raw/_fc1/invalid/20261024T011653
   PASS: session completes (exit 0)
   PASS: both damaged cells detected
   PASS: the 20 valid cells skipped

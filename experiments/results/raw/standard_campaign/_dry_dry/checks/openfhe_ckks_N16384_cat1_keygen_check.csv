@@ -1,0 +1,4 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,CKKS,16384,1,keygen,0,2.38177e-07,max_norm_error,correct
+OpenFHE,CKKS,16384,1,keygen,1,2.53022e-07,max_norm_error,correct
+OpenFHE,CKKS,16384,1,keygen,2,2.45942e-07,max_norm_error,correct
