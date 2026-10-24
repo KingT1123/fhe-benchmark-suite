@@ -1,0 +1,191 @@
+nohup: ignoring input
+Session s1: 94 cells, order seed 241766622, governor enforced: 1
+[1/94] 01:50:35 openfhe_ckks_N4096_cat5_add  (CPU 58 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat5_add.csv (all 105 checks correct)
+[2/94] 01:53:48 openfhe_bfv_N4096_cat3_keygen  (CPU 93 °C; elapsed 0h3m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N4096_cat3_keygen.csv (all 105 checks correct)
+[3/94] 01:53:49 openfhe_bfv_N8192_cat5_add_inplace  (CPU 91 °C; elapsed 0h3m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N8192_cat5_add_inplace.csv (all 105 checks correct)
+[4/94] 02:02:07 openfhe_bfv_N4096_cat3_add_inplace  (CPU 93 °C; elapsed 0h11m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N4096_cat3_add_inplace.csv (all 105 checks correct)
+[5/94] 02:06:04 openfhe_ckks_N4096_cat5_keygen  (CPU 93 °C; elapsed 0h15m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat5_keygen.csv (all 105 checks correct)
+[6/94] 02:06:05 openfhe_ckks_N4096_cat3_add_inplace  (CPU 90 °C; elapsed 0h15m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat3_add_inplace.csv (all 105 checks correct)
+[7/94] 02:09:26 seal_ckks_N4096_cat3_encrypt  (CPU 94 °C; elapsed 0h18m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat3_encrypt.csv
+[8/94] 02:10:59 openfhe_bfv_N8192_cat5_decrypt_full  (CPU 93 °C; elapsed 0h20m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N8192_cat5_decrypt_full.csv (all 105 checks correct)
+[9/94] 02:15:48 openfhe_ckks_N2048_cat5_encrypt  (CPU 92 °C; elapsed 0h25m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat5_encrypt.csv (all 105 checks correct)
+[10/94] 02:16:31 seal_ckks_N4096_cat5_add  (CPU 93 °C; elapsed 0h25m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat5_add.csv
+[11/94] 02:19:46 openfhe_ckks_N4096_cat1_relinearize  (CPU 92 °C; elapsed 0h29m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_relinearize.csv (all 105 checks correct)
+[12/94] 02:25:20 openfhe_ckks_N2048_cat5_add  (CPU 93 °C; elapsed 0h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat5_add.csv (all 105 checks correct)
+[13/94] 02:26:54 seal_ckks_N4096_cat3_keygen  (CPU 93 °C; elapsed 0h36m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat3_keygen.csv
+[14/94] 02:26:57 openfhe_ckks_N2048_cat1_add  (CPU 74 °C; elapsed 0h36m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat1_add.csv (all 105 checks correct)
+[15/94] 02:28:30 openfhe_ckks_N2048_cat1_encrypt  (CPU 92 °C; elapsed 0h37m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat1_encrypt.csv (all 105 checks correct)
+[16/94] 02:29:12 openfhe_ckks_N4096_cat3_encrypt  (CPU 93 °C; elapsed 0h38m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat3_encrypt.csv (all 105 checks correct)
+[17/94] 02:30:39 openfhe_ckks_N8192_cat5_add_inplace  (CPU 94 °C; elapsed 0h40m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N8192_cat5_add_inplace.csv (all 105 checks correct)
+[18/94] 02:37:38 openfhe_bfv_N4096_cat3_decrypt  (CPU 93 °C; elapsed 0h47m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N4096_cat3_decrypt.csv (all 105 checks correct)
+[19/94] 02:39:49 openfhe_bgv_N8192_cat5_keygen  (CPU 93 °C; elapsed 0h49m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bgv_N8192_cat5_keygen.csv (all 105 checks correct)
+[20/94] 02:39:50 openfhe_ckks_N4096_cat3_add  (CPU 91 °C; elapsed 0h49m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat3_add.csv (all 105 checks correct)
+[21/94] 02:43:02 seal_bgv_N8192_cat5_keygen  (CPU 93 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bgv_N8192_cat5_keygen.csv
+[22/94] 02:43:06 seal_ckks_N8192_cat5_keygen  (CPU 77 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N8192_cat5_keygen.csv
+[23/94] 02:43:09 openfhe_bfv_N8192_cat5_keygen  (CPU 72 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N8192_cat5_keygen.csv (all 105 checks correct)
+[24/94] 02:43:10 seal_ckks_N4096_cat1_keygen  (CPU 82 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat1_keygen.csv
+[25/94] 02:43:15 openfhe_ckks_N2048_cat1_keygen  (CPU 69 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat1_keygen.csv (all 105 checks correct)
+[26/94] 02:43:15 seal_ckks_N2048_cat1_decrypt  (CPU 72 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat1_decrypt.csv
+[27/94] 02:44:05 seal_bfv_N8192_cat5_keygen  (CPU 93 °C; elapsed 0h53m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N8192_cat5_keygen.csv
+[28/94] 02:44:08 openfhe_ckks_N8192_cat5_keygen  (CPU 75 °C; elapsed 0h53m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N8192_cat5_keygen.csv (all 105 checks correct)
+[29/94] 02:44:10 openfhe_ckks_N8192_cat5_decrypt  (CPU 82 °C; elapsed 0h53m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N8192_cat5_decrypt.csv (all 105 checks correct)
+[30/94] 02:47:42 openfhe_bfv_N4096_cat3_decrypt_full  (CPU 93 °C; elapsed 0h57m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N4096_cat3_decrypt_full.csv (all 105 checks correct)
+[31/94] 02:49:59 openfhe_ckks_N4096_cat3_decrypt_full  (CPU 94 °C; elapsed 0h59m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat3_decrypt_full.csv (all 105 checks correct)
+[32/94] 02:52:10 seal_bfv_N4096_cat3_add  (CPU 93 °C; elapsed 1h1m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N4096_cat3_add.csv
+[33/94] 02:54:41 openfhe_ckks_N8192_cat5_add  (CPU 93 °C; elapsed 1h4m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N8192_cat5_add.csv (all 105 checks correct)
+[34/94] 03:01:44 seal_ckks_N4096_cat5_encrypt  (CPU 93 °C; elapsed 1h11m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat5_encrypt.csv
+[35/94] 03:03:17 seal_ckks_N2048_cat1_keygen  (CPU 93 °C; elapsed 1h12m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat1_keygen.csv
+[36/94] 03:03:20 openfhe_bfv_N4096_cat3_encrypt  (CPU 74 °C; elapsed 1h12m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N4096_cat3_encrypt.csv (all 105 checks correct)
+[37/94] 03:05:21 openfhe_bgv_N8192_cat5_decrypt  (CPU 93 °C; elapsed 1h14m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bgv_N8192_cat5_decrypt.csv (all 105 checks correct)
+[38/94] 03:08:44 openfhe_bgv_N8192_cat5_decrypt_full  (CPU 93 °C; elapsed 1h18m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bgv_N8192_cat5_decrypt_full.csv (all 105 checks correct)
+[39/94] 03:12:30 openfhe_ckks_N4096_cat5_encrypt  (CPU 93 °C; elapsed 1h21m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat5_encrypt.csv (all 105 checks correct)
+[40/94] 03:13:58 seal_bgv_N8192_cat5_encrypt  (CPU 93 °C; elapsed 1h23m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bgv_N8192_cat5_encrypt.csv
+[41/94] 03:17:10 openfhe_ckks_N4096_cat3_keygen  (CPU 93 °C; elapsed 1h26m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat3_keygen.csv (all 105 checks correct)
+[42/94] 03:17:11 openfhe_ckks_N2048_cat1_decrypt  (CPU 90 °C; elapsed 1h26m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat1_decrypt.csv (all 105 checks correct)
+[43/94] 03:17:58 openfhe_ckks_N4096_cat5_decrypt  (CPU 93 °C; elapsed 1h27m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat5_decrypt.csv (all 105 checks correct)
+[44/94] 03:19:36 seal_ckks_N4096_cat5_decrypt  (CPU 93 °C; elapsed 1h29m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat5_decrypt.csv
+[45/94] 03:21:16 seal_ckks_N2048_cat5_keygen  (CPU 93 °C; elapsed 1h30m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat5_keygen.csv
+[46/94] 03:21:17 openfhe_bfv_N8192_cat5_add  (CPU 81 °C; elapsed 1h30m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N8192_cat5_add.csv (all 105 checks correct)
+[47/94] 03:29:30 seal_bfv_N8192_cat5_decrypt  (CPU 92 °C; elapsed 1h38m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N8192_cat5_decrypt.csv
+[48/94] 03:32:35 seal_ckks_N4096_cat1_relinearize  (CPU 93 °C; elapsed 1h42m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat1_relinearize.csv
+[49/94] 03:38:04 seal_ckks_N2048_cat1_encrypt  (CPU 93 °C; elapsed 1h47m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat1_encrypt.csv
+[50/94] 03:38:50 openfhe_ckks_N2048_cat5_keygen  (CPU 93 °C; elapsed 1h48m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat5_keygen.csv (all 105 checks correct)
+[51/94] 03:38:51 openfhe_ckks_N4096_cat3_decrypt  (CPU 90 °C; elapsed 1h48m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat3_decrypt.csv (all 105 checks correct)
+[52/94] 03:40:33 seal_bfv_N4096_cat3_encrypt  (CPU 93 °C; elapsed 1h49m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N4096_cat3_encrypt.csv
+[53/94] 03:41:47 openfhe_ckks_N4096_cat1_encrypt  (CPU 93 °C; elapsed 1h51m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_encrypt.csv (all 105 checks correct)
+[54/94] 03:43:50 openfhe_ckks_N4096_cat1_add  (CPU 93 °C; elapsed 1h53m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_add.csv (all 105 checks correct)
+[55/94] 03:48:25 openfhe_ckks_N2048_cat5_decrypt  (CPU 93 °C; elapsed 1h57m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat5_decrypt.csv (all 105 checks correct)
+[56/94] 03:49:11 openfhe_ckks_N4096_cat1_decrypt_full  (CPU 93 °C; elapsed 1h58m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_decrypt_full.csv (all 105 checks correct)
+[57/94] 03:53:56 openfhe_bgv_N8192_cat5_add_inplace  (CPU 93 °C; elapsed 2h3m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bgv_N8192_cat5_add_inplace.csv (all 105 checks correct)
+[58/94] 03:59:57 seal_ckks_N2048_cat5_encrypt  (CPU 93 °C; elapsed 2h9m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat5_encrypt.csv
+[59/94] 04:00:27 openfhe_bfv_N4096_cat3_add  (CPU 93 °C; elapsed 2h9m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N4096_cat3_add.csv (all 105 checks correct)
+[60/94] 04:04:27 openfhe_bfv_N8192_cat5_decrypt  (CPU 93 °C; elapsed 2h13m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N8192_cat5_decrypt.csv (all 105 checks correct)
+[61/94] 04:08:54 seal_ckks_N4096_cat3_decrypt  (CPU 93 °C; elapsed 2h18m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat3_decrypt.csv
+[62/94] 04:10:35 seal_bgv_N8192_cat5_add  (CPU 93 °C; elapsed 2h20m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bgv_N8192_cat5_add.csv
+[63/94] 04:17:16 openfhe_ckks_N4096_cat1_add_inplace  (CPU 93 °C; elapsed 2h26m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_add_inplace.csv (all 105 checks correct)
+[64/94] 04:21:46 openfhe_bgv_N8192_cat5_encrypt  (CPU 93 °C; elapsed 2h31m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bgv_N8192_cat5_encrypt.csv (all 105 checks correct)
+[65/94] 04:24:58 seal_ckks_N2048_cat5_decrypt  (CPU 94 °C; elapsed 2h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat5_decrypt.csv
+[66/94] 04:25:32 openfhe_ckks_N4096_cat1_multiply  (CPU 93 °C; elapsed 2h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_multiply.csv (all 105 checks correct)
+[67/94] 04:30:14 seal_ckks_N2048_cat5_add  (CPU 92 °C; elapsed 2h39m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat5_add.csv
+[68/94] 04:31:20 seal_ckks_N4096_cat3_add  (CPU 93 °C; elapsed 2h40m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat3_add.csv
+[69/94] 04:34:35 seal_bfv_N4096_cat3_decrypt  (CPU 93 °C; elapsed 2h44m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N4096_cat3_decrypt.csv
+[70/94] 04:36:06 openfhe_ckks_N8192_cat5_decrypt_full  (CPU 93 °C; elapsed 2h45m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N8192_cat5_decrypt_full.csv (all 105 checks correct)
+[71/94] 04:40:36 openfhe_ckks_N2048_cat5_add_inplace  (CPU 93 °C; elapsed 2h50m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat5_add_inplace.csv (all 105 checks correct)
+[72/94] 04:42:14 seal_bfv_N4096_cat3_keygen  (CPU 93 °C; elapsed 2h51m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N4096_cat3_keygen.csv
+[73/94] 04:42:17 seal_ckks_N4096_cat1_decrypt  (CPU 74 °C; elapsed 2h51m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat1_decrypt.csv
+[74/94] 04:44:31 seal_ckks_N2048_cat1_add  (CPU 93 °C; elapsed 2h53m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N2048_cat1_add.csv
+[75/94] 04:46:08 openfhe_ckks_N4096_cat5_decrypt_full  (CPU 94 °C; elapsed 2h55m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat5_decrypt_full.csv (all 105 checks correct)
+[76/94] 04:48:19 seal_ckks_N8192_cat5_add  (CPU 93 °C; elapsed 2h57m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N8192_cat5_add.csv
+[77/94] 04:54:56 seal_bfv_N8192_cat5_add  (CPU 93 °C; elapsed 3h4m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N8192_cat5_add.csv
+[78/94] 05:00:01 openfhe_ckks_N2048_cat1_add_inplace  (CPU 93 °C; elapsed 3h9m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat1_add_inplace.csv (all 105 checks correct)
+[79/94] 05:01:37 seal_ckks_N4096_cat1_multiply  (CPU 93 °C; elapsed 3h11m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat1_multiply.csv
+[80/94] 05:06:08 openfhe_ckks_N4096_cat1_keygen  (CPU 93 °C; elapsed 3h15m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_keygen.csv (all 105 checks correct)
+[81/94] 05:06:09 seal_ckks_N8192_cat5_decrypt  (CPU 92 °C; elapsed 3h15m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N8192_cat5_decrypt.csv
+[82/94] 05:09:31 openfhe_ckks_N4096_cat5_add_inplace  (CPU 93 °C; elapsed 3h18m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat5_add_inplace.csv (all 105 checks correct)
+[83/94] 05:12:54 seal_ckks_N4096_cat1_add  (CPU 93 °C; elapsed 3h22m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat1_add.csv
+[84/94] 05:17:11 seal_ckks_N4096_cat1_encrypt  (CPU 93 °C; elapsed 3h26m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat1_encrypt.csv
+[85/94] 05:19:13 openfhe_bgv_N8192_cat5_add  (CPU 93 °C; elapsed 3h28m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bgv_N8192_cat5_add.csv (all 105 checks correct)
+[86/94] 05:25:15 openfhe_ckks_N8192_cat5_encrypt  (CPU 93 °C; elapsed 3h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N8192_cat5_encrypt.csv (all 105 checks correct)
+[87/94] 05:28:16 seal_ckks_N4096_cat5_keygen  (CPU 93 °C; elapsed 3h37m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N4096_cat5_keygen.csv
+[88/94] 05:28:19 openfhe_ckks_N4096_cat1_decrypt  (CPU 76 °C; elapsed 3h37m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N4096_cat1_decrypt.csv (all 105 checks correct)
+[89/94] 05:30:19 openfhe_ckks_N2048_cat5_decrypt_full  (CPU 93 °C; elapsed 3h39m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat5_decrypt_full.csv (all 105 checks correct)
+[90/94] 05:31:22 openfhe_bfv_N8192_cat5_encrypt  (CPU 93 °C; elapsed 3h40m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_bfv_N8192_cat5_encrypt.csv (all 105 checks correct)
+[91/94] 05:35:38 seal_bfv_N8192_cat5_encrypt  (CPU 93 °C; elapsed 3h45m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bfv_N8192_cat5_encrypt.csv
+[92/94] 05:38:07 seal_bgv_N8192_cat5_decrypt  (CPU 93 °C; elapsed 3h47m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_bgv_N8192_cat5_decrypt.csv
+[93/94] 05:41:48 openfhe_ckks_N2048_cat1_decrypt_full  (CPU 93 °C; elapsed 3h51m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/openfhe_ckks_N2048_cat1_decrypt_full.csv (all 105 checks correct)
+[94/94] 05:42:51 seal_ckks_N8192_cat5_encrypt  (CPU 93 °C; elapsed 3h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s1/seal_ckks_N8192_cat5_encrypt.csv
+Session s1 complete: 05:46:00. Next: cd experiments/scripts && python3 aggregate.py --scenario=openfhe_standard

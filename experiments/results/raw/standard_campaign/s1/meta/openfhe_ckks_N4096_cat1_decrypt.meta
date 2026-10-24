@@ -1,0 +1,8 @@
+code commit: e816fc7c1c192364f12162d04411f9889aee5ab7; uncommitted changes in experiments/{openfhe,seal/src,scripts,config}: 0
+bench_openfhe sha256: 0146f0db8f20adf2b852dd6f3f4a1441feb81081bc5349b78a919fff0d671d51
+bench_seal sha256: f6d5834972e7df208faa6c508d28b31951f9676229ceb0f819b7d054ef6490c0
+images: seal-env sha256:3d03656e0bf8c2cef53317b2e21c02af8e2e99fb8827a18ad7715d537d6503d3 openfhe-env sha256:903bb39e603c31e2364bf3eb23bf6fb337484a64b2db31408339a99eb8a30cb3
+eligible_v2.csv sha256: e55e26a197adeedc55392238f9224e94489532b3f1f8b0c2a289fa9e31ed58aa
+param_grid.csv sha256: e68b159e8a4c733e3a2ee3fd87e0fac6859180ef54e366068df3ac4047a551a1
+library: openfhe
+args: --scheme=CKKS --N=4096 --category=1 --operation=decrypt --reps=100 --warmup=5 --inner-loop=1000

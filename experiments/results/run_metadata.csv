@@ -15,3 +15,4 @@ timestamp,scenario,run_order_seed,num_cells
 2026-10-18T08:34:51+01:00,openfhe_pilot,1449618142,21
 2026-10-18T16:19:53+01:00,openfhe_pilot,722225001,22
 2026-10-20T23:25:48+01:00,validation_v2,959322611,40
+2026-10-24T01:50:35+01:00,openfhe_standard_s1,241766622,94

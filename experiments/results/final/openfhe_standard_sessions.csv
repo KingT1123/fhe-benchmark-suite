@@ -1,0 +1,2 @@
+session,cells_listed,cells_valid,cells_excluded,code_commit,run_order_seed,effective_freq_mhz_median,temp_c_median,share_below_90pct_max_boost
+s1,94,94,0,e816fc7c1c192364f12162d04411f9889aee5ab7,241766622,4441.593,95.125,0.5908179343933534
