@@ -32,7 +32,7 @@
 \begin{itemize}[leftmargin=*, itemsep=2pt]
   \item ``Directly comparable'' is withdrawn. Every operation cell is now an \textbf{exact-parameter comparison} (the primes used by the operation are the same values in both libraries), a \textbf{matched-profile comparison} (same number and nominal sizes of primes, not the same primes) or a \textbf{separate analysis}. No cell is an exact-parameter comparison. The 32 former ``directly comparable'' cells are matched-profile comparisons and are never presented as exact-parameter ones; each carries the list of its remaining differences (\texttt{operations\_v2.csv}, column \texttt{differences}).
   \item For CKKS, a table now records, per cell, the primes, key switching, initial scales and levels of both libraries. The levels are equal everywhere; the initial scales are equal only at 8192/1 and 16384/1 ($2^{40}$) and differ by 2 to 14 bits elsewhere.
-  \item The statement that the scale cannot affect latency has been removed. It is now an expectation (every timed operation works prime by prime on residue polynomials whose number and size do not depend on the scale), tested in the pilot (Section~\ref{sec:scale}).
+  \item The statement that the scale cannot affect latency has been removed. It is now an expectation (every timed operation works prime by prime on residue polynomials whose number and size do not depend on the scale), tested in the pilot (Section~\ref{sec:scale}) and, for relinearization, in a later independent session.
 \end{itemize}
 
 \section{Security evaluation and measurement eligibility (point 2)}
@@ -143,7 +143,7 @@ SEAL was also measured at scale $2^{30}$ on exactly the same primes, in the same
 \label{tab:scale}
 \end{table}
 
-For \emph{relinearize}, equivalence is not established. The difference comes from the first repetitions of that cell, which ran markedly slower than the rest; its later repetitions and its fastest ones are close to those at $2^{40}$ (raw data: \texttt{seal\_ckks\_N8192\_cat1\_relinearize\_scale30.csv}). The pilot therefore supports the expectation that the scale value does not change the cost of an operation for five of the six operations, but does not yet establish it for relinearization. Until it is established for every operation, latency results of cells whose scales differ are reported with that difference stated, and the full campaign repeats the scale test for relinearization.
+For \emph{relinearize}, equivalence was not established in the pilot. The difference comes from the first repetitions of that cell, which ran markedly slower than the rest; its later repetitions and its fastest ones are close to those at $2^{40}$ (raw data: \texttt{seal\_ckks\_N8192\_cat1\_relinearize\_scale30.csv}). The pilot therefore supports the expectation that the scale value does not change the cost of an operation for five of the six operations, but did not establish it for relinearization. \textbf{Update.} The relinearization test was repeated afterwards in an independent session, with the two scales alternated in counterbalanced blocks (\texttt{openfhe\_corrections\_v2}, Section~3): relinearization is equivalent within $\pm$5\% as well. Scale equivalence is thereby established for all six measured operations, \emph{for this configuration ($N{=}8192$/category~1) and these two scales only}; it is not claimed for other CKKS parameter sets, whose results are reported with any scale difference stated.
 
 \section{An earlier pilot run, kept but not used}
 \label{sec:run1}
@@ -158,7 +158,7 @@ The pilot shows that the OpenFHE harness executes the SEAL protocol correctly an
   \item to report every result in its class (matched-profile comparison or separate analysis, never exact-parameter), with its remaining differences, and the operations whose work differs (encryption, addition, full decryption) as library-level costs together with their diagnostics;
   \item to verify the BFV and BGV operation boundaries in both libraries' sources, as done here for CKKS, before measuring them;
   \item to measure energy and memory with the dedicated protocol of the SEAL campaign, for both libraries;
-  \item to repeat the scale test for relinearization, and to state the cost-model condition of the three $N{=}8192$/category~5 configurations wherever they appear.
+  \item to repeat the scale test for relinearization (done since: equivalent within $\pm$5\%, see the update above), and to state the cost-model condition of the three $N{=}8192$/category~5 configurations wherever they appear.
 \end{enumerate}
 
 \section{Reproduction}
