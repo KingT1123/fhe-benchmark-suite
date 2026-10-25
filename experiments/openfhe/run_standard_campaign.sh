@@ -19,7 +19,10 @@
 # session in randomized order (seed recorded and reused on resume).
 #
 # Configuration record and safe resume:
-#   * the session manifest (<session>/manifest.txt) records the code commit,
+#   * the session manifest (<session>/manifest.txt) records the code commit
+#     (the last commit that changed experiments/{openfhe,seal/src,scripts,
+#     config} -- committing result files does not change it, so a session can
+#     be resumed after its partial results were committed),
 #     the sha256 of both harness binaries, the Docker image identifiers, the
 #     sha256 of eligible_v2.csv and param_grid.csv, the repetition counts, the
 #     order seed and the complete ordered cell list; on resume the manifest
@@ -92,7 +95,7 @@ MANIFEST=$(
     echo "scenario: openfhe_standard_campaign"
     echo "session: $SESSION$([ "$DRY" = 1 ] && echo ' (DRY RUN)')"
     echo "run_order_seed: $SEED"
-    echo "code commit: $("${G[@]}" rev-parse HEAD); uncommitted changes in experiments/{openfhe,seal/src,scripts,config}: $DIRTY"
+    echo "code commit (last commit changing experiments/{openfhe,seal/src,scripts,config}): $("${G[@]}" log -1 --format=%H -- experiments/openfhe experiments/seal/src experiments/scripts experiments/config); uncommitted changes there: $DIRTY"
     echo "bench_openfhe sha256: $(sha "$EXP/openfhe/build/bench_openfhe")"
     echo "bench_seal sha256: $(sha "$EXP/seal/build/bench_seal")"
     echo "images: seal-env $(docker image inspect -f '{{.Id}}' seal-env) openfhe-env $(docker image inspect -f '{{.Id}}' openfhe-env)"
