@@ -49,7 +49,7 @@ was discarded without an entry in this file.
   at every (re)start, so the resumes of s2 and s3 erased the per-second
   frequency/temperature records of their earlier parts:
   - s2: record kept only from the resume (08:24, cells 47–48); the record of
-    cells 1–46 (2025-10-25 23:55 → 2026-10-26 07:0x) is lost;
+    cells 1–46 (2026-10-25 23:55 → 2026-10-26 07:0x) is lost;
   - s3: record kept only from the resume (15:12, cells 37–42); the record of
     cells 1–36 (08:55 → 13:53) is lost.
 * What remains for those parts: the CPU temperature at the start of every
