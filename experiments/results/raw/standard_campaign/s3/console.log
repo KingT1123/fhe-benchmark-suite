@@ -1,0 +1,76 @@
+nohup: ignoring input
+Session s3: 42 cells, order seed 2755924728, governor enforced: 1
+[1/42] 08:55:28 seal_bfv_N8192_cat3_encrypt  (CPU 51 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bfv_N8192_cat3_encrypt.csv
+[2/42] 08:58:38 seal_ckks_N8192_cat3_multiply  (CPU 93 °C; elapsed 0h3m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_ckks_N8192_cat3_multiply.csv
+[3/42] 09:07:51 seal_bfv_N8192_cat3_add  (CPU 92 °C; elapsed 0h12m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bfv_N8192_cat3_add.csv
+[4/42] 09:14:21 seal_bfv_N8192_cat3_multiply  (CPU 92 °C; elapsed 0h18m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bfv_N8192_cat3_multiply.csv
+[5/42] 09:30:22 seal_ckks_N8192_cat3_keygen  (CPU 93 °C; elapsed 0h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_ckks_N8192_cat3_keygen.csv
+[6/42] 09:30:27 openfhe_ckks_N8192_cat3_encrypt  (CPU 71 °C; elapsed 0h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_encrypt.csv (all 105 checks correct)
+[7/42] 09:34:43 seal_bfv_N8192_cat3_decrypt  (CPU 93 °C; elapsed 0h39m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bfv_N8192_cat3_decrypt.csv
+[8/42] 09:38:51 openfhe_bfv_N8192_cat3_decrypt_full  (CPU 92 °C; elapsed 0h43m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_decrypt_full.csv (all 105 checks correct)
+[9/42] 09:46:12 openfhe_bfv_N8192_cat3_relinearize  (CPU 92 °C; elapsed 0h50m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_relinearize.csv (all 105 checks correct)
+[10/42] 10:09:57 seal_bgv_N8192_cat3_decrypt  (CPU 91 °C; elapsed 1h14m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bgv_N8192_cat3_decrypt.csv
+[11/42] 10:15:11 seal_bfv_N8192_cat3_relinearize  (CPU 91 °C; elapsed 1h19m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bfv_N8192_cat3_relinearize.csv
+[12/42] 10:33:42 seal_ckks_N8192_cat3_decrypt  (CPU 91 °C; elapsed 1h38m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_ckks_N8192_cat3_decrypt.csv
+[13/42] 10:38:21 openfhe_bgv_N8192_cat3_add  (CPU 91 °C; elapsed 1h42m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_add.csv (all 105 checks correct)
+[14/42] 10:46:40 openfhe_bfv_N8192_cat3_decrypt  (CPU 91 °C; elapsed 1h51m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_decrypt.csv (all 105 checks correct)
+[15/42] 10:53:49 openfhe_bgv_N8192_cat3_keygen  (CPU 92 °C; elapsed 1h58m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_keygen.csv (all 105 checks correct)
+[16/42] 10:53:51 openfhe_ckks_N8192_cat3_add  (CPU 91 °C; elapsed 1h58m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_add.csv (all 105 checks correct)
+[17/42] 11:03:37 seal_bfv_N8192_cat3_keygen  (CPU 92 °C; elapsed 2h8m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bfv_N8192_cat3_keygen.csv
+[18/42] 11:03:42 openfhe_bfv_N8192_cat3_add_inplace  (CPU 76 °C; elapsed 2h8m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_add_inplace.csv (all 105 checks correct)
+[19/42] 11:16:11 openfhe_bgv_N8192_cat3_multiply  (CPU 91 °C; elapsed 2h20m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_multiply.csv (all 105 checks correct)
+[20/42] 11:24:39 openfhe_bgv_N8192_cat3_decrypt_full  (CPU 91 °C; elapsed 2h29m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_decrypt_full.csv (all 105 checks correct)
+[21/42] 11:30:00 openfhe_ckks_N8192_cat3_add_inplace  (CPU 91 °C; elapsed 2h34m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_add_inplace.csv (all 105 checks correct)
+[22/42] 11:39:34 openfhe_bgv_N8192_cat3_add_inplace  (CPU 91 °C; elapsed 2h44m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_add_inplace.csv (all 105 checks correct)
+[23/42] 11:47:42 seal_bgv_N8192_cat3_multiply  (CPU 91 °C; elapsed 2h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bgv_N8192_cat3_multiply.csv
+[24/42] 11:57:27 openfhe_bfv_N8192_cat3_add  (CPU 91 °C; elapsed 3h1m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_add.csv (all 105 checks correct)
+[25/42] 12:09:55 openfhe_ckks_N8192_cat3_decrypt  (CPU 91 °C; elapsed 3h14m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_decrypt.csv (all 105 checks correct)
+[26/42] 12:14:46 seal_ckks_N8192_cat3_encrypt  (CPU 91 °C; elapsed 3h19m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_ckks_N8192_cat3_encrypt.csv
+[27/42] 12:19:06 openfhe_bfv_N8192_cat3_encrypt  (CPU 92 °C; elapsed 3h23m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_encrypt.csv (all 105 checks correct)
+[28/42] 12:26:01 seal_bgv_N8192_cat3_encrypt  (CPU 92 °C; elapsed 3h30m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bgv_N8192_cat3_encrypt.csv
+[29/42] 12:30:38 seal_bgv_N8192_cat3_relinearize  (CPU 92 °C; elapsed 3h35m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bgv_N8192_cat3_relinearize.csv
+[30/42] 12:43:23 seal_ckks_N8192_cat3_add  (CPU 92 °C; elapsed 3h47m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_ckks_N8192_cat3_add.csv
+[31/42] 12:52:48 openfhe_ckks_N8192_cat3_keygen  (CPU 92 °C; elapsed 3h57m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_keygen.csv (all 105 checks correct)
+[32/42] 12:52:50 openfhe_bfv_N8192_cat3_multiply  (CPU 91 °C; elapsed 3h57m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_multiply.csv (all 105 checks correct)
+[33/42] 13:15:12 openfhe_bgv_N8192_cat3_encrypt  (CPU 92 °C; elapsed 4h19m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_encrypt.csv (all 105 checks correct)
+[34/42] 13:20:01 openfhe_bgv_N8192_cat3_decrypt  (CPU 92 °C; elapsed 4h24m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_decrypt.csv (all 105 checks correct)
+[35/42] 13:25:12 seal_ckks_N8192_cat3_relinearize  (CPU 92 °C; elapsed 4h29m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_ckks_N8192_cat3_relinearize.csv
+[36/42] 13:37:15 openfhe_ckks_N8192_cat3_relinearize  (CPU 92 °C; elapsed 4h41m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_relinearize.csv (all 105 checks correct)
+[37/42] 13:50:08 openfhe_ckks_N8192_cat3_multiply  (CPU 89 °C; elapsed 4h54m)
+bash terminated by signal HUP.

@@ -1,0 +1,88 @@
+nohup: ignoring input
+Resuming session s3 (manifest identical).
+Session s3: 42 cells, order seed 2755924728, governor enforced: 1
+[1/42] 15:12:37 seal_bfv_N8192_cat3_encrypt  (CPU 51 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N8192_cat3_encrypt
+[2/42] 15:12:37 seal_ckks_N8192_cat3_multiply  (CPU 52 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N8192_cat3_multiply
+[3/42] 15:12:38 seal_bfv_N8192_cat3_add  (CPU 52 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N8192_cat3_add
+[4/42] 15:12:38 seal_bfv_N8192_cat3_multiply  (CPU 53 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N8192_cat3_multiply
+[5/42] 15:12:38 seal_ckks_N8192_cat3_keygen  (CPU 53 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N8192_cat3_keygen
+[6/42] 15:12:38 openfhe_ckks_N8192_cat3_encrypt  (CPU 54 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N8192_cat3_encrypt
+[7/42] 15:12:38 seal_bfv_N8192_cat3_decrypt  (CPU 54 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N8192_cat3_decrypt
+[8/42] 15:12:38 openfhe_bfv_N8192_cat3_decrypt_full  (CPU 55 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_decrypt_full
+[9/42] 15:12:38 openfhe_bfv_N8192_cat3_relinearize  (CPU 56 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_relinearize
+[10/42] 15:12:38 seal_bgv_N8192_cat3_decrypt  (CPU 57 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bgv_N8192_cat3_decrypt
+[11/42] 15:12:38 seal_bfv_N8192_cat3_relinearize  (CPU 58 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N8192_cat3_relinearize
+[12/42] 15:12:38 seal_ckks_N8192_cat3_decrypt  (CPU 59 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N8192_cat3_decrypt
+[13/42] 15:12:38 openfhe_bgv_N8192_cat3_add  (CPU 59 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_add
+[14/42] 15:12:38 openfhe_bfv_N8192_cat3_decrypt  (CPU 60 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_decrypt
+[15/42] 15:12:38 openfhe_bgv_N8192_cat3_keygen  (CPU 60 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_keygen
+[16/42] 15:12:38 openfhe_ckks_N8192_cat3_add  (CPU 61 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N8192_cat3_add
+[17/42] 15:12:38 seal_bfv_N8192_cat3_keygen  (CPU 61 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N8192_cat3_keygen
+[18/42] 15:12:38 openfhe_bfv_N8192_cat3_add_inplace  (CPU 62 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_add_inplace
+[19/42] 15:12:38 openfhe_bgv_N8192_cat3_multiply  (CPU 62 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_multiply
+[20/42] 15:12:38 openfhe_bgv_N8192_cat3_decrypt_full  (CPU 63 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_decrypt_full
+[21/42] 15:12:38 openfhe_ckks_N8192_cat3_add_inplace  (CPU 64 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N8192_cat3_add_inplace
+[22/42] 15:12:38 openfhe_bgv_N8192_cat3_add_inplace  (CPU 64 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_add_inplace
+[23/42] 15:12:38 seal_bgv_N8192_cat3_multiply  (CPU 64 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bgv_N8192_cat3_multiply
+[24/42] 15:12:38 openfhe_bfv_N8192_cat3_add  (CPU 64 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_add
+[25/42] 15:12:38 openfhe_ckks_N8192_cat3_decrypt  (CPU 65 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N8192_cat3_decrypt
+[26/42] 15:12:38 seal_ckks_N8192_cat3_encrypt  (CPU 65 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N8192_cat3_encrypt
+[27/42] 15:12:38 openfhe_bfv_N8192_cat3_encrypt  (CPU 66 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_encrypt
+[28/42] 15:12:38 seal_bgv_N8192_cat3_encrypt  (CPU 66 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bgv_N8192_cat3_encrypt
+[29/42] 15:12:38 seal_bgv_N8192_cat3_relinearize  (CPU 66 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_bgv_N8192_cat3_relinearize
+[30/42] 15:12:38 seal_ckks_N8192_cat3_add  (CPU 66 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N8192_cat3_add
+[31/42] 15:12:38 openfhe_ckks_N8192_cat3_keygen  (CPU 66 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N8192_cat3_keygen
+[32/42] 15:12:38 openfhe_bfv_N8192_cat3_multiply  (CPU 67 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N8192_cat3_multiply
+[33/42] 15:12:38 openfhe_bgv_N8192_cat3_encrypt  (CPU 67 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_encrypt
+[34/42] 15:12:38 openfhe_bgv_N8192_cat3_decrypt  (CPU 68 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bgv_N8192_cat3_decrypt
+[35/42] 15:12:38 seal_ckks_N8192_cat3_relinearize  (CPU 68 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N8192_cat3_relinearize
+[36/42] 15:12:39 openfhe_ckks_N8192_cat3_relinearize  (CPU 68 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N8192_cat3_relinearize
+[37/42] 15:12:39 openfhe_ckks_N8192_cat3_multiply  (CPU 69 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_multiply.csv (all 105 checks correct)
+[38/42] 15:22:37 seal_bgv_N8192_cat3_add  (CPU 93 °C; elapsed 0h10m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bgv_N8192_cat3_add.csv
+[39/42] 15:31:52 seal_bgv_N8192_cat3_keygen  (CPU 93 °C; elapsed 0h19m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/seal_bgv_N8192_cat3_keygen.csv
+[40/42] 15:31:58 openfhe_ckks_N8192_cat3_decrypt_full  (CPU 75 °C; elapsed 0h19m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_ckks_N8192_cat3_decrypt_full.csv (all 105 checks correct)
+[41/42] 15:42:03 openfhe_bgv_N8192_cat3_relinearize  (CPU 93 °C; elapsed 0h29m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bgv_N8192_cat3_relinearize.csv (all 105 checks correct)
+[42/42] 15:51:57 openfhe_bfv_N8192_cat3_keygen  (CPU 93 °C; elapsed 0h39m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s3/openfhe_bfv_N8192_cat3_keygen.csv (all 105 checks correct)
+Session s3 complete: 15:51:59. Next: cd experiments/scripts && python3 aggregate.py --scenario=openfhe_standard
