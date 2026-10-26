@@ -41,7 +41,10 @@ session_start() {  # $1 = scenario name for run_metadata.csv, $2 = seed
     CPUF="/sys/devices/system/cpu/cpu${TASKSET_CORE}/cpufreq"
     K10="$(hwmon_by_name k10temp)"; ASUS="$(hwmon_by_name asus)"
     TEMP_SRC="${K10:+$K10/temp1_input}"; [ -z "$TEMP_SRC" ] && TEMP_SRC=/sys/class/thermal/thermal_zone0/temp
-    echo "timestamp,core,effective_freq_khz,requested_freq_khz,temp_millic,cpu_fan_rpm,gpu_fan_rpm" > "$SESSION_DIR/thermal_log.csv"
+    # appended across (re)starts of the same session -- never truncated, so a
+    # resumed session keeps the record of its earlier part
+    [ -f "$SESSION_DIR/thermal_log.csv" ] || \
+        echo "timestamp,core,effective_freq_khz,requested_freq_khz,temp_millic,cpu_fan_rpm,gpu_fan_rpm" > "$SESSION_DIR/thermal_log.csv"
     ( while true; do
           echo "$(date -Iseconds),$TASKSET_CORE,$(cat "$CPUF/cpuinfo_avg_freq" 2>/dev/null),$(cat "$CPUF/scaling_cur_freq" 2>/dev/null),$(cat "$TEMP_SRC" 2>/dev/null),$(cat "$ASUS/fan1_input" 2>/dev/null),$(cat "$ASUS/fan2_input" 2>/dev/null)" >> "$SESSION_DIR/thermal_log.csv"
           sleep 1
