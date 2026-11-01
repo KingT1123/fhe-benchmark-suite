@@ -1,0 +1,144 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, array, amsmath, amssymb, xcolor, enumitem}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parskip}{4pt}
+\sloppy
+
+% Every number below comes from experiments/openfhe/standard_tables/ (generated
+% by experiments/openfhe/make_standard_tables.py from aggregate.py's outputs).
+\newcommand{\tab}[1]{../../experiments/openfhe/standard_tables/#1}
+\input{\tab{numbers.tex}}
+\newcommand{\R}[1]{\csname r:#1\endcsname}   % ratio OpenFHE/SEAL, e.g. \R{CKKS:8192:1:relinearize}
+\newcommand{\X}[1]{\csname x:#1\endcsname}   % its inverse (SEAL/OpenFHE)
+\newcommand{\V}[1]{\csname v:#1\endcsname}   % mean latency, ms, e.g. \V{OpenFHE:CKKS:16384:1:add}
+
+\title{OpenFHE Standard campaign: results\\[2pt]
+\large SEAL 4.1.2 and OpenFHE 1.5.1, same sessions, \nConfigs\ configurations}
+\author{Boungo Tr\'esor}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Scope.} This note reports the complete Standard campaign authorized after the pilot (\texttt{openfhe\_pilot\_note}): every eligible configuration, OpenFHE and SEAL measured in the same sessions with the pilot's harness and protocol. It gives the consolidated results, the excluded and problematic cells, and an interpretation of the main differences. Latency only: energy and memory are a later step (Section~\ref{sec:limits}). All tables and numbers are generated from the data (\texttt{experiments/openfhe/make\_standard\_tables.py}); every incident is recorded in \texttt{experiments/results/raw/standard\_campaign/INCIDENTS.md}.
+
+\paragraph{Summary.}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{\nCells\ cells in \nSessions\ sessions, all valid (\nExcluded\ excluded).} Every cell passed the fail-closed validation: complete repetitions, every OpenFHE result checked correct, configuration card identical to the session manifest.
+  \item \textbf{\nSetAside\ cells were set aside and measured again.} They had been measured while the laptop ran on battery, which lowers the CPU frequency. They are kept in the raw data, not used. A power guard then prevented any measurement on battery.
+  \item \textbf{Main differences} (matched-profile comparisons, same session): OpenFHE's key generation is \speedMinkeygen--\speedMaxkeygen\ times faster; its decryption (to SEAL's boundary) is faster for CKKS (ratio \ratioMinckksdecrypt--\ratioMaxckksdecrypt); multiplication is close (ratio \ratioMinmultiply--\ratioMaxmultiply); key switching is about twice as slow (relinearization \ratioMinrelinearize--\ratioMaxrelinearize, rotation \ratioMinrotate). These are the pilot's findings, now across $N$ and categories.
+\end{itemize}
+
+\section{Protocol and sessions}
+
+The protocol is the pilot's, unchanged (pilot note, Section~3): one process per cell; fresh inputs for every call; 100 measured repetitions after 5 warm-up, inner loop 1000 (keygen and rotate: one call); one pinned core, governor \texttt{performance}; both libraries in the same session in randomized order (seed recorded); laptop otherwise idle. A session was resumed after an interruption only with an identical manifest (code commit, binary and image hashes, configuration files), so the completed cells were reused and the interrupted cell measured again from the start.
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{sessions.tex}}
+\caption{Sessions. Freq.: median effective core frequency over the session. SEAL/archived: SEAL's mean in this session over its mean in the archived SEAL campaign, same cell: minimum--median--maximum (number of cells). Data: \texttt{experiments/results/final/openfhe\_standard\_sessions.csv}, \texttt{openfhe\_standard.csv}.}
+\label{tab:sessions}
+\end{table}
+
+SEAL ran faster in these sessions than in the archived SEAL campaign (median ratio \archMedian\ over \archN\ cells, range \archMin--\archMax). This is a difference between the two campaigns' conditions; it does not affect the OpenFHE/SEAL comparisons, which only use cells of the same session. The lowest ratio (\archMin) is SEAL's \emph{add} at BFV 16384/1, whose archived value is itself flagged HIGH\_VARIANCE.
+
+\section{Results}
+
+Results are reported in three groups, as in the pilot: (i) \emph{matched-profile comparisons} of \emph{equivalent computational boundaries}, the only cells where a ratio OpenFHE/SEAL is formed; (ii) equivalent boundaries of configurations that require a \emph{separate analysis} (the two libraries' moduli differ), reported per library without a ratio; (iii) \emph{end-to-end API costs}, each library's own call, which do not perform the same computation, without a ratio. No cell is an exact-parameter comparison. The class of every cell and its remaining differences are in \texttt{openfhe\_standard\_comparisons.csv}.
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{matched.tex}}
+\caption{Matched-profile comparisons, equivalent boundaries (\nRatios\ cells): mean latency, same session. Ratio O/S: OpenFHE mean / SEAL mean; Welch 90\% CI of the difference. decrypt$^\ast$: up to SEAL's decrypt boundary. Remaining differences (primes not equal, error distribution, key-switching method, CKKS scale where it differs) are listed per cell in \texttt{openfhe\_standard\_comparisons.csv}.}
+\label{tab:matched}
+\end{table}
+
+\begin{table}[h!]\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\input{\tab{separate.tex}}
+\caption{Equivalent boundaries of configurations requiring separate analysis (\nSeparateCells\ cells): mean latency per library, same session. The ciphertext moduli differ between the libraries, so no ratio is formed.}
+\label{tab:separate}
+\end{table}
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{api.tex}}
+\caption{End-to-end API costs (mean latency, ms), same session: each library's own call. \texttt{EvalAdd} copies its operand first (\texttt{EvalAddInPlace} does not); OpenFHE's \texttt{Decrypt} also decodes, SEAL's decrypt stops before; SEAL's encryption includes its special-prime step. The calls of a row do not perform the same computation and are not compared by a ratio.}
+\label{tab:api}
+\end{table}
+
+\clearpage
+\section{Excluded and problematic cells}
+
+\paragraph{Excluded cells: none.} Validation excluded \nExcluded\ of \nCells\ cells (\texttt{openfhe\_standard\_excluded.csv} is empty).
+
+\paragraph{Cells set aside: \nSetAside, all measured again (Table~\ref{tab:aside}).} On this laptop, running on battery makes the firmware lower the CPU power limit; the core frequency drops (to about 4.23--4.32~GHz against 4.40--4.46~GHz on mains in session s4). In s4, one cell (26~October) and eight cells (27~October, morning) ran partly or wholly on battery. They passed validation, but their timings come from a different power state, so they were moved, with their checks and cards, to \texttt{s4/set\_aside\_battery\_*} (not read by the aggregation) and measured again on mains with the same manifest. From then on every run went through a power guard (\texttt{experiments/tools/power\_guard.sh}): it records the mains state every 5~s, stops the measurement after 10~s on battery and resumes automatically 2~minutes after mains returns. Its record shows that every cell measured under it ran on mains.
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{set_aside.tex}}
+\caption{Cells measured on battery, set aside (kept in the raw data) and measured again on mains.}
+\label{tab:aside}
+\end{table}
+
+\paragraph{High variance: \nHighVar\ of \nCells\ cells (Table~\ref{tab:hv}).} All are short operations (additions, CKKS 2048 decryption, rotations timed one call per repetition, full decryption) except OpenFHE's BFV 16384/1 key generation, whose flag comes from 3 isolated slow repetitions out of 100. The table gives the median and interquartile range next to the mean; except SEAL's CKKS 8192/1 rotation, where about a quarter of the repetitions are slower (upper quartile 2.18 against median 1.87~ms), the interquartile range is narrow, so the spread comes from a few outlying repetitions. All are reported as measured, with the flag; only one of them (SEAL's CKKS 8192/1 rotation) enters a ratio.
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{highvar.tex}}
+\caption{Cells above 5\% coefficient of variation (HIGH\_VARIANCE).}
+\label{tab:hv}
+\end{table}
+
+\paragraph{Machine state between sessions.} With the same governor and power profile, the sustained frequency differed between days (s4: \freqMinsfour--\freqMaxsfour~GHz per cell; s5: \freqMinsfive--\freqMaxsfive~GHz; s1--s3: \freqMinsone--\freqMaxsone~GHz), for a reason not identified. Per-cell frequency, temperature and kernel are recorded in \texttt{openfhe\_standard.csv} and shown for s4 and s5 in Table~\ref{tab:cond}. The pairs used for a ratio in s5 ran within about 2\% of each other in frequency, except key generation (short cells, which end before the CPU heats up). Other points, all recorded in the incident log:
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item The last cell of s5 (OpenFHE CKKS 16384/1 relinearization) ran after an operating-system update, on kernel 7.0.0-42 instead of 7.0.0-38; its SEAL partner ran on 7.0.0-38. Binaries, images and configuration were unchanged (identical manifest). Its ratio (\R{CKKS:16384:1:relinearize}) is in line with that of $N{=}8192$ (\R{CKKS:8192:1:relinearize}) and with the pilot.
+  \item The re-measured s4 OpenFHE addition ran at 4.27~GHz against 4.36--4.46~GHz for the rest of s4. It is an end-to-end API cost of a separate-analysis configuration, so no ratio depends on it.
+  \item The per-second frequency record of the first parts of s2 and s3 was overwritten by a logging bug (fixed before s4); the measurements themselves are complete.
+\end{itemize}
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{\tab{conditions_s4s5.tex}}
+\caption{Per-cell conditions in s4 and s5: mean effective core frequency and temperature during the cell, SEAL's ratio to the archived campaign, kernel.}
+\label{tab:cond}
+\end{table}
+
+\clearpage
+\section{Interpretation of the main differences}
+\label{sec:interp}
+
+The following describes what the matched-profile comparisons show. Explanations are given only where the operation's implementation was verified (pilot note); other differences are reported as observations.
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+  \item \textbf{Key generation is much faster in OpenFHE} (context creation included in both): \X{CKKS:2048:5:keygen}$\times$ at CKKS 2048/5, \X{CKKS:8192:1:keygen}$\times$ at 8192/1, \X{CKKS:16384:1:keygen}$\times$ at 16384/1. The same direction appears in every separate-analysis configuration (Table~\ref{tab:separate}). The factor is largest at the smallest $N$ (\V{SEAL:CKKS:2048:5:keygen}~ms against \V{OpenFHE:CKKS:2048:5:keygen}~ms at 2048/5). The origin of the difference was not investigated.
+  \item \textbf{Decryption to SEAL's boundary is faster in OpenFHE for CKKS}, with a stable ratio across $N$ and categories (\ratioMinckksdecrypt--\ratioMaxckksdecrypt, \ratioNckksdecrypt\ configurations from 2048 to 16384). The ratio is the same where the initial scales are equal (8192/1: \R{CKKS:8192:1:decrypt}; 16384/1: \R{CKKS:16384:1:decrypt}) and where they differ (the other six), which is consistent with the scale not affecting this cost. BFV 8192/5 shows the same (\R{BFV:8192:5:decrypt}); BGV 8192/5 is close to parity (\R{BGV:8192:5:decrypt}).
+  \item \textbf{Ciphertext multiplication (without relinearization) costs about the same}: \R{CKKS:4096:1:multiply} at 4096/1, \R{CKKS:8192:1:multiply} at 8192/1, \R{CKKS:16384:1:multiply} at 16384/1; OpenFHE becomes slightly slower as $N$ grows.
+  \item \textbf{Key switching is about twice as slow in OpenFHE}: relinearization \R{CKKS:8192:1:relinearize} at 8192/1 and \R{CKKS:16384:1:relinearize} at 16384/1, rotation \R{CKKS:8192:1:rotate} at 8192/1. It is the largest difference measured, and it grows with $N$. The two libraries' key-switching methods differ (SEAL: one special prime; OpenFHE: hybrid key switching, one prime per digit; listed in the cells' remaining differences), so the gap reflects method and implementation together; separating the two was not attempted. The pilot found the same ratios, so the finding holds across sessions.
+  \item \textbf{End-to-end API costs include different work in the two libraries} (Table~\ref{tab:api}): OpenFHE's \texttt{EvalAdd} copies its operand, which makes it \copyMin--\copyMax\ times slower than \texttt{EvalAddInPlace}; OpenFHE's \texttt{Decrypt} includes decoding (e.g.\ \V{OpenFHE:CKKS:16384:1:decrypt_full}~ms at CKKS 16384/1, against \V{OpenFHE:CKKS:16384:1:decrypt}~ms to SEAL's boundary). These values are each library's cost for the user, not a comparison of the same work.
+  \item \textbf{Separate-analysis cells} (all BFV and BGV cells except decryption at 8192/5; all of CKKS 8192/3; key generation and relinearization at several other CKKS configurations) are reported per library only. Their values show why no ratio is formed: at 8192/3, for example, OpenFHE's BGV relinearization is faster than SEAL's (\V{OpenFHE:BGV:8192:3:relinearize} against \V{SEAL:BGV:8192:3:relinearize}~ms), the reverse of the matched-profile CKKS cells, because the two libraries' moduli (number and size of primes) are different there.
+\end{enumerate}
+
+\section{Limitations and next steps}
+\label{sec:limits}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Latency only.} Energy and memory were not measured in this campaign; the plan is the SEAL campaign's dedicated protocol (timed-window RAPL with idle correction; memory at inner loop 1), for both libraries.
+  \item \textbf{Frequency not fixed.} The CPU frequency followed the firmware's power management (boost enabled), which varied between days (Section~4). Comparisons are within a session, where conditions were close, and per-cell frequency is reported. For the next campaigns I propose to fix the frequency (boost disabled), so that results do not depend on the power state; this will be tested on this laptop first.
+  \item \textbf{Scale equivalence} (CKKS) was established only for 8192/1 at $2^{30}$ and $2^{40}$. The initial scales are equal at 8192/1 and 16384/1; at 2048, 4096 and 8192/5 they differ by 2 to 14 bits, which is listed in the remaining differences of those cells (their ratios are decryption, key generation at 2048/5 and multiplication at 4096/1).
+  \item \textbf{HElib and Lattigo} are not started, as agreed (SEAL first, then OpenFHE).
+\end{itemize}
+
+\section{Reproduction}
+
+{\footnotesize
+\begin{tabular}{@{}L{4.0cm}L{12.5cm}@{}}
+\toprule
+Step & Command (from the repository root) \\
+\midrule
+Build & \texttt{bash experiments/seal/docker\_build\_and\_run.sh}; \texttt{bash experiments/openfhe/docker\_build.sh} \\
+One session (s1--s5) & \texttt{sudo bash experiments/tools/power\_guard.sh s1} (or directly \texttt{sudo bash experiments/openfhe/run\_standard\_campaign.sh s1}) \\
+Statistics & \texttt{cd experiments/scripts; python3 aggregate.py --scenario=openfhe\_standard} \\
+Tables of this note & \texttt{cd experiments/openfhe; python3 make\_standard\_tables.py} \\
+Raw data, incidents & \texttt{experiments/results/raw/standard\_campaign/s1..s5/}, \texttt{INCIDENTS.md} \\
+\bottomrule
+\end{tabular}}
+
+\end{document}

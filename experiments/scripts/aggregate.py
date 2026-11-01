@@ -2064,7 +2064,10 @@ def aggregate_openfhe_standard(args):
     openfhe_standard_excluded.csv (nothing is dropped silently).
     Outputs (results/final/):
       openfhe_standard.csv              per cell: latency statistics (same
-                                         formulas as every scenario), session
+                                         formulas as every scenario), session,
+                                         cell window, mean effective frequency and
+                                         temperature inside it, kernel, and for SEAL
+                                         the ratio to the archived SEAL campaign
       openfhe_standard_comparisons.csv  OpenFHE vs SEAL, SAME SESSION only, per
                                          configuration and operation: for the
                                          equivalent computational boundaries OF A
@@ -2092,6 +2095,10 @@ def aggregate_openfhe_standard(args):
                           if os.path.isdir(d) and not os.path.basename(d).startswith("_"))
     cls = {(r["scheme"], r["N"], r["category"], r["operation"]): r
            for r in csv.DictReader(open("../openfhe/probe/operations_v2.csv"))}
+    # archived SEAL campaign (environment check: same SEAL cell, other session)
+    seal_archive = {(r["scheme"], r["N"], r["category"], r["operation"]): float(r["mean"])
+                    for r in csv.DictReader(open("../results/final/seal_standard.csv"))
+                    if r["metric"] == "latency_ms" and r["scenario"] == "standard" and r["mean"]}
     rows, comps, excluded, sess_rows = [], [], [], []
     for sd in sessions:
         sname = os.path.basename(sd)
@@ -2099,6 +2106,18 @@ def aggregate_openfhe_standard(args):
         reps, warm = map(int, re.search(r"repetitions: (\d+) measured \+ (\d+) warm-up", "\n".join(man)).groups())
         card_head = "\n".join(man[3:9])                     # code commit .. param_grid sha256
         listed = [l.strip() for l in man[man.index(next(l for l in man if l.startswith("cells ("))) + 1:]]
+        # per-cell conditions: the cell's LAST window in cell_times.csv (an
+        # earlier window of the same tag is a measurement that was set aside),
+        # the thermal record inside it, and the kernel of the (re)start before it
+        from datetime import datetime
+        windows = {r["tag"]: (datetime.fromisoformat(r["start"]), datetime.fromisoformat(r["end"]))
+                   for r in csv.DictReader(open(os.path.join(sd, "cell_times.csv")))}
+        therm_t = [(datetime.fromisoformat(r["timestamp"]), r["effective_freq_khz"], r["temp_millic"])
+                   for r in csv.DictReader(open(os.path.join(sd, "thermal_log.csv")))]
+        kernels = []
+        for p in sorted(glob.glob(os.path.join(sd, "cpu_state_*.txt"))):
+            km = re.search(r"^kernel: (\S+)", open(p).read(), re.M)
+            kernels.append((datetime.strptime(os.path.basename(p)[10:25], "%Y%m%dT%H%M%S"), km.group(1) if km else ""))
         stats, n_ok = {}, 0
         for cell in listed:
             lib, sch, N, cat, op = cell.split(",")
@@ -2114,10 +2133,20 @@ def aggregate_openfhe_standard(args):
             n_ok += 1
             st = aggregate_latency_file(os.path.join(sd, tag + ".csv"))
             stats[(lib, sch, N, cat, op)] = st
+            w0, w1 = windows.get(tag, (None, None))
+            inside = [(f, t) for ts, f, t in therm_t if w0 and w0.replace(tzinfo=None) <= ts.replace(tzinfo=None) <= w1.replace(tzinfo=None)]
+            fq = [float(f) / 1000 for f, _ in inside if f]
+            tq = [float(t) / 1000 for _, t in inside if t]
+            kern = [k for ts, k in kernels if w0 and ts <= w0.replace(tzinfo=None)]
+            arch = seal_archive.get((sch, N, cat, op)) if lib == "seal" else None
             rows.append({"session": sname, "library": st["library"], "scheme": sch, "N": N, "category": cat,
                          "operation": op, "n": st["n_measured"], "mean_ms": st["mean_ms"], "std_ms": st["std_ms"],
                          "ci_low_ms": st["ci_low_ms"], "ci_high_ms": st["ci_high_ms"], "median_ms": st["median_ms"],
-                         "iqr_low_ms": st["iqr_low_ms"], "iqr_high_ms": st["iqr_high_ms"], "flag": st["flag"]})
+                         "iqr_low_ms": st["iqr_low_ms"], "iqr_high_ms": st["iqr_high_ms"], "flag": st["flag"],
+                         "cell_start": w0.isoformat() if w0 else "", "cell_end": w1.isoformat() if w1 else "",
+                         "effective_freq_mhz_mean": statistics.mean(fq) if fq else "",
+                         "temp_c_mean": statistics.mean(tq) if tq else "", "kernel": kern[-1] if kern else "",
+                         "seal_vs_archived_ratio": st["mean_ms"] / arch if arch else ""})
         for (lib, sch, N, cat, op), o in sorted(stats.items()):
             if lib != "openfhe":
                 continue
