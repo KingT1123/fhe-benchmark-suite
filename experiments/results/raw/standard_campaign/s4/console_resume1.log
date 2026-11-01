@@ -1,0 +1,32 @@
+nohup: ignoring input
+Resuming session s4 (manifest identical).
+Session s4: 14 cells, order seed 31082694, governor enforced: 1
+[1/14] 21:54:25 openfhe_bfv_N16384_cat1_add  (CPU 57 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_add
+[2/14] 21:54:25 openfhe_bfv_N16384_cat1_relinearize  (CPU 57 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_relinearize.csv (all 105 checks correct)
+[3/14] 00:34:59 seal_bfv_N16384_cat1_add  (CPU 91 °C; elapsed 2h40m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/seal_bfv_N16384_cat1_add.csv
+[4/14] 01:07:11 openfhe_bfv_N16384_cat1_add_inplace  (CPU 92 °C; elapsed 3h12m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_add_inplace.csv (all 105 checks correct)
+[5/14] 02:07:44 seal_bfv_N16384_cat1_multiply  (CPU 91 °C; elapsed 4h13m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/seal_bfv_N16384_cat1_multiply.csv
+[6/14] 03:55:30 seal_bfv_N16384_cat1_keygen  (CPU 91 °C; elapsed 6h1m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/seal_bfv_N16384_cat1_keygen.csv
+[7/14] 03:56:01 seal_bfv_N16384_cat1_relinearize  (CPU 74 °C; elapsed 6h1m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/seal_bfv_N16384_cat1_relinearize.csv
+[8/14] 06:20:16 openfhe_bfv_N16384_cat1_multiply  (CPU 92 °C; elapsed 8h25m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_multiply.csv (all 105 checks correct)
+[9/14] 08:32:09 openfhe_bfv_N16384_cat1_encrypt  (CPU 90 °C; elapsed 10h37m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_encrypt.csv (all 105 checks correct)
+[10/14] 09:07:44 openfhe_bfv_N16384_cat1_decrypt_full  (CPU 92 °C; elapsed 11h13m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_decrypt_full.csv (all 105 checks correct)
+[11/14] 09:46:44 openfhe_bfv_N16384_cat1_decrypt  (CPU 92 °C; elapsed 11h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_decrypt.csv (all 105 checks correct)
+[12/14] 10:24:55 openfhe_bfv_N16384_cat1_keygen  (CPU 92 °C; elapsed 12h30m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_keygen.csv (all 105 checks correct)
+[13/14] 10:25:08 seal_bfv_N16384_cat1_decrypt  (CPU 92 °C; elapsed 12h30m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/seal_bfv_N16384_cat1_decrypt.csv
+[14/14] 10:48:55 seal_bfv_N16384_cat1_encrypt  (CPU 91 °C; elapsed 12h54m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/seal_bfv_N16384_cat1_encrypt.csv
+Session s4 complete: 11:05:17. Next: cd experiments/scripts && python3 aggregate.py --scenario=openfhe_standard

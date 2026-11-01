@@ -1,0 +1,31 @@
+Resuming session s4 (manifest identical).
+Session s4: 14 cells, order seed 31082694, governor enforced: 1
+[1/14] 01:04:10 openfhe_bfv_N16384_cat1_add  (CPU 52 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_add.csv (all 105 checks correct)
+[2/14] 02:08:03 openfhe_bfv_N16384_cat1_relinearize  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_relinearize
+[3/14] 02:08:04 seal_bfv_N16384_cat1_add  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N16384_cat1_add
+[4/14] 02:08:04 openfhe_bfv_N16384_cat1_add_inplace  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_add_inplace
+[5/14] 02:08:04 seal_bfv_N16384_cat1_multiply  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N16384_cat1_multiply
+[6/14] 02:08:04 seal_bfv_N16384_cat1_keygen  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N16384_cat1_keygen
+[7/14] 02:08:04 seal_bfv_N16384_cat1_relinearize  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N16384_cat1_relinearize
+[8/14] 02:08:04 openfhe_bfv_N16384_cat1_multiply  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_multiply
+[9/14] 02:08:04 openfhe_bfv_N16384_cat1_encrypt  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_encrypt
+[10/14] 02:08:04 openfhe_bfv_N16384_cat1_decrypt_full  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_decrypt_full
+[11/14] 02:08:04 openfhe_bfv_N16384_cat1_decrypt  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_decrypt
+[12/14] 02:08:04 openfhe_bfv_N16384_cat1_keygen  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): openfhe_bfv_N16384_cat1_keygen
+[13/14] 02:08:04 seal_bfv_N16384_cat1_decrypt  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N16384_cat1_decrypt
+[14/14] 02:08:04 seal_bfv_N16384_cat1_encrypt  (CPU 91 °C; elapsed 1h3m)
+   SKIPPED (valid, same configuration, already complete): seal_bfv_N16384_cat1_encrypt
+Session s4 complete: 02:08:04. Next: cd experiments/scripts && python3 aggregate.py --scenario=openfhe_standard

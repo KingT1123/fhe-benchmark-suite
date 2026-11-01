@@ -1,0 +1,29 @@
+Resuming session s5 (manifest identical).
+Session s5: 14 cells, order seed 278861723, governor enforced: 1
+[1/14] 00:46:47 openfhe_ckks_N16384_cat1_decrypt  (CPU 62 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_decrypt
+[2/14] 00:46:47 openfhe_ckks_N16384_cat1_encrypt  (CPU 62 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_encrypt
+[3/14] 00:46:47 seal_ckks_N16384_cat1_decrypt  (CPU 63 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_decrypt
+[4/14] 00:46:47 openfhe_ckks_N16384_cat1_multiply  (CPU 64 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_multiply
+[5/14] 00:46:47 openfhe_ckks_N16384_cat1_add  (CPU 64 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_add
+[6/14] 00:46:47 seal_ckks_N16384_cat1_multiply  (CPU 65 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_multiply
+[7/14] 00:46:47 openfhe_ckks_N16384_cat1_add_inplace  (CPU 65 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_add_inplace.csv (all 105 checks correct)
+[8/14] 01:32:04 openfhe_ckks_N16384_cat1_keygen  (CPU 90 °C; elapsed 0h45m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_keygen.csv (all 105 checks correct)
+[9/14] 01:32:20 seal_ckks_N16384_cat1_add  (CPU 91 °C; elapsed 0h45m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/seal_ckks_N16384_cat1_add.csv
+[10/14] 02:20:02 openfhe_ckks_N16384_cat1_decrypt_full  (CPU 91 °C; elapsed 1h33m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_decrypt_full.csv (all 105 checks correct)
+[11/14] 03:13:27 seal_ckks_N16384_cat1_keygen  (CPU 91 °C; elapsed 2h26m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/seal_ckks_N16384_cat1_keygen.csv
+[12/14] 03:13:57 seal_ckks_N16384_cat1_relinearize  (CPU 79 °C; elapsed 2h27m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/seal_ckks_N16384_cat1_relinearize.csv
+[13/14] 04:36:04 seal_ckks_N16384_cat1_encrypt  (CPU 91 °C; elapsed 3h49m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/seal_ckks_N16384_cat1_encrypt.csv
+[14/14] 04:58:37 openfhe_ckks_N16384_cat1_relinearize  (CPU 91 °C; elapsed 4h11m)

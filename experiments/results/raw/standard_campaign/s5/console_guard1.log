@@ -1,0 +1,14 @@
+Session s5: 14 cells, order seed 278861723, governor enforced: 1
+[1/14] 02:08:12 openfhe_ckks_N16384_cat1_decrypt  (CPU 58 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_decrypt.csv (all 105 checks correct)
+[2/14] 02:35:40 openfhe_ckks_N16384_cat1_encrypt  (CPU 91 °C; elapsed 0h27m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_encrypt.csv (all 105 checks correct)
+[3/14] 03:00:52 seal_ckks_N16384_cat1_decrypt  (CPU 92 °C; elapsed 0h52m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/seal_ckks_N16384_cat1_decrypt.csv
+[4/14] 03:26:10 openfhe_ckks_N16384_cat1_multiply  (CPU 91 °C; elapsed 1h17m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_multiply.csv (all 105 checks correct)
+[5/14] 04:25:23 openfhe_ckks_N16384_cat1_add  (CPU 91 °C; elapsed 2h17m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_add.csv (all 105 checks correct)
+[6/14] 05:23:20 seal_ckks_N16384_cat1_multiply  (CPU 92 °C; elapsed 3h15m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/seal_ckks_N16384_cat1_multiply.csv
+[7/14] 06:15:45 openfhe_ckks_N16384_cat1_add_inplace  (CPU 91 °C; elapsed 4h7m)

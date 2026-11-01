@@ -1,0 +1,31 @@
+Resuming session s5 (manifest identical).
+Session s5: 14 cells, order seed 278861723, governor enforced: 1
+[1/14] 09:21:09 openfhe_ckks_N16384_cat1_decrypt  (CPU 54 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_decrypt
+[2/14] 09:21:09 openfhe_ckks_N16384_cat1_encrypt  (CPU 54 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_encrypt
+[3/14] 09:21:09 seal_ckks_N16384_cat1_decrypt  (CPU 55 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_decrypt
+[4/14] 09:21:09 openfhe_ckks_N16384_cat1_multiply  (CPU 56 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_multiply
+[5/14] 09:21:09 openfhe_ckks_N16384_cat1_add  (CPU 57 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_add
+[6/14] 09:21:09 seal_ckks_N16384_cat1_multiply  (CPU 57 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_multiply
+[7/14] 09:21:09 openfhe_ckks_N16384_cat1_add_inplace  (CPU 58 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_add_inplace
+[8/14] 09:21:09 openfhe_ckks_N16384_cat1_keygen  (CPU 58 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_keygen
+[9/14] 09:21:09 seal_ckks_N16384_cat1_add  (CPU 59 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_add
+[10/14] 09:21:09 openfhe_ckks_N16384_cat1_decrypt_full  (CPU 59 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): openfhe_ckks_N16384_cat1_decrypt_full
+[11/14] 09:21:09 seal_ckks_N16384_cat1_keygen  (CPU 60 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_keygen
+[12/14] 09:21:09 seal_ckks_N16384_cat1_relinearize  (CPU 60 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_relinearize
+[13/14] 09:21:09 seal_ckks_N16384_cat1_encrypt  (CPU 61 °C; elapsed 0h0m)
+   SKIPPED (valid, same configuration, already complete): seal_ckks_N16384_cat1_encrypt
+[14/14] 09:21:09 openfhe_ckks_N16384_cat1_relinearize  (CPU 61 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s5/openfhe_ckks_N16384_cat1_relinearize.csv (all 105 checks correct)
+Session s5 complete: 11:30:37. Next: cd experiments/scripts && python3 aggregate.py --scenario=openfhe_standard

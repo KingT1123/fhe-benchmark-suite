@@ -1,0 +1,6 @@
+nohup: ignoring input
+Session s4: 14 cells, order seed 31082694, governor enforced: 1
+[1/14] 18:34:24 openfhe_bfv_N16384_cat1_add  (CPU 68 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s4/openfhe_bfv_N16384_cat1_add.csv (all 105 checks correct)
+[2/14] 19:37:31 openfhe_bfv_N16384_cat1_relinearize  (CPU 89 °C; elapsed 1h3m)
+bash terminated by signal HUP.
