@@ -1,0 +1,60 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, array, enumitem, xcolor}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parskip}{4pt}
+\sloppy
+
+\title{Plan for the remaining work\\[2pt]\large SEAL/OpenFHE completion, HElib, Lattigo and the thesis}
+\author{Boungo Tr\'esor}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Basis of the estimates.} The durations are taken from the OpenFHE phase, which went from the correspondence grid (11~October) to the complete Standard campaign (1~November): about three weeks, of which the measurements themselves took about ten days of machine time, mostly at night. Each review round with you took two to four days. The plan keeps that rhythm: one library at a time, a pilot and your approval before each campaign, and no measurement that does not follow the agreed protocol. It assumes a submission at the end of January 2027 and will be adjusted to the official deadline.
+
+\section{Work items}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+  \item \textbf{Targeted checks requested on the Standard campaign.} (a) CKKS 16384/1 relinearization: the SEAL--OpenFHE pair measured again in one session under one kernel (about 3.5~h of measurement). (b) CKKS 8192/1 rotation: sensitivity analysis done (ratio 1.84 from means, 1.98 from medians, 1.84--2.22 across three independent sessions); no new measurement planned. Results note version~2.
+  \item \textbf{Energy and memory: limited validation.} Fixed-frequency configuration (boost disabled), first tested on its own (frequency, power state and temperature logged every second, on mains and on battery); then a small set of BFV, BGV and CKKS operations in both libraries. Gross package energy as the primary measurement; idle-corrected energy as a complementary estimate with a per-session baseline and its sensitivity; memory reported as observed peak process RSS. A short account to you before any complete energy/memory campaign. These results are kept separate from the latency campaign (different CPU configuration).
+  \item \textbf{Energy and memory campaign, SEAL and OpenFHE}, after your approval, with the validated protocol.
+  \item \textbf{HElib.} BGV and CKKS only (HElib has no BFV, reported as \emph{not available}). Its parameters are given differently (cyclotomic order $m = 2N$, a bit budget instead of explicit primes, $p^r$ for BGV, a precision parameter instead of a CKKS scale), so most cells are expected to be separate analyses; matched profiles will be claimed only where the chains can actually be matched. Steps: Docker image with a pinned version; parameter mapping and Lattice Estimator validation of every configuration actually used; harness reproducing the SEAL protocol rule by rule (same operations and boundaries, fresh inputs, correctness checks, raw rows only); verification of the operation boundaries in HElib's sources; pilot on one configuration; campaign with SEAL in the same sessions; energy/memory with the validated protocol.
+  \item \textbf{Lattigo} (Go). BFV, BGV and CKKS; $\log N$, prime sizes and key-switching primes are set directly, so matched profiles should be possible in more configurations than for HElib. Same steps as HElib. Specific point: Go's garbage collector can add pauses and changes how memory is held; it will be recorded (collector statistics) and, if needed, controlled the same way in every cell, and stated as a limitation.
+  \item \textbf{Cross-library analysis}: the four libraries in one framework, each result in its comparability class, with the same statistical treatment and the reproducibility checks used for OpenFHE.
+  \item \textbf{Thesis.} A complete first draft from the SEAL and OpenFHE results (research problem, state of the art, methodology, implementation, results, discussion, limitations), with observations kept apart from hypotheses; then HElib and Lattigo added to the same chapters.
+\end{enumerate}
+
+\section{Schedule}
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}L{2.6cm}L{8.2cm}L{5.4cm}@{}}
+\toprule
+\textbf{Weeks} & \textbf{Experiments} & \textbf{Thesis and reporting} \\
+\midrule
+4--15 Nov & Relinearization pair (1); fixed-frequency test and energy/memory validation (2) & Results note v2; thesis outline; chapters 1--3 (problem, state of the art, methodology). \textbf{Account of the validation to you.} \\
+16--22 Nov & Energy/memory campaign SEAL and OpenFHE (3), after approval; HElib Docker image, parameter mapping, security estimation (4) & Chapter 4 (implementation) \\
+23 Nov--6 Dec & HElib harness, boundary verification, correctness checks, pilot (4) & Chapters 5--6 (SEAL and OpenFHE results, discussion, limitations). \textbf{First complete draft to you.} HElib pilot note. \\
+7--20 Dec & HElib campaign, latency then energy/memory (4); Lattigo image, mapping, security (5) & Revisions of the draft \\
+21 Dec--10 Jan & Lattigo harness, pilot, campaign (5) & Lattigo pilot note \\
+11--24 Jan & Lattigo energy/memory (5); cross-library analysis (6) & HElib and Lattigo added to chapters 4--6 \\
+25--31 Jan & Buffer (repeated cells, power interruptions) & Final revisions, conclusion, abstract \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Risks and how they are handled}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Power cuts.} The power guard stops a measurement within 10~s on battery and resumes it automatically; a session costs at worst one cell. One week of buffer is kept.
+  \item \textbf{Review time.} Each library needs two approvals (pilot, campaign). Writing continues during each review, so the experiments and the thesis do not wait for each other.
+  \item \textbf{HElib parameter model.} If no configuration can be matched with SEAL, HElib is reported entirely as separate analysis, which is a result in itself; the grid is not changed to force a match.
+  \item \textbf{Fixed frequency.} If disabling boost is not possible or not stable on this laptop, I will report it to you before choosing another approach; latency results already obtained are not affected.
+  \item \textbf{Scope.} If the schedule slips, the order of priority is: the thesis draft with SEAL and OpenFHE, then the latency campaigns of HElib and Lattigo, then their energy/memory.
+\end{itemize}
+
+\end{document}

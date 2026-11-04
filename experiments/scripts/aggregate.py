@@ -2165,8 +2165,14 @@ def aggregate_openfhe_standard(args):
             elif op in EQUIVALENT_OPS:
                 t = tost_equivalence(sref["mean_ms"], sref["std_ms"], sref["n_measured"],
                                      o["mean_ms"], o["std_ms"], o["n_measured"], 0.05)
+                # sensitivity of the ratio to the estimator: medians, and the
+                # quartile envelope (OpenFHE Q1/SEAL Q3 .. OpenFHE Q3/SEAL Q1)
                 base.update({"ratio_openfhe_over_seal": o["mean_ms"] / sref["mean_ms"],
-                             "diff_ms": t["diff"], "diff_ci90_low": t["ci_low"], "diff_ci90_high": t["ci_high"]})
+                             "diff_ms": t["diff"], "diff_ci90_low": t["ci_low"], "diff_ci90_high": t["ci_high"],
+                             "openfhe_median_ms": o["median_ms"], "seal_median_ms": sref["median_ms"],
+                             "ratio_of_medians": o["median_ms"] / sref["median_ms"],
+                             "ratio_quartile_low": o["iqr_low_ms"] / sref["iqr_high_ms"],
+                             "ratio_quartile_high": o["iqr_high_ms"] / sref["iqr_low_ms"]})
             else:
                 base["note"] = "API costs of different computations: no ratio"
             comps.append(base)
@@ -2198,7 +2204,32 @@ def aggregate_openfhe_standard(args):
     dump(stem + "_comparisons.csv", comps,
          ["session", "scheme", "N", "category", "operation", "seal_operation", "boundary", "comparability_class",
           "class_reason", "remaining_differences", "openfhe_mean_ms", "seal_mean_ms", "ratio_openfhe_over_seal",
-          "diff_ms", "diff_ci90_low", "diff_ci90_high", "note"])
+          "diff_ms", "diff_ci90_low", "diff_ci90_high", "openfhe_median_ms", "seal_median_ms", "ratio_of_medians",
+          "ratio_quartile_low", "ratio_quartile_high", "note"])
+    # reproducibility across INDEPENDENT sessions (separate processes, days and
+    # thermal histories): the same matched-profile ratio from every session that
+    # measured it -- the two pilot runs and the campaign. The within-cell Welch
+    # CI does not cover this between-session variation.
+    rep = []
+    for label, path in (("pilot run 1 (laptop in use)", "../results/final/pilot_run1.csv"),
+                        ("pilot run 2", "../results/final/pilot.csv")):
+        if not os.path.exists(path):
+            continue
+        pr = {(r["library"], r["operation"]): r for r in csv.DictReader(open(path))
+              if r["metric"] == "latency_ms" and r["ckks_scale_bits"] == "40"}
+        for op in EQUIVALENT_OPS:
+            s_, o_ = pr.get(("SEAL", op)), pr.get(("OpenFHE", op))
+            if s_ and o_:
+                rep.append({"source": label, "scheme": "CKKS", "N": "8192", "category": "1", "operation": op,
+                            "seal_mean_ms": float(s_["mean"]), "openfhe_mean_ms": float(o_["mean"]),
+                            "ratio_of_means": float(o_["mean"]) / float(s_["mean"]),
+                            "ratio_of_medians": float(o_["median"]) / float(s_["median"])})
+    for c in comps:
+        if c.get("ratio_openfhe_over_seal", "") != "" and (c["scheme"], c["N"], c["category"]) == ("CKKS", "8192", "1"):
+            rep.append({"source": f"campaign {c['session']}", "scheme": c["scheme"], "N": c["N"], "category": c["category"],
+                        "operation": c["operation"], "seal_mean_ms": c["seal_mean_ms"], "openfhe_mean_ms": c["openfhe_mean_ms"],
+                        "ratio_of_means": c["ratio_openfhe_over_seal"], "ratio_of_medians": c["ratio_of_medians"]})
+    dump(stem + "_reproducibility.csv", rep)
     dump(stem + "_excluded.csv", excluded, ["session", "cell", "reason"])
     dump(stem + "_sessions.csv", sess_rows)
     print(f"{len(sessions)} session(s); {len(rows)} valid cells; {len(excluded)} excluded; {len(comps)} comparisons")

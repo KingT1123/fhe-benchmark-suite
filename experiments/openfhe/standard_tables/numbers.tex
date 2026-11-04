@@ -40,6 +40,28 @@
 \newcommand{\ratioMaxckksdecrypt}{0.68}
 \newcommand{\ratioNckksdecrypt}{8}
 \newcommand{\nMatchedConfigs}{10}
+\newcommand{\medianDevMaxOthers}{1}
+\newcommand{\repMinkeygen}{0.22}
+\newcommand{\repMaxkeygen}{0.26}
+\newcommand{\repMedMinkeygen}{0.22}
+\newcommand{\repMedMaxkeygen}{0.24}
+\newcommand{\repMindecrypt}{0.62}
+\newcommand{\repMaxdecrypt}{0.68}
+\newcommand{\repMedMindecrypt}{0.62}
+\newcommand{\repMedMaxdecrypt}{0.66}
+\newcommand{\repMinmultiply}{1.05}
+\newcommand{\repMaxmultiply}{1.13}
+\newcommand{\repMedMinmultiply}{1.05}
+\newcommand{\repMedMaxmultiply}{1.13}
+\newcommand{\repMinrelinearize}{1.98}
+\newcommand{\repMaxrelinearize}{2.03}
+\newcommand{\repMedMinrelinearize}{1.99}
+\newcommand{\repMedMaxrelinearize}{2.01}
+\newcommand{\repMinrotate}{1.84}
+\newcommand{\repMaxrotate}{2.22}
+\newcommand{\repMedMinrotate}{1.93}
+\newcommand{\repMedMaxrotate}{2.20}
+\newcommand{\nRepSessions}{3}
 \newcommand{\nSeparateConfigs}{14}
 \newcommand{\nSeparateCells}{36}
 \newcommand{\copyMin}{1.2}
@@ -55,42 +77,80 @@
 \newcommand{\freqMaxsfour}{4.46}
 \newcommand{\freqMinsfive}{4.25}
 \newcommand{\freqMaxsfive}{4.35}
+\expandafter\def\csname rm:CKKS:2048:5:keygen\endcsname{0.07}
+\expandafter\def\csname rq:CKKS:2048:5:keygen\endcsname{0.06--0.07}
 \expandafter\def\csname r:CKKS:2048:5:keygen\endcsname{0.07}
 \expandafter\def\csname x:CKKS:2048:5:keygen\endcsname{15.2}
+\expandafter\def\csname rm:CKKS:8192:1:keygen\endcsname{0.22}
+\expandafter\def\csname rq:CKKS:8192:1:keygen\endcsname{0.21--0.22}
 \expandafter\def\csname r:CKKS:8192:1:keygen\endcsname{0.22}
 \expandafter\def\csname x:CKKS:8192:1:keygen\endcsname{4.6}
+\expandafter\def\csname rm:CKKS:16384:1:keygen\endcsname{0.44}
+\expandafter\def\csname rq:CKKS:16384:1:keygen\endcsname{0.43--0.44}
 \expandafter\def\csname r:CKKS:16384:1:keygen\endcsname{0.44}
 \expandafter\def\csname x:CKKS:16384:1:keygen\endcsname{2.3}
+\expandafter\def\csname rm:CKKS:2048:1:decrypt\endcsname{0.68}
+\expandafter\def\csname rq:CKKS:2048:1:decrypt\endcsname{0.67--0.69}
 \expandafter\def\csname r:CKKS:2048:1:decrypt\endcsname{0.68}
 \expandafter\def\csname x:CKKS:2048:1:decrypt\endcsname{1.5}
+\expandafter\def\csname rm:CKKS:2048:5:decrypt\endcsname{0.67}
+\expandafter\def\csname rq:CKKS:2048:5:decrypt\endcsname{0.67--0.68}
 \expandafter\def\csname r:CKKS:2048:5:decrypt\endcsname{0.68}
 \expandafter\def\csname x:CKKS:2048:5:decrypt\endcsname{1.5}
+\expandafter\def\csname rm:CKKS:4096:1:decrypt\endcsname{0.63}
+\expandafter\def\csname rq:CKKS:4096:1:decrypt\endcsname{0.62--0.63}
 \expandafter\def\csname r:CKKS:4096:1:decrypt\endcsname{0.63}
 \expandafter\def\csname x:CKKS:4096:1:decrypt\endcsname{1.6}
+\expandafter\def\csname rm:CKKS:4096:3:decrypt\endcsname{0.63}
+\expandafter\def\csname rq:CKKS:4096:3:decrypt\endcsname{0.63--0.64}
 \expandafter\def\csname r:CKKS:4096:3:decrypt\endcsname{0.64}
 \expandafter\def\csname x:CKKS:4096:3:decrypt\endcsname{1.6}
+\expandafter\def\csname rm:CKKS:4096:5:decrypt\endcsname{0.63}
+\expandafter\def\csname rq:CKKS:4096:5:decrypt\endcsname{0.63--0.64}
 \expandafter\def\csname r:CKKS:4096:5:decrypt\endcsname{0.64}
 \expandafter\def\csname x:CKKS:4096:5:decrypt\endcsname{1.6}
+\expandafter\def\csname rm:CKKS:8192:1:decrypt\endcsname{0.62}
+\expandafter\def\csname rq:CKKS:8192:1:decrypt\endcsname{0.62--0.62}
 \expandafter\def\csname r:CKKS:8192:1:decrypt\endcsname{0.62}
 \expandafter\def\csname x:CKKS:8192:1:decrypt\endcsname{1.6}
+\expandafter\def\csname rm:BFV:8192:5:decrypt\endcsname{0.66}
+\expandafter\def\csname rq:BFV:8192:5:decrypt\endcsname{0.66--0.66}
 \expandafter\def\csname r:BFV:8192:5:decrypt\endcsname{0.66}
 \expandafter\def\csname x:BFV:8192:5:decrypt\endcsname{1.5}
+\expandafter\def\csname rm:BGV:8192:5:decrypt\endcsname{1.03}
+\expandafter\def\csname rq:BGV:8192:5:decrypt\endcsname{1.03--1.03}
 \expandafter\def\csname r:BGV:8192:5:decrypt\endcsname{1.04}
 \expandafter\def\csname x:BGV:8192:5:decrypt\endcsname{1.0}
+\expandafter\def\csname rm:CKKS:8192:5:decrypt\endcsname{0.62}
+\expandafter\def\csname rq:CKKS:8192:5:decrypt\endcsname{0.62--0.63}
 \expandafter\def\csname r:CKKS:8192:5:decrypt\endcsname{0.63}
 \expandafter\def\csname x:CKKS:8192:5:decrypt\endcsname{1.6}
+\expandafter\def\csname rm:CKKS:16384:1:decrypt\endcsname{0.61}
+\expandafter\def\csname rq:CKKS:16384:1:decrypt\endcsname{0.61--0.61}
 \expandafter\def\csname r:CKKS:16384:1:decrypt\endcsname{0.61}
 \expandafter\def\csname x:CKKS:16384:1:decrypt\endcsname{1.6}
+\expandafter\def\csname rm:CKKS:4096:1:multiply\endcsname{1.01}
+\expandafter\def\csname rq:CKKS:4096:1:multiply\endcsname{1.00--1.01}
 \expandafter\def\csname r:CKKS:4096:1:multiply\endcsname{1.00}
 \expandafter\def\csname x:CKKS:4096:1:multiply\endcsname{1.0}
+\expandafter\def\csname rm:CKKS:8192:1:multiply\endcsname{1.07}
+\expandafter\def\csname rq:CKKS:8192:1:multiply\endcsname{1.07--1.08}
 \expandafter\def\csname r:CKKS:8192:1:multiply\endcsname{1.07}
 \expandafter\def\csname x:CKKS:8192:1:multiply\endcsname{0.9}
+\expandafter\def\csname rm:CKKS:16384:1:multiply\endcsname{1.16}
+\expandafter\def\csname rq:CKKS:16384:1:multiply\endcsname{1.15--1.16}
 \expandafter\def\csname r:CKKS:16384:1:multiply\endcsname{1.16}
 \expandafter\def\csname x:CKKS:16384:1:multiply\endcsname{0.9}
+\expandafter\def\csname rm:CKKS:8192:1:relinearize\endcsname{1.99}
+\expandafter\def\csname rq:CKKS:8192:1:relinearize\endcsname{1.99--2.00}
 \expandafter\def\csname r:CKKS:8192:1:relinearize\endcsname{1.99}
 \expandafter\def\csname x:CKKS:8192:1:relinearize\endcsname{0.5}
+\expandafter\def\csname rm:CKKS:16384:1:relinearize\endcsname{2.31}
+\expandafter\def\csname rq:CKKS:16384:1:relinearize\endcsname{2.30--2.31}
 \expandafter\def\csname r:CKKS:16384:1:relinearize\endcsname{2.31}
 \expandafter\def\csname x:CKKS:16384:1:relinearize\endcsname{0.4}
+\expandafter\def\csname rm:CKKS:8192:1:rotate\endcsname{1.98}
+\expandafter\def\csname rq:CKKS:8192:1:rotate\endcsname{1.69--2.04}
 \expandafter\def\csname r:CKKS:8192:1:rotate\endcsname{1.84}
 \expandafter\def\csname x:CKKS:8192:1:rotate\endcsname{0.5}
 \expandafter\def\csname v:OpenFHE:CKKS:4096:5:add\endcsname{0.01516}

@@ -15,9 +15,11 @@
 \newcommand{\R}[1]{\csname r:#1\endcsname}   % ratio OpenFHE/SEAL, e.g. \R{CKKS:8192:1:relinearize}
 \newcommand{\X}[1]{\csname x:#1\endcsname}   % its inverse (SEAL/OpenFHE)
 \newcommand{\V}[1]{\csname v:#1\endcsname}   % mean latency, ms, e.g. \V{OpenFHE:CKKS:16384:1:add}
+\newcommand{\RM}[1]{\csname rm:#1\endcsname} % ratio of medians
+\newcommand{\RQ}[1]{\csname rq:#1\endcsname} % quartile envelope of the ratio
 
 \title{OpenFHE Standard campaign: results\\[2pt]
-\large SEAL 4.1.2 and OpenFHE 1.5.1, same sessions, \nConfigs\ configurations}
+\large SEAL 4.1.2 and OpenFHE 1.5.1, same sessions, \nConfigs\ configurations\\ (version 2)}
 \author{Boungo Tr\'esor}
 \date{\today}
 
@@ -26,11 +28,13 @@
 
 \noindent\textbf{Scope.} This note reports the complete Standard campaign authorized after the pilot (\texttt{openfhe\_pilot\_note}): every eligible configuration, OpenFHE and SEAL measured in the same sessions with the pilot's harness and protocol. It gives the consolidated results, the excluded and problematic cells, and an interpretation of the main differences. Latency only: energy and memory are a later step (Section~\ref{sec:limits}). All tables and numbers are generated from the data (\texttt{experiments/openfhe/make\_standard\_tables.py}); every incident is recorded in \texttt{experiments/results/raw/standard\_campaign/INCIDENTS.md}.
 
+\paragraph{Changes from version 1} (tag \texttt{openfhe-standard-v1}, unchanged) in answer to its review: every conclusion is stated with the configurations and boundaries that support it, and no general statement about one library being faster is made (Section~\ref{sec:interp}); key generation is described as an initialization and key-generation cost; the sensitivity of each ratio to the estimator (means, medians, quartiles) and the reproducibility of the main ratios across independent sessions are reported, and the meaning of the confidence intervals is stated (Section~\ref{sec:stats}). The CKKS 16384/1 relinearization pair, affected by a kernel change, will be measured again under one kernel (Section~\ref{sec:problems}); its current values are kept here and marked.
+
 \paragraph{Summary.}
 \begin{itemize}[leftmargin=*, itemsep=2pt]
-  \item \textbf{\nCells\ cells in \nSessions\ sessions, all valid (\nExcluded\ excluded).} Every cell passed the fail-closed validation: complete repetitions, every OpenFHE result checked correct, configuration card identical to the session manifest.
-  \item \textbf{\nSetAside\ cells were set aside and measured again.} They had been measured while the laptop ran on battery, which lowers the CPU frequency. They are kept in the raw data, not used. A power guard then prevented any measurement on battery.
-  \item \textbf{Main differences} (matched-profile comparisons, same session): OpenFHE's key generation is \speedMinkeygen--\speedMaxkeygen\ times faster; its decryption (to SEAL's boundary) is faster for CKKS (ratio \ratioMinckksdecrypt--\ratioMaxckksdecrypt); multiplication is close (ratio \ratioMinmultiply--\ratioMaxmultiply); key switching is about twice as slow (relinearization \ratioMinrelinearize--\ratioMaxrelinearize, rotation \ratioMinrotate). These are the pilot's findings, now across $N$ and categories.
+  \item \textbf{\nCells\ valid cells in \nSessions\ sessions enter the analysis (\nExcluded\ excluded).} Every one passed the fail-closed validation: complete repetitions, every OpenFHE result checked correct, configuration card identical to the session manifest.
+  \item \textbf{\nSetAside\ earlier measurements are not part of these \nCells.} They had been measured while the laptop ran on battery, which lowers the CPU frequency; they are kept in the raw data, set aside, and their cells were measured again on mains. A power guard then prevented any measurement on battery.
+  \item \textbf{Main observations} (matched-profile comparisons of equivalent boundaries, same session; ratio = OpenFHE/SEAL). Initialization and key generation: ratio \ratioMinkeygen--\ratioMaxkeygen\ at CKKS 2048/5, 8192/1 and 16384/1. Decryption to SEAL's boundary: \ratioMinckksdecrypt--\ratioMaxckksdecrypt\ in the \ratioNckksdecrypt\ CKKS configurations. Multiplication without relinearization: \ratioMinmultiply--\ratioMaxmultiply\ at CKKS 4096/1, 8192/1, 16384/1. Key switching at CKKS 8192/1 and 16384/1: relinearization \ratioMinrelinearize--\ratioMaxrelinearize, rotation \ratioMinrotate\ (8192/1). At CKKS 8192/1, the only configuration measured in several independent sessions, these ratios were reproduced in \nRepSessions\ sessions (Table~\ref{tab:repro}).
 \end{itemize}
 
 \section{Protocol and sessions}
@@ -51,7 +55,7 @@ Results are reported in three groups, as in the pilot: (i) \emph{matched-profile
 
 \begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{4pt}
 \input{\tab{matched.tex}}
-\caption{Matched-profile comparisons, equivalent boundaries (\nRatios\ cells): mean latency, same session. Ratio O/S: OpenFHE mean / SEAL mean; Welch 90\% CI of the difference. decrypt$^\ast$: up to SEAL's decrypt boundary. Remaining differences (primes not equal, error distribution, key-switching method, CKKS scale where it differs) are listed per cell in \texttt{openfhe\_standard\_comparisons.csv}.}
+\caption{Matched-profile comparisons, equivalent boundaries (\nRatios\ cells), same session. Ratio O/S of means, of medians, and quartile envelope (OpenFHE $Q_1$/SEAL $Q_3$ to OpenFHE $Q_3$/SEAL $Q_1$). Welch 90\% CI of the difference of means: within-cell variability only (Section~\ref{sec:stats}). decrypt$^\ast$: up to SEAL's decrypt boundary. Remaining differences (primes not equal, error distribution, key-switching method, CKKS scale where it differs) are listed per cell in \texttt{openfhe\_standard\_comparisons.csv}.}
 \label{tab:matched}
 \end{table}
 
@@ -67,8 +71,28 @@ Results are reported in three groups, as in the pilot: (i) \emph{matched-profile
 \label{tab:api}
 \end{table}
 
+\section{Statistical interpretation and reproducibility}
+\label{sec:stats}
+
+\paragraph{What the confidence intervals describe.} The 95\% CI of each mean and the Welch 90\% CI of each difference are computed from the 100 repetitions of one cell. The repetitions are successive, in one process, on one day; they are not independent experiments. These intervals therefore describe the variability \emph{within} a cell. They do not account for what changes \emph{between} sessions (process start, memory layout, frequency and thermal state of the day), and they are not used as a statement on the reproducibility of a result. That is assessed separately, below.
+
+\paragraph{Sensitivity to the estimator.} For all but one of the \nRatios\ matched-profile ratios, the ratio of medians differs from the ratio of means by at most \medianDevMaxOthers\%, and the quartile envelope is narrow (Table~\ref{tab:matched}). The exception is the CKKS 8192/1 rotation: \R{CKKS:8192:1:rotate} from the means, \RM{CKKS:8192:1:rotate} from the medians, quartile envelope \RQ{CKKS:8192:1:rotate}. SEAL's rotation cell has a bimodal series: about 20 repetitions at its start and 18 at its end are slower (2.0--2.8~ms) than the stable middle (about 1.85~ms). It was the first cell of session s2: it ran for about one second, on a CPU that had just started, and the frequency record of that part of s2 was lost (logging bug, incident~4). Its OpenFHE partner ran in the middle of the session.
+
+\paragraph{Reproducibility across independent sessions.} Only CKKS 8192/1 was measured, with both libraries, in more than one independent session: the two pilot runs (one with the laptop in use, kept as a record) and campaign session s2, on different days, each with new processes and its own randomized order. Table~\ref{tab:repro} gives the ratio in each. Between sessions, the relinearization ratio varies by less than 3\% (\repMinrelinearize--\repMaxrelinearize), decryption by about 10\% (\repMindecrypt--\repMaxdecrypt), multiplication by less than 8\% (\repMinmultiply--\repMaxmultiply) and initialization with key generation by about 20\% (\repMinkeygen--\repMaxkeygen); the highest values of the last three come from pilot run 1, made with the laptop in use. None of these variations changes the direction or the order of magnitude of a ratio. The rotation ratio varies most (\repMinrotate--\repMaxrotate\ from means, \repMedMinrotate--\repMedMaxrotate\ from medians), but OpenFHE's rotation is about twice SEAL's in every session.
+
+\begin{table}[h!]\centering\footnotesize\setlength{\tabcolsep}{5pt}
+\input{\tab{reproducibility.tex}}
+\caption{CKKS 8192/1: ratio OpenFHE/SEAL of means (of medians in brackets) in each independent session that measured both libraries. Data: \texttt{experiments/results/final/openfhe\_standard\_reproducibility.csv}.}
+\label{tab:repro}
+\end{table}
+
+\paragraph{Consequence for the rotation.} The existing observations support a stable conclusion at the level at which it is stated: at CKKS 8192/1, OpenFHE's rotation (one step, one Galois key) took about twice SEAL's time in all three sessions, with the exact factor uncertain by about $\pm$10\% (\repMinrotate--\repMaxrotate). A further measurement is therefore not needed for this conclusion; a more precise factor would need SEAL's cell to be measured again warm, in alternation with OpenFHE's.
+
+For the other configurations, one session each was measured; the reproducibility of their ratios rests on the consistency across configurations (e.g.\ CKKS decryption \ratioMinckksdecrypt--\ratioMaxckksdecrypt\ in \ratioNckksdecrypt\ configurations measured in three different sessions) and on SEAL's agreement with the archived SEAL campaign (Table~\ref{tab:sessions}), not on repeated sessions of the same configuration.
+
 \clearpage
 \section{Excluded and problematic cells}
+\label{sec:problems}
 
 \paragraph{Excluded cells: none.} Validation excluded \nExcluded\ of \nCells\ cells (\texttt{openfhe\_standard\_excluded.csv} is empty).
 
@@ -90,7 +114,7 @@ Results are reported in three groups, as in the pilot: (i) \emph{matched-profile
 
 \paragraph{Machine state between sessions.} With the same governor and power profile, the sustained frequency differed between days (s4: \freqMinsfour--\freqMaxsfour~GHz per cell; s5: \freqMinsfive--\freqMaxsfive~GHz; s1--s3: \freqMinsone--\freqMaxsone~GHz), for a reason not identified. Per-cell frequency, temperature and kernel are recorded in \texttt{openfhe\_standard.csv} and shown for s4 and s5 in Table~\ref{tab:cond}. The pairs used for a ratio in s5 ran within about 2\% of each other in frequency, except key generation (short cells, which end before the CPU heats up). Other points, all recorded in the incident log:
 \begin{itemize}[leftmargin=*, itemsep=2pt]
-  \item The last cell of s5 (OpenFHE CKKS 16384/1 relinearization) ran after an operating-system update, on kernel 7.0.0-42 instead of 7.0.0-38; its SEAL partner ran on 7.0.0-38. Binaries, images and configuration were unchanged (identical manifest). Its ratio (\R{CKKS:16384:1:relinearize}) is in line with that of $N{=}8192$ (\R{CKKS:8192:1:relinearize}) and with the pilot.
+  \item The last cell of s5 (OpenFHE CKKS 16384/1 relinearization) ran after an operating-system update, on kernel 7.0.0-42 instead of 7.0.0-38; its SEAL partner ran on 7.0.0-38. Binaries, images and configuration were unchanged (identical manifest). Its ratio (\R{CKKS:16384:1:relinearize}) is reported here but is \textbf{provisional}: the pair (SEAL and OpenFHE CKKS 16384/1 relinearization) will be measured again in one session, under one kernel, with the same protocol; the current cells stay in the raw data.
   \item The re-measured s4 OpenFHE addition ran at 4.27~GHz against 4.36--4.46~GHz for the rest of s4. It is an end-to-end API cost of a separate-analysis configuration, so no ratio depends on it.
   \item The per-second frequency record of the first parts of s2 and s3 was overwritten by a logging bug (fixed before s4); the measurements themselves are complete.
 \end{itemize}
@@ -105,15 +129,15 @@ Results are reported in three groups, as in the pilot: (i) \emph{matched-profile
 \section{Interpretation of the main differences}
 \label{sec:interp}
 
-The following describes what the matched-profile comparisons show. Explanations are given only where the operation's implementation was verified (pilot note); other differences are reported as observations.
+Matched-profile comparisons are not exact-parameter comparisons: the primes, error distributions, CKKS scales (in some configurations) and key-switching methods still differ, as listed per cell. The observations below therefore hold for the stated configurations, boundaries, library versions and machine; none is a statement that one library is faster in general. Each item separates what was \emph{observed} from what would \emph{explain} it; no explanation below was tested.
 
 \begin{enumerate}[leftmargin=*, itemsep=3pt]
-  \item \textbf{Key generation is much faster in OpenFHE} (context creation included in both): \X{CKKS:2048:5:keygen}$\times$ at CKKS 2048/5, \X{CKKS:8192:1:keygen}$\times$ at 8192/1, \X{CKKS:16384:1:keygen}$\times$ at 16384/1. The same direction appears in every separate-analysis configuration (Table~\ref{tab:separate}). The factor is largest at the smallest $N$ (\V{SEAL:CKKS:2048:5:keygen}~ms against \V{OpenFHE:CKKS:2048:5:keygen}~ms at 2048/5). The origin of the difference was not investigated.
-  \item \textbf{Decryption to SEAL's boundary is faster in OpenFHE for CKKS}, with a stable ratio across $N$ and categories (\ratioMinckksdecrypt--\ratioMaxckksdecrypt, \ratioNckksdecrypt\ configurations from 2048 to 16384). The ratio is the same where the initial scales are equal (8192/1: \R{CKKS:8192:1:decrypt}; 16384/1: \R{CKKS:16384:1:decrypt}) and where they differ (the other six), which is consistent with the scale not affecting this cost. BFV 8192/5 shows the same (\R{BFV:8192:5:decrypt}); BGV 8192/5 is close to parity (\R{BGV:8192:5:decrypt}).
-  \item \textbf{Ciphertext multiplication (without relinearization) costs about the same}: \R{CKKS:4096:1:multiply} at 4096/1, \R{CKKS:8192:1:multiply} at 8192/1, \R{CKKS:16384:1:multiply} at 16384/1; OpenFHE becomes slightly slower as $N$ grows.
-  \item \textbf{Key switching is about twice as slow in OpenFHE}: relinearization \R{CKKS:8192:1:relinearize} at 8192/1 and \R{CKKS:16384:1:relinearize} at 16384/1, rotation \R{CKKS:8192:1:rotate} at 8192/1. It is the largest difference measured, and it grows with $N$. The two libraries' key-switching methods differ (SEAL: one special prime; OpenFHE: hybrid key switching, one prime per digit; listed in the cells' remaining differences), so the gap reflects method and implementation together; separating the two was not attempted. The pilot found the same ratios, so the finding holds across sessions.
-  \item \textbf{End-to-end API costs include different work in the two libraries} (Table~\ref{tab:api}): OpenFHE's \texttt{EvalAdd} copies its operand, which makes it \copyMin--\copyMax\ times slower than \texttt{EvalAddInPlace}; OpenFHE's \texttt{Decrypt} includes decoding (e.g.\ \V{OpenFHE:CKKS:16384:1:decrypt_full}~ms at CKKS 16384/1, against \V{OpenFHE:CKKS:16384:1:decrypt}~ms to SEAL's boundary). These values are each library's cost for the user, not a comparison of the same work.
-  \item \textbf{Separate-analysis cells} (all BFV and BGV cells except decryption at 8192/5; all of CKKS 8192/3; key generation and relinearization at several other CKKS configurations) are reported per library only. Their values show why no ratio is formed: at 8192/3, for example, OpenFHE's BGV relinearization is faster than SEAL's (\V{OpenFHE:BGV:8192:3:relinearize} against \V{SEAL:BGV:8192:3:relinearize}~ms), the reverse of the matched-profile CKKS cells, because the two libraries' moduli (number and size of primes) are different there.
+  \item \textbf{Initialization and key generation.} The timed boundary is the same in both libraries: creation of the context from the parameters (in SEAL, including the generation of the primes), secret and public keys and, when the depth is positive, the relinearization key; no rotation keys. It is an initialization and key-generation cost, not the cost of an isolated key-generation primitive. \emph{Observed:} OpenFHE's cost was lower at CKKS 2048/5 (ratio \R{CKKS:2048:5:keygen}), 8192/1 (\R{CKKS:8192:1:keygen}) and 16384/1 (\R{CKKS:16384:1:keygen}); the per-library values of the separate-analysis configurations go in the same direction (Table~\ref{tab:separate}), without a ratio. \emph{Not established:} which part of the boundary (context creation, prime generation, key generation) causes the difference; it was not measured separately.
+  \item \textbf{Decryption up to SEAL's boundary.} \emph{Observed:} ratio \ratioMinckksdecrypt--\ratioMaxckksdecrypt\ in all \ratioNckksdecrypt\ matched CKKS configurations (2048 to 16384, three sessions), \R{BFV:8192:5:decrypt} at BFV 8192/5 and \R{BGV:8192:5:decrypt} at BGV 8192/5. The CKKS ratio is the same where the initial scales are equal (8192/1: \R{CKKS:8192:1:decrypt}; 16384/1: \R{CKKS:16384:1:decrypt}) and where they differ, which is consistent with the scale not affecting this cost (established by test only at 8192/1). \emph{Not established:} the reason for the CKKS difference.
+  \item \textbf{Multiplication without relinearization.} \emph{Observed:} ratio \R{CKKS:4096:1:multiply} at CKKS 4096/1, \R{CKKS:8192:1:multiply} at 8192/1 and \R{CKKS:16384:1:multiply} at 16384/1: close to parity, increasing with $N$ in these three configurations.
+  \item \textbf{Key switching.} \emph{Observed:} at CKKS 8192/1, relinearization ratio \R{CKKS:8192:1:relinearize} and rotation ratio \R{CKKS:8192:1:rotate} (\RM{CKKS:8192:1:rotate} from medians), both reproduced in three independent sessions (Table~\ref{tab:repro}); at CKKS 16384/1, relinearization ratio \R{CKKS:16384:1:relinearize}, provisional until the pair is measured again under one kernel. This is the largest difference among the equivalent boundaries. \emph{Hypothesis, not tested:} the two libraries use different key-switching methods (SEAL: one special prime; OpenFHE: hybrid key switching, one prime per digit), so the difference may come from the method, the implementation, or both; the measurements do not separate them.
+  \item \textbf{End-to-end API costs} (Table~\ref{tab:api}) are each library's cost for its own call, which includes different work, and are not compared. \emph{Observed within OpenFHE:} \texttt{EvalAdd}, which copies its operand, took \copyMin--\copyMax\ times as long as \texttt{EvalAddInPlace}; \texttt{Decrypt} with decoding took \V{OpenFHE:CKKS:16384:1:decrypt_full}~ms at CKKS 16384/1, against \V{OpenFHE:CKKS:16384:1:decrypt}~ms up to SEAL's boundary.
+  \item \textbf{Separate-analysis cells} (all BFV and BGV cells except decryption at 8192/5; all of CKKS 8192/3; key generation and relinearization at several other CKKS configurations) are reported per library only. Their values show why no ratio is formed: at 8192/3, for example, OpenFHE's BGV relinearization took less time than SEAL's (\V{OpenFHE:BGV:8192:3:relinearize} against \V{SEAL:BGV:8192:3:relinearize}~ms), the reverse of the matched-profile CKKS cells, because the two libraries' moduli (number and size of primes) are different there.
 \end{enumerate}
 
 \section{Limitations and next steps}

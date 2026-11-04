@@ -72,8 +72,10 @@ def main():
                    "archMin": f"{min(allr):.2f}", "archMax": f"{max(allr):.2f}"})
 
     # ---- matched-profile comparisons: equivalent boundaries, with ratio --------
-    t = [r"\begin{tabular}{@{}lllrrrr@{}}", r"\toprule",
-         r"Session & Configuration & Operation & SEAL, ms & OpenFHE, ms & Ratio O/S & OpenFHE $-$ SEAL, 90\% CI, ms \\",
+    t = [r"\begin{tabular}{@{}lllrrrrrr@{}}", r"\toprule",
+         r"& & & \multicolumn{2}{c}{mean, ms} & \multicolumn{3}{c}{ratio O/S} & \\",
+         r"\cmidrule(lr){4-5}\cmidrule(lr){6-8}",
+         r"Sess. & Config. & Operation & SEAL & OpenFHE & means & medians & quartiles & OpenFHE $-$ SEAL, 90\% CI, ms \\",
          r"\midrule"]
     m = sorted((c for c in comps if c["ratio_openfhe_over_seal"]),
                key=lambda c: (EQUIV.index(c["operation"]), int(c["N"]), int(c["category"]), c["scheme"]))
@@ -84,8 +86,12 @@ def main():
         prev = c["operation"]
         name = r"decrypt$^\ast$" if c["operation"] == "decrypt" else c["operation"]
         t.append(f'{c["session"]} & {c["scheme"]} {c["N"]}/{c["category"]} & {name} & {fmt(c["seal_mean_ms"])} & '
-                 f'{fmt(c["openfhe_mean_ms"])} & {float(c["ratio_openfhe_over_seal"]):.2f} & '
+                 f'{fmt(c["openfhe_mean_ms"])} & {float(c["ratio_openfhe_over_seal"]):.2f} & {float(c["ratio_of_medians"]):.2f} & '
+                 f'{float(c["ratio_quartile_low"]):.2f}--{float(c["ratio_quartile_high"]):.2f} & '
                  f'[{fmt(c["diff_ci90_low"])}, {fmt(c["diff_ci90_high"])}] \\\\')
+        keyed.append((f'rm:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}', f'{float(c["ratio_of_medians"]):.2f}'))
+        keyed.append((f'rq:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}',
+                      f'{float(c["ratio_quartile_low"]):.2f}--{float(c["ratio_quartile_high"]):.2f}'))
         keyed.append((f'r:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}', f'{float(c["ratio_openfhe_over_seal"]):.2f}'))
         keyed.append((f'x:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}', f'{1 / float(c["ratio_openfhe_over_seal"]):.1f}'))
     t += [r"\bottomrule", r"\end{tabular}"]
@@ -100,6 +106,28 @@ def main():
                    "ratioNckksdecrypt": len(ck)})
     macros["nMatchedConfigs"] = len({(c["scheme"], c["N"], c["category"]) for c in comps
                                      if c["comparability_class"] == "matched-profile comparison"})
+
+    dev = [abs(float(c["ratio_of_medians"]) / float(c["ratio_openfhe_over_seal"]) - 1) for c in m]
+    macros["medianDevMaxOthers"] = f'{100 * sorted(dev)[-2]:.0f}'   # largest except the rotation, discussed apart
+
+    # ---- reproducibility across independent sessions (CKKS 8192/1) -------------
+    rp = list(csv.DictReader(open(FINAL + "_reproducibility.csv")))
+    srcs = list(dict.fromkeys(r["source"] for r in rp))
+    t = [r"\begin{tabular}{@{}l" + "r" * len(srcs) + "r@{}}", r"\toprule",
+         "Operation & " + " & ".join(srcs) + r" & range \\", r"\midrule"]
+    for op in EQUIV:
+        rr = {r["source"]: r for r in rp if r["operation"] == op}
+        if len(rr) < 2:
+            continue
+        vals = [float(rr[s_]["ratio_of_means"]) for s_ in srcs if s_ in rr]
+        meds = [float(rr[s_]["ratio_of_medians"]) for s_ in srcs if s_ in rr]
+        t.append(f"{op} & " + " & ".join(f'{float(rr[s_]["ratio_of_means"]):.2f} ({float(rr[s_]["ratio_of_medians"]):.2f})'
+                                          if s_ in rr else "--" for s_ in srcs) + f" & {min(vals):.2f}--{max(vals):.2f} \\\\")
+        macros[f"repMin{op}"], macros[f"repMax{op}"] = f"{min(vals):.2f}", f"{max(vals):.2f}"
+        macros[f"repMedMin{op}"], macros[f"repMedMax{op}"] = f"{min(meds):.2f}", f"{max(meds):.2f}"
+    t += [r"\bottomrule", r"\end{tabular}"]
+    write("reproducibility.tex", t)
+    macros["nRepSessions"] = len(srcs)
 
     # ---- separate analysis: values per library, NO ratio ----------------------
     t = [r"\begin{tabular}{@{}lllrr@{\hspace{1.2em}}lllrr@{}}", r"\toprule",
