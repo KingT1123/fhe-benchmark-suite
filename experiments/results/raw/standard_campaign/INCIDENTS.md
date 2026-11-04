@@ -161,3 +161,20 @@ interrupted cell had no output file and was measured again from the start.
   and ends with `bash terminated by signal HUP`: launching with nohup did
   not protect the run from its terminal being closed. Later runs were
   launched through power_guard.sh (setsid).
+
+## 10. Session s6: CKKS 16384/1 relinearization pair measured again under one kernel (2026-11-04/05)
+
+* Why: on review of openfhe-standard-v1, the s5 pair (seal and openfhe
+  CKKS 16384/1 relinearize) had run on different kernels (item 8). Only this
+  pair was to be measured again, under one kernel, same protocol.
+* How: session s6 (campaign/standard_sessions.csv, new optional column ops
+  restricting a session to the listed operations; runner change committed
+  as db8d0b3 before the session), the two cells in randomized order, same
+  harness binaries and Docker images as s1-s5, kernel 7.0.0-42 for both,
+  profile balanced, launched through power_guard.sh: on mains for the whole
+  session (power_log.csv), no interruption. 2026-11-04 20:30 -> 2026-11-05
+  00:00; 2/2 valid.
+* Result: ratio OpenFHE/SEAL 2.24 (s5: 2.31). s6 replaces the s5 pair in
+  every summary (make_standard_tables.py, SUPERSEDED); the s5 cells stay in
+  the raw data and in the aggregated files and are shown, marked, in the
+  results note.

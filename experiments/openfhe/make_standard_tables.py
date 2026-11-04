@@ -20,6 +20,11 @@ OUT = "standard_tables"
 FINAL = "../results/final/openfhe_standard"
 RAW = "../results/raw/standard_campaign"
 EQUIV = ["keygen", "decrypt", "multiply", "relinearize", "rotate"]
+# (session, scheme, N, category, operation) measured again in a later session
+# and replaced by it in every summary; still listed, marked, in the tables.
+# s5 CKKS 16384/1 relinearization: its two cells ran on different kernels;
+# measured again in s6 under one kernel (review of openfhe-standard-v1).
+SUPERSEDED = {("s5", "CKKS", "16384", "1", "relinearize"): "s6"}
 
 
 def write(name, lines):
@@ -44,7 +49,8 @@ def main():
     comps = list(csv.DictReader(open(FINAL + "_comparisons.csv")))
     sess = list(csv.DictReader(open(FINAL + "_sessions.csv")))
     excl = list(csv.DictReader(open(FINAL + "_excluded.csv")))
-    cell = {(r["library"], r["scheme"], r["N"], r["category"], r["operation"]): r for r in rows}
+    sup = lambda r: (r["session"], r["scheme"], r["N"], r["category"], r["operation"]) in SUPERSEDED
+    cell = {(r["library"], r["scheme"], r["N"], r["category"], r["operation"]): r for r in rows if not sup(r)}
     macros, keyed = {}, []
 
     # ---- session conditions --------------------------------------------------
@@ -65,7 +71,8 @@ def main():
                    "nCells": sum(int(s["cells_listed"]) for s in sess),
                    "nValid": sum(int(s["cells_valid"]) for s in sess), "nExcluded": len(excl),
                    "nComparisons": len(comps),
-                   "nRatios": sum(1 for c in comps if c["ratio_openfhe_over_seal"]),
+                   "nUsed": sum(1 for r in rows if not sup(r)), "nSuperseded": sum(1 for r in rows if sup(r)),
+                   "nRatios": sum(1 for c in comps if c["ratio_openfhe_over_seal"] and not sup(c)),
                    "nHighVar": sum(r["flag"] == "HIGH_VARIANCE" for r in rows)})
     allr = [float(r["seal_vs_archived_ratio"]) for r in rows if r["seal_vs_archived_ratio"]]
     macros.update({"archN": len(allr), "archMedian": f"{statistics.median(allr):.2f}",
@@ -85,10 +92,14 @@ def main():
             t.append(r"\addlinespace")
         prev = c["operation"]
         name = r"decrypt$^\ast$" if c["operation"] == "decrypt" else c["operation"]
-        t.append(f'{c["session"]} & {c["scheme"]} {c["N"]}/{c["category"]} & {name} & {fmt(c["seal_mean_ms"])} & '
+        mark = r"$^\dagger$" if sup(c) else ""
+        t.append(f'{c["session"]}{mark} & {c["scheme"]} {c["N"]}/{c["category"]} & {name} & {fmt(c["seal_mean_ms"])} & '
                  f'{fmt(c["openfhe_mean_ms"])} & {float(c["ratio_openfhe_over_seal"]):.2f} & {float(c["ratio_of_medians"]):.2f} & '
                  f'{float(c["ratio_quartile_low"]):.2f}--{float(c["ratio_quartile_high"]):.2f} & '
                  f'[{fmt(c["diff_ci90_low"])}, {fmt(c["diff_ci90_high"])}] \\\\')
+        if sup(c):   # kept in the table, out of every summary
+            keyed.append((f'old:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}', f'{float(c["ratio_openfhe_over_seal"]):.2f}'))
+            continue
         keyed.append((f'rm:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}', f'{float(c["ratio_of_medians"]):.2f}'))
         keyed.append((f'rq:{c["scheme"]}:{c["N"]}:{c["category"]}:{c["operation"]}',
                       f'{float(c["ratio_quartile_low"]):.2f}--{float(c["ratio_quartile_high"]):.2f}'))
@@ -97,10 +108,11 @@ def main():
     t += [r"\bottomrule", r"\end{tabular}"]
     write("matched.tex", t)
     for op in EQUIV:
-        rs = [float(c["ratio_openfhe_over_seal"]) for c in m if c["operation"] == op]
+        rs = [float(c["ratio_openfhe_over_seal"]) for c in m if c["operation"] == op and not sup(c)]
         if rs:
             macros[f"ratioMin{op}"], macros[f"ratioMax{op}"], macros[f"ratioN{op}"] = f"{min(rs):.2f}", f"{max(rs):.2f}", len(rs)
             macros[f"speedMin{op}"], macros[f"speedMax{op}"] = f"{1 / max(rs):.1f}", f"{1 / min(rs):.1f}"
+    m = [c for c in m if not sup(c)]
     ck = [float(c["ratio_openfhe_over_seal"]) for c in m if c["operation"] == "decrypt" and c["scheme"] == "CKKS"]
     macros.update({"ratioMinckksdecrypt": f"{min(ck):.2f}", "ratioMaxckksdecrypt": f"{max(ck):.2f}",
                    "ratioNckksdecrypt": len(ck)})
@@ -198,7 +210,7 @@ def main():
     t = [r"\begin{tabular}{@{}llrrrl@{}}", r"\toprule",
          r"Session & Cell & Freq., MHz & Temp., \textdegree C & SEAL/archived & Kernel \\", r"\midrule"]
     for r in rows:
-        if r["session"] in ("s4", "s5"):
+        if r["session"] in ("s4", "s5", "s6"):
             t.append(f'{r["session"]} & {r["library"]} {r["operation"].replace("_", " ")} & {float(r["effective_freq_mhz_mean"]):.0f} & '
                      f'{float(r["temp_c_mean"]):.1f} & {format(float(r["seal_vs_archived_ratio"]), ".3f") if r["seal_vs_archived_ratio"] else "--"} & '
                      f'{r["kernel"].replace("-generic", "")} \\\\')
@@ -211,7 +223,7 @@ def main():
     for s, v in fq.items():
         macros[f"freqMin{s}"], macros[f"freqMax{s}"] = f"{min(v) / 1000:.2f}", f"{max(v) / 1000:.2f}"
 
-    write("numbers.tex", [f"\\newcommand{{\\{k.replace('s1', 'sone').replace('s2', 'stwo').replace('s3', 'sthree').replace('s4', 'sfour').replace('s5', 'sfive')}}}{{{v}}}"
+    write("numbers.tex", [f"\\newcommand{{\\{k.replace('s1', 'sone').replace('s2', 'stwo').replace('s3', 'sthree').replace('s4', 'sfour').replace('s5', 'sfive').replace('s6', 'ssix')}}}{{{v}}}"
                           for k, v in macros.items()]
           + [f"\\expandafter\\def\\csname {k}\\endcsname{{{v}}}" for k, v in keyed])
     print("wrote", sorted(os.listdir(OUT)))

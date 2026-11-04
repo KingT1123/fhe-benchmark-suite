@@ -1,0 +1,3 @@
+tag,start,end,exit_code
+openfhe_ckks_N16384_cat1_relinearize,2026-11-04T20:30:43+01:00,2026-11-04T22:38:22+01:00,0
+seal_ckks_N16384_cat1_relinearize,2026-11-04T22:38:22+01:00,2026-11-05T00:00:53+01:00,0
