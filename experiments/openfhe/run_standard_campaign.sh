@@ -9,6 +9,9 @@
 # Sessions: campaign/standard_sessions.csv assigns each of the 17 eligible
 # configurations (probe/eligible_v2.csv) to one session (s1..s5); "dry" is the
 # short validation run on representative CKKS, BFV and BGV configurations.
+# Column ops (optional) restricts a session to the listed operations, for
+# both libraries: s6 measures again only the CKKS 16384/1 relinearization
+# pair of s5 (SEAL and OpenFHE under one kernel, requested on review).
 # Per configuration, the cells are exactly the operations established as valid
 # for it (eligible_v2.csv, column ops), for OpenFHE and for SEAL, plus
 # OpenFHE's two diagnostics where defined (decrypt_full with decrypt,
@@ -34,7 +37,7 @@
 #     scripts,config} have uncommitted changes.
 #
 # Usage (HOST, sudo for the CPU governor), one session per night:
-#   sudo bash experiments/openfhe/run_standard_campaign.sh s1     (s1 .. s5)
+#   sudo bash experiments/openfhe/run_standard_campaign.sh s1     (s1 .. s6)
 # Dry run (no sudo; 2 repetitions, inner loop 5; directory _dry_<session>):
 #   DRY=1 bash experiments/openfhe/run_standard_campaign.sh dry
 # Output: experiments/results/raw/standard_campaign/<session>/.
@@ -42,7 +45,7 @@
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXP="$(cd "$SCRIPT_DIR/.." && pwd)"
-SESSION="${1:?usage: run_standard_campaign.sh s1|s2|s3|s4|s5|dry}"
+SESSION="${1:?usage: run_standard_campaign.sh s1|s2|s3|s4|s5|s6|dry}"
 DRY="${DRY:-0}"
 if [ "$DRY" = 1 ]; then REPS=2; WARMUP=1; INNER=5; NAME="_dry_$SESSION"
 else REPS=100; WARMUP=5; INNER=1000; NAME="$SESSION"; fi
@@ -76,6 +79,8 @@ for r in csv.DictReader(open(sessions)):
         continue
     key = (r["scheme"], r["N"], r["category"])
     ops = el[key]["ops"].split()                     # operations established as valid for this configuration
+    if (r.get("ops") or "").strip():                 # session restricted to some of them
+        ops = [op for op in ops if op in r["ops"].split()]
     diag = (["decrypt_full"] if "decrypt" in ops else []) + (["add_inplace"] if "add" in ops else [])
     for op in ops + diag:
         print(f"openfhe,{key[0]},{key[1]},{key[2]},{op}")
