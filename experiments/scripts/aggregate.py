@@ -2047,6 +2047,211 @@ def aggregate_validation(args):
         print(f"EXCLUDED (invalid cell): {tag}: {why}")
 
 
+# ---------- energy/memory validation at fixed frequency (run_energy_validation.sh) ----------
+
+def aggregate_energy_validation(args):
+    """--scenario=energy_validation reads experiments/results/raw/energy_validation/
+    e*/ (one directory per session of openfhe/run_energy_validation.sh;
+    fixed_freq_* and directories starting with "_" are skipped -- or
+    --raw-dir: one session directory, or another directory of sessions). Fail-closed: an invocation
+    enters the statistics only if validate_cell.py accepts it (with its
+    correctness checks). Outputs results/final/energy_validation_*.csv:
+      _invocations.csv  one row per energy invocation: gross J/op (package
+          energy of the timed window / ops: the PRIMARY measurement), package
+          power during the window, window length, the harness's own idle
+          reading, effective core frequency and temperature over the
+          invocation (thermal_log.csv, cell_times.csv);
+      _cells.csv  per session x library x scheme x operation: gross J/op of
+          each invocation and their ratio (TOST +/-10%); idle-corrected J/op
+          (COMPLEMENTARY: gross minus baseline x window, per op) with the
+          session baseline = median of the session's own per-invocation idle
+          readings, and its sensitivity: the same correction with the
+          session's lowest and highest reading and with the two session idle
+          windows (idle_start, idle_end, from power_log.csv); observed peak
+          process RSS (VmHWM) of the 3 memory invocations (mean, min, max);
+      _sessions.csv  per session: baseline and idle readings, idle windows,
+          frequency/temperature during the invocations, mains and boost
+          state over the session (samples off mains, samples with boost on),
+          set-aside invocations, valid/excluded counts;
+      _across_sessions.csv  when two sessions exist: gross (and net) J/op of
+          session 2 over session 1 per cell.
+    No ratio between libraries is computed here, and nothing here is combined
+    with the latency campaign (different CPU configuration)."""
+    from validate_cell import validate
+    from datetime import datetime
+    root = (args.raw_dir or "../results/raw/energy_validation").rstrip("/")
+    if os.path.exists(os.path.join(root, "cpu_state.txt")):   # --raw-dir = one session directory
+        dirs = [root]
+    else:
+        dirs = sorted(d for d in glob.glob(os.path.join(root, "*")) if os.path.isdir(d)
+                      and not os.path.basename(d).startswith(("_", "fixed_freq_")))
+    stem = (args.out or "../results/final/energy_validation.csv")[:-4]
+    plan = list(csv.DictReader(open("../openfhe/validation/energy_plan_fixedfreq.csv")))
+    inv_rows, cell_rows, sess_rows, excluded = [], [], [], []
+    per_cell = {}   # (session, lib, scheme, op) -> mean gross, mean net over the two invocations
+
+    for d in dirs:
+        sess = os.path.basename(d)
+        state = open(os.path.join(d, "cpu_state.txt")).read()
+        er, ew = map(int, re.search(r"energy: (\d+) reps \+ (\d+) warm-up", state).groups())
+        mr, mw = map(int, re.search(r"memory: 3 x \((\d+) reps \+ (\d+) warm-up\)", state).groups())
+        times = {}
+        for r in csv.DictReader(open(os.path.join(d, "cell_times.csv"))):
+            if r["exit_code"] == "0":   # last attempt wins (a set-aside invocation is measured again)
+                times[r["tag"]] = (datetime.fromisoformat(r["start"]), datetime.fromisoformat(r["end"]))
+        therm = [(datetime.fromisoformat(r["timestamp"]), float(r["effective_freq_khz"] or "nan") / 1000,
+                  float(r["temp_millic"] or "nan") / 1000)
+                 for r in csv.DictReader(open(os.path.join(d, "thermal_log.csv")))]
+        power = list(csv.DictReader(open(os.path.join(d, "power_log.csv"))))
+        set_aside = list(csv.DictReader(open(os.path.join(d, "set_aside.csv"))))
+
+        def window(tag):
+            if tag not in times:
+                return [], []
+            a, b = times[tag]
+            sel = [(f, t) for ts, f, t in therm if a <= ts <= b and not math.isnan(f)]
+            return [f for f, _ in sel], [t for _, t in sel]
+
+        def idle_window_w(phase):
+            r = [x for x in power if x["phase"] == phase and x["package_energy_uj"]]
+            if len(r) < 2 or int(r[-1]["package_energy_uj"]) < int(r[0]["package_energy_uj"]):
+                return float("nan")
+            dt = (datetime.fromisoformat(r[-1]["timestamp"]) - datetime.fromisoformat(r[0]["timestamp"])).total_seconds()
+            return (int(r[-1]["package_energy_uj"]) - int(r[0]["package_energy_uj"])) / 1e6 / dt if dt > 0 else float("nan")
+
+        def valid(tag, rows, warm):
+            ok, why = validate(os.path.join(d, tag + ".csv"), rows, warm, os.path.join(d, "checks", tag + "_check.csv"))
+            if not ok:
+                excluded.append({"session": sess, "invocation": tag, "reason": why})
+            return ok
+
+        energy = {}   # tag -> measured rows
+        n_valid = 0
+        for p in plan:
+            for k in (1, 2):
+                tag = f"{p['library']}_{p['scheme'].lower()}_N8192_cat1_{p['operation']}_energy{k}"
+                if valid(tag, er + ew, ew):
+                    rows = [r for r in csv.DictReader(open(os.path.join(d, tag + ".csv"))) if r["status"] == "measured"]
+                    if "energy_uj" not in rows[0]:
+                        excluded.append({"session": sess, "invocation": tag, "reason": "no energy columns (RAPL not read)"})
+                        continue
+                    energy[tag] = rows
+                    n_valid += 1
+        idle = [float(rows[0]["idle_power_w"]) for rows in energy.values()]
+        base = statistics.median(idle) if idle else float("nan")
+        baselines = {"session median": base, "lowest reading": min(idle, default=float("nan")),
+                     "highest reading": max(idle, default=float("nan")),
+                     "idle_start window": idle_window_w("idle_start"), "idle_end window": idle_window_w("idle_end")}
+
+        def net(rows, w):
+            return [(int(r["energy_uj"]) / 1e6 - w * float(r["latency_ms"]) * int(r["inner_loop"]) / 1000)
+                    / int(r["inner_loop"]) for r in rows]
+
+        all_f, all_t = [], []
+        for p in plan:
+            lib, scheme, op = p["library"], p["scheme"], p["operation"]
+            g, nt = {}, {}
+            for k in (1, 2):
+                tag = f"{lib}_{scheme.lower()}_N8192_cat1_{op}_energy{k}"
+                if tag not in energy:
+                    continue
+                rows = energy[tag]
+                gross = [int(r["energy_uj"]) / 1e6 / int(r["inner_loop"]) for r in rows]
+                pw = [int(r["energy_uj"]) / 1e6 / (float(r["latency_ms"]) * int(r["inner_loop"]) / 1000) for r in rows]
+                win = [float(r["latency_ms"]) * int(r["inner_loop"]) for r in rows]
+                f, t = window(tag); all_f += f; all_t += t
+                g[k], nt[k] = _stats(gross), _stats(net(rows, base))
+                inv_rows.append({"session": sess, "library": lib, "scheme": scheme, "operation": op, "invocation": k,
+                                 "n": g[k]["n"], "gross_j_per_op": g[k]["mean"], "gross_std": g[k]["std"],
+                                 "gross_ci_low": g[k]["ci_low"], "gross_ci_high": g[k]["ci_high"], "gross_median": g[k]["median"],
+                                 "package_power_w": statistics.mean(pw), "window_ms_mean": statistics.mean(win),
+                                 "inner_loop": rows[0]["inner_loop"], "idle_reading_w": rows[0]["idle_power_w"],
+                                 "net_j_per_op_session_baseline": nt[k]["mean"],
+                                 "effective_freq_mhz_median": statistics.median(f) if f else "",
+                                 "effective_freq_mhz_min": min(f) if f else "", "effective_freq_mhz_max": max(f) if f else "",
+                                 "temp_c_median": statistics.median(t) if t else ""})
+            c = {"session": sess, "library": lib, "scheme": scheme, "operation": op, "inner_loop": p["inner_loop"],
+                 "valid_energy_invocations": len(g)}
+            if len(g) == 2:
+                tt = tost_equivalence(g[1]["mean"], g[1]["std"], g[1]["n"], g[2]["mean"], g[2]["std"], g[2]["n"], 0.10)
+                gm = (g[1]["mean"] + g[2]["mean"]) / 2
+                c.update({"gross_j_inv1": g[1]["mean"], "gross_j_inv2": g[2]["mean"],
+                          "gross_ratio_inv2_inv1": g[2]["mean"] / g[1]["mean"], "gross_tost_10pct": tt["verdict"],
+                          "gross_j_mean": gm})
+                rows = energy[f"{lib}_{scheme.lower()}_N8192_cat1_{op}_energy1"] + energy[f"{lib}_{scheme.lower()}_N8192_cat1_{op}_energy2"]
+                nets = {name: statistics.mean(net(rows, w)) if not math.isnan(w) else float("nan") for name, w in baselines.items()}
+                nm = nets["session median"]
+                c.update({"net_j_mean": nm, "net_share_of_gross": nm / gm,
+                          "net_ratio_inv2_inv1": nt[2]["mean"] / nt[1]["mean"]})
+                for name, v in nets.items():
+                    if name != "session median":
+                        c["net_rel_change_" + name.replace(" ", "_")] = v / nm - 1 if nm and not math.isnan(v) else ""
+                per_cell[(sess, lib, scheme, op)] = (gm, nm)
+            else:
+                c["gross_tost_10pct"] = "NOT COMPUTED: invalid or missing invocation"
+            peaks = []
+            for k in (1, 2, 3):
+                tag = f"{lib}_{scheme.lower()}_N8192_cat1_{op}_mem{k}"
+                pk = os.path.join(d, "memory", f"{tag}_peak.log")
+                if valid(tag, mr + mw, mw) and os.path.exists(pk):
+                    v = parse_mem_log(pk)
+                    if v is not None:
+                        peaks.append(v)
+                        n_valid += 1
+            if len(peaks) == 3:
+                c.update({"peak_rss_mb_mean": statistics.mean(peaks), "peak_rss_mb_min": min(peaks),
+                          "peak_rss_mb_max": max(peaks)})
+            else:
+                c["peak_rss_mb_mean"] = "NOT COMPUTED: invalid or missing invocation"
+            cell_rows.append(c)
+
+        cells_power = [x for x in power if x["phase"] == "cells"]
+        sess_rows.append({
+            "session": sess, "invocations_valid": n_valid, "invocations_excluded": sum(e["session"] == sess for e in excluded),
+            "set_aside_mains_lost": len(set_aside),
+            "idle_baseline_w_session_median": base, "idle_readings_n": len(idle),
+            "idle_reading_w_min": baselines["lowest reading"], "idle_reading_w_max": baselines["highest reading"],
+            "idle_start_window_w": baselines["idle_start window"], "idle_end_window_w": baselines["idle_end window"],
+            "effective_freq_mhz_median": statistics.median(all_f) if all_f else "",
+            "effective_freq_mhz_min": min(all_f) if all_f else "", "effective_freq_mhz_max": max(all_f) if all_f else "",
+            "temp_c_median": statistics.median(all_t) if all_t else "", "temp_c_max": max(all_t) if all_t else "",
+            "power_samples": len(power), "samples_off_mains": sum(x["mains_online"] != "1" for x in power),
+            "samples_off_mains_during_cells": sum(x["mains_online"] != "1" for x in cells_power),
+            "samples_boost_on": sum(x["boost"] != "0" for x in power),
+            "platform_profiles": " ".join(sorted({x["platform_profile"] for x in power})),
+            "battery_pct_min": min((int(x["battery_pct"]) for x in power if x["battery_pct"]), default="")})
+
+    across = []
+    sessions = sorted({k[0] for k in per_cell})
+    if len(sessions) >= 2:
+        s1, s2 = sessions[0], sessions[1]
+        for (s, lib, scheme, op), (gm, nm) in sorted(per_cell.items()):
+            if s == s1 and (s2, lib, scheme, op) in per_cell:
+                g2, n2 = per_cell[(s2, lib, scheme, op)]
+                across.append({"library": lib, "scheme": scheme, "operation": op, "session_1": s1, "session_2": s2,
+                               "gross_j_s1": gm, "gross_j_s2": g2, "gross_ratio_s2_s1": g2 / gm,
+                               "net_j_s1": nm, "net_j_s2": n2, "net_ratio_s2_s1": n2 / nm if nm else ""})
+
+    def dump(path, rows, fields=None):
+        fields = fields or list(dict.fromkeys(k for r in rows for k in r))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=fields, lineterminator="\n")
+            w.writeheader()
+            for r in rows:
+                w.writerow({k: r.get(k, "") for k in fields})
+    dump(stem + "_invocations.csv", inv_rows)
+    dump(stem + "_cells.csv", cell_rows)
+    dump(stem + "_sessions.csv", sess_rows)
+    dump(stem + "_across_sessions.csv", across, ["library", "scheme", "operation", "session_1", "session_2", "gross_j_s1",
+                                                 "gross_j_s2", "gross_ratio_s2_s1", "net_j_s1", "net_j_s2", "net_ratio_s2_s1"])
+    dump(stem + "_excluded.csv", excluded, ["session", "invocation", "reason"])
+    print(f"{len(dirs)} session(s); {len(inv_rows)} valid energy invocations; {len(excluded)} excluded; "
+          f"{len(across)} cells compared across sessions")
+    for e in excluded:
+        print(f"EXCLUDED: {e['session']}/{e['invocation']}: {e['reason']}")
+
+
 # ---------- OpenFHE Standard campaign (run_standard_campaign.sh) ----------
 
 EQUIVALENT_OPS = ("keygen", "decrypt", "multiply", "relinearize", "rotate")   # same computation in both libraries
@@ -2242,7 +2447,8 @@ def main():
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
-                              "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard"])
+                              "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard",
+                              "energy_validation"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -2262,6 +2468,10 @@ def main():
 
     if args.scenario == "openfhe_standard":
         aggregate_openfhe_standard(args)
+        return
+
+    if args.scenario == "energy_validation":
+        aggregate_energy_validation(args)
         return
 
     if args.scenario == "composite_checks":
