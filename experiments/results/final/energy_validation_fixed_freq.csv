@@ -1,0 +1,4 @@
+test,phase,seconds,effective_freq_mhz_median,effective_freq_mhz_min,effective_freq_mhz_max,samples_below_3200_mhz,temp_c_median,temp_c_max,package_power_w_median,mains_online_values,boost_values
+fixed_freq_20261105T015810,boost_on_mains,180,4220.4465,3917.84,4450.25,0,93.125,93.125,15.9857,1,1
+fixed_freq_20261105T015810,fixed_mains,600,3268.9055,3262.115,3269.044,0,59.375,93.0,8.835877,1,0
+fixed_freq_20261105T015810,fixed_battery,600,3268.6,2233.762,3269.045,1,55.75,57.25,6.686956,0,0

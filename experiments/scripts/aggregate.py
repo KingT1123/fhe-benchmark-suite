@@ -2074,7 +2074,9 @@ def aggregate_energy_validation(args):
           state over the session (samples off mains, samples with boost on),
           set-aside invocations, valid/excluded counts;
       _across_sessions.csv  when two sessions exist: gross (and net) J/op of
-          session 2 over session 1 per cell.
+          session 2 over session 1 per cell;
+      _fixed_freq.csv  part A (fixed_freq_* directories, tools/fixed_freq_test.sh):
+          per phase, effective frequency, temperature, package power.
     No ratio between libraries is computed here, and nothing here is combined
     with the latency campaign (different CPU configuration)."""
     from validate_cell import validate
@@ -2221,6 +2223,30 @@ def aggregate_energy_validation(args):
             "platform_profiles": " ".join(sorted({x["platform_profile"] for x in power})),
             "battery_pct_min": min((int(x["battery_pct"]) for x in power if x["battery_pct"]), default="")})
 
+    # ---- part A (tools/fixed_freq_test.sh): per phase, effective frequency,
+    # temperature and package power (from consecutive energy-counter samples)
+    fixed = []
+    for d in sorted(glob.glob(os.path.join(root, "fixed_freq_*"))):
+        log = list(csv.DictReader(open(os.path.join(d, "freq_log.csv"))))
+        for ph in ("boost_on_mains", "fixed_mains", "fixed_battery"):
+            r = [x for x in log if x["phase"] == ph]
+            f = [int(x["effective_freq_khz"]) / 1000 for x in r if x["effective_freq_khz"]]
+            t = [int(x["temp_millic"]) / 1000 for x in r if x["temp_millic"]]
+            w = []
+            for a, b in zip(r, r[1:]):
+                if a["package_energy_uj"] and b["package_energy_uj"] and int(b["package_energy_uj"]) >= int(a["package_energy_uj"]):
+                    dt = (datetime.fromisoformat(b["timestamp"]) - datetime.fromisoformat(a["timestamp"])).total_seconds()
+                    if dt > 0:
+                        w.append((int(b["package_energy_uj"]) - int(a["package_energy_uj"])) / 1e6 / dt)
+            if f:
+                fixed.append({"test": os.path.basename(d), "phase": ph, "seconds": len(r),
+                              "effective_freq_mhz_median": statistics.median(f), "effective_freq_mhz_min": min(f),
+                              "effective_freq_mhz_max": max(f), "samples_below_3200_mhz": sum(x < 3200 for x in f),
+                              "temp_c_median": statistics.median(t), "temp_c_max": max(t),
+                              "package_power_w_median": statistics.median(w) if w else "",
+                              "mains_online_values": " ".join(sorted({x["mains_online"] for x in r})),
+                              "boost_values": " ".join(sorted({x["boost"] for x in r}))})
+
     across = []
     sessions = sorted({k[0] for k in per_cell})
     if len(sessions) >= 2:
@@ -2246,6 +2272,8 @@ def aggregate_energy_validation(args):
     dump(stem + "_across_sessions.csv", across, ["library", "scheme", "operation", "session_1", "session_2", "gross_j_s1",
                                                  "gross_j_s2", "gross_ratio_s2_s1", "net_j_s1", "net_j_s2", "net_ratio_s2_s1"])
     dump(stem + "_excluded.csv", excluded, ["session", "invocation", "reason"])
+    if fixed:
+        dump(stem + "_fixed_freq.csv", fixed)
     print(f"{len(dirs)} session(s); {len(inv_rows)} valid energy invocations; {len(excluded)} excluded; "
           f"{len(across)} cells compared across sessions")
     for e in excluded:
