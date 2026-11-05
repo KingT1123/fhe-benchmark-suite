@@ -1,0 +1,6 @@
+Session s6: 2 cells, order seed 20007900, governor enforced: 1
+[1/2] 20:30:43 openfhe_ckks_N16384_cat1_relinearize  (CPU 52 °C; elapsed 0h0m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s6/openfhe_ckks_N16384_cat1_relinearize.csv (all 105 checks correct)
+[2/2] 22:38:22 seal_ckks_N16384_cat1_relinearize  (CPU 91 °C; elapsed 2h7m)
+OK: wrote 105 rows to /work/results/raw/standard_campaign/s6/seal_ckks_N16384_cat1_relinearize.csv
+Session s6 complete: 00:00:53. Next: cd experiments/scripts && python3 aggregate.py --scenario=openfhe_standard
