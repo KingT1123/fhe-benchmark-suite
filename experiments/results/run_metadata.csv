@@ -21,3 +21,5 @@ timestamp,scenario,run_order_seed,num_cells
 2026-10-26T18:34:24+01:00,openfhe_standard_s4,31082694,14
 2026-10-28T02:08:12+01:00,openfhe_standard_s5,278861723,14
 2026-11-04T20:30:43+01:00,openfhe_standard_s6,20007900,2
+2026-11-05T03:23:25+01:00,energy_validation_e1,223057544,120
+2026-11-05T03:59:35+01:00,energy_validation_e2,1346423303,120
