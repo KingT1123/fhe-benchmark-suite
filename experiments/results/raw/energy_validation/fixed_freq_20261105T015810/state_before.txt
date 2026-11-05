@@ -1,0 +1,10 @@
+date: 2026-11-05T01:58:10+01:00
+kernel: 7.0.0-42-generic
+cpu: AMD Ryzen 9 6900HX with Radeon Graphics
+driver: amd-pstate-epp (active)
+boost: 1
+governor (core 0): powersave
+energy_performance_preference: performance
+platform_profile: balanced
+max frequency (amd_pstate_max_freq, kHz): 4936631
+mains: 1; battery: 100%

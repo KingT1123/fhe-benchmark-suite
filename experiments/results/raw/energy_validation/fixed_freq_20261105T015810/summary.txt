@@ -1,0 +1,4 @@
+phase               s  freq median    min    max  temp med  pkg W med
+boost_on_mains    180     4.220 GHz   3.92   4.45    93.1 C     16.0 W
+fixed_mains       600     3.269 GHz   3.26   3.27    59.4 C      8.8 W
+fixed_battery     600     3.269 GHz   2.23   3.27    55.8 C      6.7 W
