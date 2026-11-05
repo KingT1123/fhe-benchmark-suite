@@ -1,0 +1,3 @@
+session,invocations_valid,invocations_excluded,set_aside_mains_lost,idle_baseline_w_session_median,idle_readings_n,idle_reading_w_min,idle_reading_w_max,idle_start_window_w,idle_end_window_w,effective_freq_mhz_median,effective_freq_mhz_min,effective_freq_mhz_max,temp_c_median,temp_c_max,power_samples,samples_off_mains,samples_off_mains_during_cells,samples_boost_on,platform_profiles,battery_pct_min
+e1,120,0,0,5.3159600000000005,48,4.90813,8.17848,7.265771423728814,5.309752711864407,3265.841,1100.334,3270.194,51.375,65.75,1543,0,0,0,balanced,84
+e2,120,0,0,5.299564999999999,48,4.78909,5.79622,5.225084000000001,5.134646474576271,3264.8050000000003,1100.334,3271.132,48.125,57.0,1543,0,0,0,balanced,98

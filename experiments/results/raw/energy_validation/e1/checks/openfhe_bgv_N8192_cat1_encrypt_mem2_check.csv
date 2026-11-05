@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,BGV,8192,1,encrypt,0,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,1,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,2,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,3,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,4,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,5,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,6,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,7,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,8,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,9,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,10,0,mismatching_slots,correct
+OpenFHE,BGV,8192,1,encrypt,11,0,mismatching_slots,correct
