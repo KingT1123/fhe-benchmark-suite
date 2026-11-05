@@ -42,7 +42,7 @@ SESSION="${1:?usage: run_energy_validation.sh e1|e2}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXP="$(cd "$SCRIPT_DIR/.." && pwd)"
 DRY="${DRY:-0}"
-NAME="$([ "$DRY" = 1 ] && echo _dry_)$SESSION"
+if [ "$DRY" = 1 ]; then NAME="_dry_$SESSION"; else NAME="$SESSION"; fi
 SESSION_DIR="$EXP/results/raw/energy_validation/$NAME"
 LOG_DIR="$EXP/results/logs/energy_validation/$NAME"
 TASKSET_CORE="${TASKSET_CORE:-0}"
