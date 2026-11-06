@@ -1,0 +1,244 @@
+[03:23:25] session idle window idle_start: 30s settle, then 60s with nothing running
+[1/120] 03:24:55 seal_ckks_N8192_cat1_keygen_energy1  (CPU 50 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_keygen_energy1.csv
+[2/120] 03:25:12 openfhe_bgv_N8192_cat1_keygen_mem2  (CPU 51 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_keygen_mem2.csv (all 12 checks correct)
+[3/120] 03:25:15 seal_ckks_N8192_cat1_relinearize_mem3  (CPU 51 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_relinearize_mem3.csv
+[4/120] 03:25:17 seal_ckks_N8192_cat1_relinearize_mem2  (CPU 51 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_relinearize_mem2.csv
+[5/120] 03:25:20 openfhe_bfv_N8192_cat1_relinearize_mem3  (CPU 51 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_relinearize_mem3.csv (all 12 checks correct)
+[6/120] 03:25:23 seal_bgv_N8192_cat1_keygen_energy1  (CPU 51 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_keygen_energy1.csv
+[7/120] 03:25:40 seal_bfv_N8192_cat1_encrypt_mem1  (CPU 51 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_encrypt_mem1.csv
+[8/120] 03:25:43 seal_ckks_N8192_cat1_encrypt_mem3  (CPU 50 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_encrypt_mem3.csv
+[9/120] 03:25:45 seal_bfv_N8192_cat1_encrypt_mem2  (CPU 50 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_encrypt_mem2.csv
+[10/120] 03:25:48 openfhe_bgv_N8192_cat1_relinearize_energy2  (CPU 50 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_relinearize_energy2.csv (all 32 checks correct)
+[11/120] 03:26:09 openfhe_bfv_N8192_cat1_encrypt_energy2  (CPU 54 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_encrypt_energy2.csv (all 32 checks correct)
+[12/120] 03:26:27 seal_bgv_N8192_cat1_multiply_mem2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_multiply_mem2.csv
+[13/120] 03:26:29 openfhe_bgv_N8192_cat1_multiply_energy2  (CPU 56 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_multiply_energy2.csv (all 32 checks correct)
+[14/120] 03:27:14 seal_bfv_N8192_cat1_relinearize_mem3  (CPU 58 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_relinearize_mem3.csv
+[15/120] 03:27:17 seal_bgv_N8192_cat1_relinearize_mem2  (CPU 55 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_relinearize_mem2.csv
+[16/120] 03:27:20 seal_ckks_N8192_cat1_keygen_energy2  (CPU 53 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_keygen_energy2.csv
+[17/120] 03:27:37 openfhe_ckks_N8192_cat1_encrypt_mem3  (CPU 52 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_encrypt_mem3.csv (all 12 checks correct)
+[18/120] 03:27:40 openfhe_bfv_N8192_cat1_keygen_mem1  (CPU 51 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_keygen_mem1.csv (all 12 checks correct)
+[19/120] 03:27:43 openfhe_ckks_N8192_cat1_encrypt_mem2  (CPU 51 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_encrypt_mem2.csv (all 12 checks correct)
+[20/120] 03:27:45 openfhe_bfv_N8192_cat1_relinearize_mem2  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[21/120] 03:27:48 seal_ckks_N8192_cat1_relinearize_energy2  (CPU 52 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_relinearize_energy2.csv
+[22/120] 03:28:13 seal_bfv_N8192_cat1_multiply_mem3  (CPU 54 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_multiply_mem3.csv
+[23/120] 03:28:16 openfhe_bfv_N8192_cat1_relinearize_energy2  (CPU 52 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_relinearize_energy2.csv (all 32 checks correct)
+[24/120] 03:28:48 openfhe_bgv_N8192_cat1_encrypt_mem3  (CPU 54 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_encrypt_mem3.csv (all 12 checks correct)
+[25/120] 03:28:51 openfhe_ckks_N8192_cat1_multiply_mem2  (CPU 52 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_multiply_mem2.csv (all 12 checks correct)
+[26/120] 03:28:54 openfhe_bgv_N8192_cat1_multiply_mem2  (CPU 51 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_multiply_mem2.csv (all 12 checks correct)
+[27/120] 03:28:56 openfhe_bgv_N8192_cat1_relinearize_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_relinearize_energy1.csv (all 32 checks correct)
+[28/120] 03:29:18 openfhe_ckks_N8192_cat1_keygen_mem2  (CPU 53 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_keygen_mem2.csv (all 12 checks correct)
+[29/120] 03:29:21 openfhe_ckks_N8192_cat1_encrypt_energy2  (CPU 52 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_encrypt_energy2.csv (all 32 checks correct)
+[30/120] 03:29:38 openfhe_ckks_N8192_cat1_relinearize_mem2  (CPU 53 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[31/120] 03:29:41 seal_bfv_N8192_cat1_multiply_mem1  (CPU 51 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_multiply_mem1.csv
+[32/120] 03:29:44 seal_ckks_N8192_cat1_multiply_energy2  (CPU 51 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_multiply_energy2.csv
+[33/120] 03:30:34 seal_bgv_N8192_cat1_keygen_mem3  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_keygen_mem3.csv
+[34/120] 03:30:37 seal_bfv_N8192_cat1_multiply_energy1  (CPU 51 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_multiply_energy1.csv
+[35/120] 03:30:56 seal_ckks_N8192_cat1_encrypt_energy2  (CPU 53 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_encrypt_energy2.csv
+[36/120] 03:31:13 openfhe_bgv_N8192_cat1_multiply_energy1  (CPU 53 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[37/120] 03:31:58 seal_bgv_N8192_cat1_encrypt_mem3  (CPU 53 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_encrypt_mem3.csv
+[38/120] 03:32:01 seal_ckks_N8192_cat1_encrypt_mem2  (CPU 51 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_encrypt_mem2.csv
+[39/120] 03:32:03 seal_ckks_N8192_cat1_multiply_mem3  (CPU 50 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_multiply_mem3.csv
+[40/120] 03:32:06 seal_bfv_N8192_cat1_keygen_energy2  (CPU 50 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_keygen_energy2.csv
+[41/120] 03:32:23 openfhe_bfv_N8192_cat1_keygen_energy1  (CPU 50 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_keygen_energy1.csv (all 32 checks correct)
+[42/120] 03:32:39 openfhe_ckks_N8192_cat1_relinearize_mem3  (CPU 51 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_relinearize_mem3.csv (all 12 checks correct)
+[43/120] 03:32:41 seal_ckks_N8192_cat1_multiply_energy1  (CPU 50 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_multiply_energy1.csv
+[44/120] 03:33:32 seal_bfv_N8192_cat1_multiply_mem2  (CPU 53 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_multiply_mem2.csv
+[45/120] 03:33:35 seal_bgv_N8192_cat1_relinearize_energy2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_relinearize_energy2.csv
+[46/120] 03:33:58 seal_ckks_N8192_cat1_keygen_mem1  (CPU 53 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_keygen_mem1.csv
+[47/120] 03:34:02 seal_ckks_N8192_cat1_keygen_mem3  (CPU 50 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_keygen_mem3.csv
+[48/120] 03:34:05 seal_bfv_N8192_cat1_relinearize_mem1  (CPU 50 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_relinearize_mem1.csv
+[49/120] 03:34:08 openfhe_bfv_N8192_cat1_multiply_energy2  (CPU 50 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_multiply_energy2.csv (all 32 checks correct)
+[50/120] 03:34:29 openfhe_bgv_N8192_cat1_keygen_energy1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_keygen_energy1.csv (all 32 checks correct)
+[51/120] 03:34:44 seal_bgv_N8192_cat1_multiply_mem1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_multiply_mem1.csv
+[52/120] 03:34:47 openfhe_bgv_N8192_cat1_encrypt_mem1  (CPU 50 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_encrypt_mem1.csv (all 12 checks correct)
+[53/120] 03:34:49 openfhe_bfv_N8192_cat1_keygen_energy2  (CPU 49 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_keygen_energy2.csv (all 32 checks correct)
+[54/120] 03:35:05 openfhe_bgv_N8192_cat1_keygen_energy2  (CPU 50 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_keygen_energy2.csv (all 32 checks correct)
+[55/120] 03:35:20 seal_ckks_N8192_cat1_multiply_mem2  (CPU 50 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_multiply_mem2.csv
+[56/120] 03:35:23 openfhe_bfv_N8192_cat1_multiply_mem3  (CPU 49 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_multiply_mem3.csv (all 12 checks correct)
+[57/120] 03:35:26 openfhe_bgv_N8192_cat1_multiply_mem3  (CPU 50 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_multiply_mem3.csv (all 12 checks correct)
+[58/120] 03:35:28 seal_bgv_N8192_cat1_encrypt_mem1  (CPU 49 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_encrypt_mem1.csv
+[59/120] 03:35:31 openfhe_bfv_N8192_cat1_encrypt_mem3  (CPU 49 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_encrypt_mem3.csv (all 12 checks correct)
+[60/120] 03:35:34 openfhe_ckks_N8192_cat1_relinearize_mem1  (CPU 48 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_relinearize_mem1.csv (all 12 checks correct)
+[61/120] 03:35:37 openfhe_bgv_N8192_cat1_keygen_mem3  (CPU 50 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_keygen_mem3.csv (all 12 checks correct)
+[62/120] 03:35:39 openfhe_bfv_N8192_cat1_keygen_mem3  (CPU 49 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_keygen_mem3.csv (all 12 checks correct)
+[63/120] 03:35:42 seal_bfv_N8192_cat1_keygen_mem1  (CPU 49 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_keygen_mem1.csv
+[64/120] 03:35:46 seal_bfv_N8192_cat1_relinearize_mem2  (CPU 49 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_relinearize_mem2.csv
+[65/120] 03:35:49 seal_bfv_N8192_cat1_encrypt_energy2  (CPU 49 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_encrypt_energy2.csv
+[66/120] 03:36:06 openfhe_ckks_N8192_cat1_keygen_mem3  (CPU 52 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_keygen_mem3.csv (all 12 checks correct)
+[67/120] 03:36:08 seal_bgv_N8192_cat1_relinearize_mem3  (CPU 50 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_relinearize_mem3.csv
+[68/120] 03:36:11 openfhe_bgv_N8192_cat1_relinearize_mem1  (CPU 49 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_relinearize_mem1.csv (all 12 checks correct)
+[69/120] 03:36:14 openfhe_ckks_N8192_cat1_encrypt_energy1  (CPU 49 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_encrypt_energy1.csv (all 32 checks correct)
+[70/120] 03:36:31 openfhe_bgv_N8192_cat1_multiply_mem1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[71/120] 03:36:34 openfhe_bgv_N8192_cat1_encrypt_energy1  (CPU 49 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_encrypt_energy1.csv (all 32 checks correct)
+[72/120] 03:36:51 seal_bfv_N8192_cat1_relinearize_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_relinearize_energy1.csv
+[73/120] 03:37:23 seal_bgv_N8192_cat1_encrypt_energy2  (CPU 53 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_encrypt_energy2.csv
+[74/120] 03:37:40 seal_bgv_N8192_cat1_encrypt_energy1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_encrypt_energy1.csv
+[75/120] 03:37:57 openfhe_bfv_N8192_cat1_encrypt_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_encrypt_energy1.csv (all 32 checks correct)
+[76/120] 03:38:14 openfhe_ckks_N8192_cat1_multiply_mem3  (CPU 51 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_multiply_mem3.csv (all 12 checks correct)
+[77/120] 03:38:17 seal_bgv_N8192_cat1_keygen_mem2  (CPU 49 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_keygen_mem2.csv
+[78/120] 03:38:21 seal_bfv_N8192_cat1_keygen_energy1  (CPU 48 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_keygen_energy1.csv
+[79/120] 03:38:38 openfhe_bfv_N8192_cat1_keygen_mem2  (CPU 49 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_keygen_mem2.csv (all 12 checks correct)
+[80/120] 03:38:41 openfhe_ckks_N8192_cat1_keygen_energy2  (CPU 49 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_keygen_energy2.csv (all 32 checks correct)
+[81/120] 03:38:56 openfhe_ckks_N8192_cat1_multiply_energy1  (CPU 50 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[82/120] 03:39:47 openfhe_bfv_N8192_cat1_encrypt_mem2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_encrypt_mem2.csv (all 12 checks correct)
+[83/120] 03:39:49 openfhe_bgv_N8192_cat1_relinearize_mem3  (CPU 50 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_relinearize_mem3.csv (all 12 checks correct)
+[84/120] 03:39:52 seal_bgv_N8192_cat1_encrypt_mem2  (CPU 49 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_encrypt_mem2.csv
+[85/120] 03:39:55 openfhe_ckks_N8192_cat1_keygen_mem1  (CPU 49 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_keygen_mem1.csv (all 12 checks correct)
+[86/120] 03:39:58 openfhe_ckks_N8192_cat1_keygen_energy1  (CPU 49 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_keygen_energy1.csv (all 32 checks correct)
+[87/120] 03:40:13 seal_bfv_N8192_cat1_encrypt_mem3  (CPU 50 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_encrypt_mem3.csv
+[88/120] 03:40:16 seal_bfv_N8192_cat1_multiply_energy2  (CPU 49 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_multiply_energy2.csv
+[89/120] 03:40:34 seal_bgv_N8192_cat1_multiply_mem3  (CPU 52 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_multiply_mem3.csv
+[90/120] 03:40:37 seal_ckks_N8192_cat1_relinearize_mem1  (CPU 50 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_relinearize_mem1.csv
+[91/120] 03:40:40 seal_bgv_N8192_cat1_relinearize_energy1  (CPU 49 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_relinearize_energy1.csv
+[92/120] 03:41:03 seal_ckks_N8192_cat1_keygen_mem2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_keygen_mem2.csv
+[93/120] 03:41:07 seal_bfv_N8192_cat1_keygen_mem2  (CPU 49 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_keygen_mem2.csv
+[94/120] 03:41:10 seal_ckks_N8192_cat1_encrypt_mem1  (CPU 48 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_encrypt_mem1.csv
+[95/120] 03:41:13 seal_bgv_N8192_cat1_keygen_energy2  (CPU 49 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_keygen_energy2.csv
+[96/120] 03:41:30 openfhe_ckks_N8192_cat1_multiply_mem1  (CPU 48 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[97/120] 03:41:33 seal_ckks_N8192_cat1_multiply_mem1  (CPU 49 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_multiply_mem1.csv
+[98/120] 03:41:35 openfhe_bfv_N8192_cat1_multiply_mem1  (CPU 48 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[99/120] 03:41:38 openfhe_bfv_N8192_cat1_relinearize_energy1  (CPU 49 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_relinearize_energy1.csv (all 32 checks correct)
+[100/120] 03:42:11 openfhe_bfv_N8192_cat1_relinearize_mem1  (CPU 52 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_relinearize_mem1.csv (all 12 checks correct)
+[101/120] 03:42:14 openfhe_ckks_N8192_cat1_encrypt_mem1  (CPU 50 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_encrypt_mem1.csv (all 12 checks correct)
+[102/120] 03:42:16 openfhe_ckks_N8192_cat1_multiply_energy2  (CPU 49 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_multiply_energy2.csv (all 32 checks correct)
+[103/120] 03:43:07 openfhe_bgv_N8192_cat1_encrypt_energy2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_encrypt_energy2.csv (all 32 checks correct)
+[104/120] 03:43:24 openfhe_bgv_N8192_cat1_relinearize_mem2  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[105/120] 03:43:27 openfhe_bfv_N8192_cat1_multiply_energy1  (CPU 49 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[106/120] 03:43:47 seal_bfv_N8192_cat1_encrypt_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_encrypt_energy1.csv
+[107/120] 03:44:04 seal_bfv_N8192_cat1_keygen_mem3  (CPU 51 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_keygen_mem3.csv
+[108/120] 03:44:07 openfhe_bfv_N8192_cat1_encrypt_mem1  (CPU 49 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_encrypt_mem1.csv (all 12 checks correct)
+[109/120] 03:44:10 openfhe_ckks_N8192_cat1_relinearize_energy2  (CPU 48 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_relinearize_energy2.csv (all 32 checks correct)
+[110/120] 03:44:32 seal_bgv_N8192_cat1_multiply_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_multiply_energy1.csv
+[111/120] 03:45:23 openfhe_bgv_N8192_cat1_keygen_mem1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_keygen_mem1.csv (all 12 checks correct)
+[112/120] 03:45:26 seal_bfv_N8192_cat1_relinearize_energy2  (CPU 50 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bfv_N8192_cat1_relinearize_energy2.csv
+[113/120] 03:45:58 seal_bgv_N8192_cat1_keygen_mem1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_keygen_mem1.csv
+[114/120] 03:46:02 openfhe_bfv_N8192_cat1_multiply_mem2  (CPU 49 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bfv_N8192_cat1_multiply_mem2.csv (all 12 checks correct)
+[115/120] 03:46:04 openfhe_ckks_N8192_cat1_relinearize_energy1  (CPU 49 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/openfhe_ckks_N8192_cat1_relinearize_energy1.csv (all 32 checks correct)
+[116/120] 03:46:26 seal_bgv_N8192_cat1_relinearize_mem1  (CPU 52 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_relinearize_mem1.csv
+[117/120] 03:46:29 seal_ckks_N8192_cat1_encrypt_energy1  (CPU 49 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_encrypt_energy1.csv
+[118/120] 03:46:46 seal_bgv_N8192_cat1_multiply_energy2  (CPU 51 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_bgv_N8192_cat1_multiply_energy2.csv
+[119/120] 03:47:37 seal_ckks_N8192_cat1_relinearize_energy1  (CPU 52 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_validation/e1/seal_ckks_N8192_cat1_relinearize_energy1.csv
+[120/120] 03:48:02 openfhe_bgv_N8192_cat1_encrypt_mem2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_validation/e1/openfhe_bgv_N8192_cat1_encrypt_mem2.csv (all 12 checks correct)
+[03:48:05] session idle window idle_end: 30s settle, then 60s with nothing running
+Session e1 complete: 03:49:35. Statistics: cd experiments/scripts && python3 aggregate.py --scenario=energy_validation
+boost restored (1)
