@@ -1,0 +1,3 @@
+library,scheme,N,category,operation,latency_ms,inner_loop,energy_reps,energy_runs,memory_runs,label
+seal,CKKS,8192,1,multiply,0.415897,121,30,1,1,
+openfhe,CKKS,8192,1,multiply,0.445414,113,30,1,1,

@@ -12,7 +12,8 @@ correctness-check CSV. It is valid only if ALL of these hold:
   * exactly warmup + reps data rows; iteration = 0, 1, ... in order; status
     "warmup" for the first `warmup` rows and "measured" for the others;
   * every latency_ms is a finite number > 0; energy columns, when present,
-    are integers (inner_loop >= 1, energy_uj >= 0) and idle_power_w a number;
+    are integers (inner_loop >= 1, energy_uj > 0: a zero means the counter was
+    not read around the timed block) and idle_power_w a number;
   * library/scheme/N/category/operation identical on every row;
   * the check CSV (when required) has one row per repetition, the same
     iterations, and every row "correct".
@@ -60,7 +61,7 @@ def validate(path, rows, warmup, check=None):
             return False, f"row {i}: latency {lat}"
         if "energy_uj" in r:
             try:
-                if int(r["inner_loop"]) < 1 or int(r["energy_uj"]) < 0:
+                if int(r["inner_loop"]) < 1 or int(r["energy_uj"]) <= 0:   # 0 = counter not read around the block
                     return False, f"row {i}: energy columns out of range"
                 float(r["idle_power_w"])
             except (TypeError, ValueError):
