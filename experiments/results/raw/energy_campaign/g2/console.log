@@ -1,0 +1,31 @@
+[01:37:15] session idle window idle_start: 30s settle, then 60s with nothing running
+
+   >>> GUARD TEST: UNPLUG THE CHARGER NOW (any moment is fine), COUNT TO 5, THEN PLUG IT BACK IN <<<
+
+[1/6] 01:38:45 seal_ckks_N8192_cat1_multiply_energy1  (CPU 51 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/g2/seal_ckks_N8192_cat1_multiply_energy1.csv
+   mains lost during seal_ckks_N8192_cat1_multiply_energy1: set aside (kept), measured again
+   [01:39:35] ON BATTERY: paused. Measurement resumes 120s after the charger is back.
+   [01:41:36] mains back for 120s: resuming
+[1/6] 01:41:36 seal_ckks_N8192_cat1_multiply_energy1  (CPU 50 °C, 1.37 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/g2/seal_ckks_N8192_cat1_multiply_energy1.csv
+[2/6] 01:42:26 seal_ckks_N8192_cat1_multiply_energy2  (CPU 55 °C, 3.12 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/g2/seal_ckks_N8192_cat1_multiply_energy2.csv
+[3/6] 01:43:16 seal_ckks_N8192_cat1_multiply_mem1  (CPU 55 °C, 1.37 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/g2/seal_ckks_N8192_cat1_multiply_mem1.csv
+[4/6] 01:43:19 openfhe_ckks_N8192_cat1_multiply_energy1  (CPU 53 °C, 1.39 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/g2/openfhe_ckks_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[5/6] 01:44:09 openfhe_ckks_N8192_cat1_multiply_energy2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/g2/openfhe_ckks_N8192_cat1_multiply_energy2.csv (all 32 checks correct)
+[6/6] 01:45:00 openfhe_ckks_N8192_cat1_multiply_mem1  (CPU 55 °C, 1.40 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/g2/openfhe_ckks_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[01:45:03] session idle window idle_end: 30s settle, then 60s with nothing running
+Session g2 complete: 01:46:33.
+session check: g2
+  plan: 2 cells -> 4 energy invocations, 2 memory invocations
+  energy invocations with their files, valid, energy > 0: 4/4
+  memory invocations with their files, valid, peak RSS > 0: 2/2
+  set aside after a loss of mains power: 1 (original files kept: 1); each measured again: yes
+  power log: 549 samples; off mains: 20; with boost on: 0
+  RESULT: all expected files present and valid
+boost restored (1)
