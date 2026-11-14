@@ -22,8 +22,8 @@
 # Usage (HOST, repository root; sudo: boost, governor, RAPL):
 #   sudo bash experiments/openfhe/run_energy_campaign.sh <session> <plan.csv>
 # Output: experiments/results/raw/energy_campaign/<session>/
-# GUARD_TEST=1: plan order kept, and the operator is asked to unplug the
-#   charger at the start of the first energy invocation (stage-1 guard test).
+# GUARD_TEST=1: plan order kept, and the operator is reminded every 8 s,
+#   until it is done, to unplug the charger during the cells (stage-1 guard test).
 # Test without sudo: DRY=1 (tiny counts, no RAPL, nothing written to the
 # system, session _dry_<session>); AC_FILE overrides the mains-state file.
 set -euo pipefail
@@ -72,8 +72,10 @@ session_start "energy_campaign_$SESSION" "$SEED"
 setw() { [ "$DRY" = 1 ] && return 0; echo "$2" > "$1"; }
 OLD_BOOST="$(cat "$BOOST")"
 POWER_PID=""
+REMIND_PID=""
 energy_cleanup() {
     [ -n "$POWER_PID" ] && kill "$POWER_PID" 2>/dev/null || true
+    [ -n "$REMIND_PID" ] && kill "$REMIND_PID" 2>/dev/null || true
     setw "$BOOST" "$OLD_BOOST" || true
     session_cleanup
     echo "boost restored ($OLD_BOOST)"
@@ -149,7 +151,14 @@ DOCKER_EXTRA=(--mount "type=bind,source=$RAPL_HOST_DIR,target=/rapl,readonly")
 RUN_DIRECT=1   # harness started directly: no polling process draws power during a RAPL window
 echo cells > "$SESSION_DIR/.phase"
 i=0
-ASKED=0
+if [ "$GUARD_TEST" = 1 ]; then   # reminder (with a beep) every 8 s until the charger has been unplugged once
+    ( n=0
+      until [ "$(cat "$AC")" != 1 ]; do   # checked every second, so a short loss ends the reminder
+          if [ $((n % 8)) = 0 ]; then printf '\a\n   >>> GUARD TEST: UNPLUG THE CHARGER NOW (any moment is fine), COUNT TO 5, THEN PLUG IT BACK IN <<<\n\n'; fi
+          n=$((n + 1)); sleep 1
+      done ) &
+    REMIND_PID=$!
+fi
 for cell in "${ORDER[@]}"; do
     i=$((i + 1))
     IFS=, read -r LIB SCHEME N CAT OP INNER_E REPS LABEL KIND <<< "$cell"
@@ -161,10 +170,6 @@ for cell in "${ORDER[@]}"; do
     while true; do
         wait_for_mains
         echo "[$i/${#ORDER[@]}] $(date +%H:%M:%S) $TAG  (CPU $(temp_c) °C, $(awk '{printf "%.2f GHz", $1/1e6}' "$CPUF/cpuinfo_avg_freq" 2>/dev/null))"
-        if [ "$GUARD_TEST" = 1 ] && [ "$ASKED" = 0 ] && [[ "$KIND" == energy* ]]; then
-            ASKED=1
-            echo; echo "   >>> GUARD TEST: UNPLUG THE CHARGER NOW, COUNT TO 5, THEN PLUG IT BACK IN <<<"; echo
-        fi
         ARGS=(--scheme="$SCHEME" --N="$N" --category="$CAT" --operation="$OP")
         if [[ "$KIND" == energy* ]]; then
             E_ARGS=(--rapl-dir=/rapl --idle-settle-seconds="$SETTLE" --idle-seconds="$IDLE" --ramp-seconds="$RAMP")

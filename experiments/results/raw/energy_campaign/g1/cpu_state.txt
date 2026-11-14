@@ -1,0 +1,19 @@
+date: 2026-11-14T01:29:18+01:00
+scenario: energy_campaign_g1
+protocol: fail-closed v2 (every cell validated; correctness checks for every library)
+scaling_governor (as found): powersave; enforced performance: yes
+boost: 1
+max boost frequency (amd_pstate_max_freq, kHz): 4936631
+taskset_core: 0
+run_order_seed: 2590518903
+cpu:  AMD Ryzen 9 6900HX with Radeon Graphics
+kernel: 7.0.0-43-generic
+code commit: f040cabf31818f896dcd1473ebb494d3d06ac534; uncommitted changes in experiments/{openfhe,seal/src,scripts}: 0
+images: seal-env sha256:3d03656e0bf8c2cef53317b2e21c02af8e2e99fb8827a18ad7715d537d6503d3 openfhe-env sha256:903bb39e603c31e2364bf3eb23bf6fb337484a64b2db31408339a99eb8a30cb3
+energy campaign session: g1 (fixed frequency)
+plan: energy_plan_guard.csv (sha256 4ec837f5993ade04), 2 cells
+boost (as found): 1; set to: 0
+platform_profile: balanced
+energy: plan repetitions + 2 warm-up per invocation; idle 6s settle + 4s window, 2s ramp; memory: 10 reps + 2 warm-up at inner loop 1
+session idle windows: 30s settle + 60s, at start and end
+guard test: 1

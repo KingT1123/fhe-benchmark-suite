@@ -1,0 +1,5 @@
+tag,start,end,exit_code
+seal_ckks_N8192_cat1_multiply_energy1,2026-11-14T01:30:48+01:00,2026-11-14T01:31:36+01:00,0
+seal_ckks_N8192_cat1_multiply_mem1,2026-11-14T01:31:38+01:00,2026-11-14T01:31:39+01:00,0
+openfhe_ckks_N8192_cat1_multiply_energy1,2026-11-14T01:31:41+01:00,2026-11-14T01:32:30+01:00,0
+openfhe_ckks_N8192_cat1_multiply_mem1,2026-11-14T01:32:32+01:00,2026-11-14T01:32:32+01:00,0

@@ -89,4 +89,4 @@ for lib in ("seal", "openfhe"):
         window.append(row((lib, scheme, "8192", "1", "keygen"), reps=100, mruns=0, label="r100"))
 dump("energy_plan_window.csv", window)
 
-dump("energy_plan_guard.csv", [row((lib, "CKKS", "8192", "1", "multiply"), eruns=1, mruns=1) for lib in ("seal", "openfhe")])
+dump("energy_plan_guard.csv", [row((lib, "CKKS", "8192", "1", "multiply"), eruns=2, mruns=1) for lib in ("seal", "openfhe")])
