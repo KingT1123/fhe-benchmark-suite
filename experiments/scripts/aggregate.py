@@ -2470,13 +2470,329 @@ def aggregate_openfhe_standard(args):
         print(f"EXCLUDED: {e['session']}/{e['cell']}: {e['reason']}")
 
 
+# ---------- SEAL-OpenFHE energy/memory campaign (run_energy_campaign.sh) ----------
+
+HIGH_IDLE_FACTOR = 1.15      # campaign/ENERGY_CAMPAIGN_RULES.md, section 3
+PAIR_RATIO_LIMITS = (0.90, 1.10)
+FREQ_LIMIT_MHZ = 3300.0
+WINDOW_REL_LIMIT = 0.05      # section 4.2: 20 ms blocks within 5% of 50 ms blocks
+WINDOW_C_LIMIT = 0.05        # |c| below 5% of one OpenFHE key-generation block
+KEYGEN_CI_TARGET = 0.05      # 95% CI half-width of the mean, relative
+
+
+def aggregate_energy_campaign(args):
+    """--scenario=energy_campaign reads experiments/results/raw/energy_campaign/
+    <session>/ (one directory per session of openfhe/run_energy_campaign.sh;
+    directories starting with "_" are skipped -- or --raw-dir: one session
+    directory). Each session is read with its own plan (<session>/plan.csv).
+    Fail-closed: an invocation enters the statistics only if validate_cell.py
+    accepts it. The rules applied are those of
+    openfhe/campaign/ENERGY_CAMPAIGN_RULES.md, fixed before the sessions.
+    Outputs results/final/energy_campaign_*.csv:
+      _invocations.csv  one row per energy invocation: gross J/op (PRIMARY),
+          package power, block length, idle reading, core frequency over the
+          invocation, and its flags (high_idle, frequency);
+      _cells.csv  per session x cell (x label): gross J/op of each invocation,
+          their ratio and the pair_disagreement flag; the mean with all valid
+          invocations and without the flagged ones; idle-corrected J/op
+          (COMPLEMENTARY; baseline = session median of the idle readings) and
+          its sensitivity; observed peak process RSS (mean, min, max);
+      _sessions.csv  per session: baseline, idle windows, flags idle_window
+          and operator (<session>/operator_incidents.txt exists), counts;
+      _window.csv, _window_fit.csv, _window_keygen.csv, _window_decision.csv
+          the window test (plan rows labelled w<ms> and r100): gross J/op per
+          block length relative to the 50 ms block; least-squares line
+          E_block = c + e x n with the 95% CI of c; relative standard deviation
+          of the key-generation runs; and the decision rule of section 4.2.
+    No ratio between libraries is computed here."""
+    from validate_cell import validate
+    from datetime import datetime
+    root = (args.raw_dir or "../results/raw/energy_campaign").rstrip("/")
+    if os.path.exists(os.path.join(root, "cpu_state.txt")):
+        dirs = [root]
+    else:
+        dirs = sorted(d for d in glob.glob(os.path.join(root, "*")) if os.path.isdir(d)
+                      and not os.path.basename(d).startswith("_"))
+    stem = (args.out or "../results/final/energy_campaign.csv")[:-4]
+    inv_rows, cell_rows, sess_rows, excluded = [], [], [], []
+    win_rows, fit_rows, kg_rows, decision_rows = [], [], [], []
+
+    for d in dirs:
+        sess = os.path.basename(d)
+        state = open(os.path.join(d, "cpu_state.txt")).read()
+        ew = int(re.search(r"energy: plan repetitions \+ (\d+) warm-up", state).group(1))
+        mr, mw = map(int, re.search(r"memory: (\d+) reps \+ (\d+) warm-up", state).groups())
+        plan = list(csv.DictReader(open(os.path.join(d, "plan.csv"))))
+        times = {}
+        for r in csv.DictReader(open(os.path.join(d, "cell_times.csv"))):
+            if r["exit_code"] == "0":   # last attempt wins (a set-aside invocation is measured again)
+                times[r["tag"]] = (datetime.fromisoformat(r["start"]), datetime.fromisoformat(r["end"]))
+        therm = [(datetime.fromisoformat(r["timestamp"]), float(r["effective_freq_khz"] or "nan") / 1000,
+                  float(r["temp_millic"] or "nan") / 1000)
+                 for r in csv.DictReader(open(os.path.join(d, "thermal_log.csv")))]
+        power = list(csv.DictReader(open(os.path.join(d, "power_log.csv"))))
+        power_t = [(datetime.fromisoformat(x["timestamp"]), x) for x in power]
+        set_aside = list(csv.DictReader(open(os.path.join(d, "set_aside.csv"))))
+        operator = os.path.exists(os.path.join(d, "operator_incidents.txt"))
+
+        def tag_of(p, kind):
+            return (f"{p['library']}_{p['scheme'].lower()}_N{p['N']}_cat{p['category']}_{p['operation']}"
+                    f"{'_' + p['label'] if p['label'] else ''}_{kind}")
+
+        def idle_window_w(phase):
+            r = [x for x in power if x["phase"] == phase and x["package_energy_uj"]]
+            if len(r) < 2 or int(r[-1]["package_energy_uj"]) < int(r[0]["package_energy_uj"]):
+                return float("nan")
+            dt = (datetime.fromisoformat(r[-1]["timestamp"]) - datetime.fromisoformat(r[0]["timestamp"])).total_seconds()
+            return (int(r[-1]["package_energy_uj"]) - int(r[0]["package_energy_uj"])) / 1e6 / dt if dt > 0 else float("nan")
+
+        def valid(tag, rows, warm):
+            ok, why = validate(os.path.join(d, tag + ".csv"), rows, warm, os.path.join(d, "checks", tag + "_check.csv"))
+            if not ok:
+                excluded.append({"session": sess, "invocation": tag, "reason": why})
+            return ok
+
+        energy = {}
+        n_valid = 0
+        for p in plan:
+            for k in range(1, int(p["energy_runs"]) + 1):
+                tag = tag_of(p, f"energy{k}")
+                if valid(tag, int(p["energy_reps"]) + ew, ew):
+                    rows = [r for r in csv.DictReader(open(os.path.join(d, tag + ".csv"))) if r["status"] == "measured"]
+                    if "energy_uj" not in rows[0] or any(int(r["energy_uj"]) <= 0 for r in rows):
+                        excluded.append({"session": sess, "invocation": tag, "reason": "energy counter not read"})
+                        continue
+                    energy[tag] = rows
+                    n_valid += 1
+        idle = [float(rows[0]["idle_power_w"]) for rows in energy.values()]
+        base = statistics.median(idle) if idle else float("nan")
+        baselines = {"session median": base, "lowest reading": min(idle, default=float("nan")),
+                     "highest reading": max(idle, default=float("nan")),
+                     "idle_start window": idle_window_w("idle_start"), "idle_end window": idle_window_w("idle_end")}
+
+        def net(rows, w):
+            return [(int(r["energy_uj"]) / 1e6 - w * float(r["latency_ms"]) * int(r["inner_loop"]) / 1000)
+                    / int(r["inner_loop"]) for r in rows]
+
+        def gross_of(rows):
+            return [int(r["energy_uj"]) / 1e6 / int(r["inner_loop"]) for r in rows]
+
+        n_flagged = 0
+        for p in plan:
+            ident = {"session": sess, "library": p["library"], "scheme": p["scheme"], "N": p["N"],
+                     "category": p["category"], "operation": p["operation"], "label": p["label"]}
+            g, flagged = {}, {}
+            for k in range(1, int(p["energy_runs"]) + 1):
+                tag = tag_of(p, f"energy{k}")
+                if tag not in energy:
+                    continue
+                rows = energy[tag]
+                gross = gross_of(rows)
+                win = [float(r["latency_ms"]) * int(r["inner_loop"]) for r in rows]
+                pw = [int(r["energy_uj"]) / 1e6 / (w / 1000) for r, w in zip(rows, win)]
+                a, b = times.get(tag, (None, None))
+                f = [x for ts, x, _ in therm if a and a <= ts <= b and not math.isnan(x)]
+                t = [x for ts, _, x in therm if a and a <= ts <= b and not math.isnan(x)]
+                boost_on = sum(1 for ts, x in power_t if a and a <= ts <= b and x["boost"] != "0")
+                flags = []
+                if float(rows[0]["idle_power_w"]) > HIGH_IDLE_FACTOR * base:
+                    flags.append("high_idle")
+                if (f and max(f) > FREQ_LIMIT_MHZ) or boost_on:
+                    flags.append("frequency")
+                g[k] = _stats(gross)
+                flagged[k] = bool(flags)
+                n_flagged += bool(flags)
+                inv_rows.append({**ident, "invocation": k, "n": g[k]["n"], "inner_loop": rows[0]["inner_loop"],
+                                 "gross_j_per_op": g[k]["mean"], "gross_std": g[k]["std"],
+                                 "gross_rel_std": g[k]["std"] / g[k]["mean"],
+                                 "gross_ci_low": g[k]["ci_low"], "gross_ci_high": g[k]["ci_high"],
+                                 "gross_median": g[k]["median"], "package_power_w": statistics.mean(pw),
+                                 "block_ms_mean": statistics.mean(win), "idle_reading_w": rows[0]["idle_power_w"],
+                                 "idle_reading_over_session_median": float(rows[0]["idle_power_w"]) / base,
+                                 "net_j_per_op_session_baseline": statistics.mean(net(rows, base)),
+                                 "effective_freq_mhz_median": statistics.median(f) if f else "",
+                                 "effective_freq_mhz_max": max(f) if f else "",
+                                 "temp_c_median": statistics.median(t) if t else "",
+                                 "flags": " ".join(flags)})
+            want = int(p["energy_runs"])
+            c = {**ident, "inner_loop": p["inner_loop"], "energy_reps": p["energy_reps"],
+                 "valid_energy_invocations": len(g), "planned_energy_invocations": want}
+            if len(g) == want and want >= 1:
+                for k in g:
+                    c[f"gross_j_inv{k}"] = g[k]["mean"]
+                cflags = []
+                if want == 2:
+                    ratio = g[2]["mean"] / g[1]["mean"]
+                    c["gross_ratio_inv2_inv1"] = ratio
+                    if not PAIR_RATIO_LIMITS[0] <= ratio <= PAIR_RATIO_LIMITS[1]:
+                        cflags.append("pair_disagreement")
+                gm = statistics.mean(g[k]["mean"] for k in g)
+                clean = [g[k]["mean"] for k in g if not flagged[k]]
+                rows = [r for k in g for r in energy[tag_of(p, f"energy{k}")]]
+                nets = {name: statistics.mean(net(rows, w)) if not math.isnan(w) else float("nan")
+                        for name, w in baselines.items()}
+                nm = nets["session median"]
+                c.update({"gross_j_mean": gm,
+                          "gross_j_mean_without_flagged": statistics.mean(clean) if clean else "",
+                          "flagged_invocations": sum(flagged.values()),
+                          "net_j_mean": nm, "net_share_of_gross": nm / gm})
+                for name, v in nets.items():
+                    if name != "session median":
+                        c["net_rel_change_" + name.replace(" ", "_")] = v / nm - 1 if nm and not math.isnan(v) else ""
+                c["flags"] = " ".join(cflags)
+            elif want >= 1:
+                c["gross_j_mean"] = "NOT COMPUTED: invalid or missing invocation"
+            peaks = []
+            for k in range(1, int(p["memory_runs"]) + 1):
+                tag = tag_of(p, f"mem{k}")
+                pk = os.path.join(d, "memory", f"{tag}_peak.log")
+                if valid(tag, mr + mw, mw) and os.path.exists(pk):
+                    v = parse_mem_log(pk)
+                    if v is not None:
+                        peaks.append(v)
+                        n_valid += 1
+            if int(p["memory_runs"]):
+                if len(peaks) == int(p["memory_runs"]):
+                    c.update({"peak_rss_mb_mean": statistics.mean(peaks), "peak_rss_mb_min": min(peaks),
+                              "peak_rss_mb_max": max(peaks)})
+                else:
+                    c["peak_rss_mb_mean"] = "NOT COMPUTED: invalid or missing invocation"
+            cell_rows.append(c)
+
+        sflags = []
+        for name in ("idle_start window", "idle_end window"):
+            if not math.isnan(baselines[name]) and baselines[name] > HIGH_IDLE_FACTOR * base:
+                sflags.append("idle_window")
+                break
+        if operator:
+            sflags.append("operator")
+        fall = [x for ts, x, _ in therm if not math.isnan(x)
+                and any(a <= ts <= b for a, b in times.values())] if len(times) < 400 else []
+        sess_rows.append({
+            "session": sess, "plan_cells": len(plan), "invocations_valid": n_valid,
+            "invocations_excluded": sum(e["session"] == sess for e in excluded),
+            "energy_invocations_flagged": n_flagged,
+            "cells_pair_disagreement": sum(r["session"] == sess and "pair_disagreement" in r.get("flags", "") for r in cell_rows),
+            "set_aside_mains_lost": len(set_aside),
+            "idle_baseline_w_session_median": base, "idle_readings_n": len(idle),
+            "idle_reading_w_min": baselines["lowest reading"], "idle_reading_w_max": baselines["highest reading"],
+            "idle_reading_max_over_median": baselines["highest reading"] / base if idle else "",
+            "idle_start_window_w": baselines["idle_start window"], "idle_end_window_w": baselines["idle_end window"],
+            "effective_freq_mhz_max_during_invocations": max(fall) if fall else "",
+            "power_samples": len(power), "samples_off_mains": sum(x["mains_online"] != "1" for x in power),
+            "samples_boost_on": sum(x["boost"] != "0" for x in power),
+            "flags": " ".join(sflags)})
+
+        # ---- window test (rules, section 4.2): only for plan rows labelled w<ms> / r100
+        wplan = [p for p in plan if re.fullmatch(r"w\d+", p["label"])]
+        kplan = [p for p in plan if p["operation"] == "keygen" and p["label"].startswith("r")]
+        if not wplan:
+            continue
+        kg_block, kg_rsd = {}, []   # OpenFHE key generation: mean block energy per scheme; relative std per run
+        for p in kplan:
+            for k in range(1, int(p["energy_runs"]) + 1):
+                tag = tag_of(p, f"energy{k}")
+                if tag not in energy:
+                    continue
+                s = _stats(gross_of(energy[tag]))
+                half = t_critical(s["n"]) * s["std"] / math.sqrt(s["n"]) / s["mean"]
+                kg_rows.append({"session": sess, "library": p["library"], "scheme": p["scheme"], "invocation": k,
+                                "n": s["n"], "gross_j_per_keygen": s["mean"], "rel_std": s["std"] / s["mean"],
+                                "ci95_half_width_rel": half,
+                                "block_ms_mean": statistics.mean(float(r["latency_ms"]) for r in energy[tag])})
+                if p["library"] == "openfhe":
+                    kg_block.setdefault(p["scheme"], []).append(s["mean"])
+                    kg_rsd.append(s["std"] / s["mean"])
+        kg_ref = min(statistics.mean(v) for v in kg_block.values()) if kg_block else float("nan")
+        groups = {}
+        for p in wplan:
+            groups.setdefault((p["library"], p["scheme"], p["N"], p["category"], p["operation"]), []).append(p)
+        rel20, c_share = {}, {}
+        for key, ps in sorted(groups.items()):
+            lib, scheme, n_, cat, op = key
+            per_label, xs, ys = {}, [], []
+            for p in ps:
+                rows = [r for k in range(1, int(p["energy_runs"]) + 1) for r in energy.get(tag_of(p, f"energy{k}"), [])]
+                if not rows:
+                    continue
+                per_label[p["label"]] = (statistics.mean(gross_of(rows)), int(p["inner_loop"]),
+                                         statistics.mean(float(r["latency_ms"]) * int(r["inner_loop"]) for r in rows), len(rows))
+                xs += [int(r["inner_loop"]) for r in rows]
+                ys += [int(r["energy_uj"]) / 1e6 for r in rows]
+            ref = per_label.get("w50", (float("nan"),))[0]
+            for label, (gj, inner, ms, nb) in sorted(per_label.items(), key=lambda kv: int(kv[0][1:])):
+                win_rows.append({"session": sess, "library": lib, "scheme": scheme, "N": n_, "category": cat,
+                                 "operation": op, "label": label, "inner_loop": inner, "block_ms_mean": ms,
+                                 "blocks": nb, "gross_j_per_op": gj, "relative_to_50ms_block": gj / ref})
+            if "w20" in per_label:
+                rel20[(lib, op)] = per_label["w20"][0] / ref - 1
+            n = len(xs)
+            mx, my = statistics.mean(xs), statistics.mean(ys)
+            sxx = sum((x - mx) ** 2 for x in xs)
+            e = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sxx
+            c0 = my - e * mx
+            s2 = sum((y - c0 - e * x) ** 2 for x, y in zip(xs, ys)) / (n - 2)
+            se_c = math.sqrt(s2 * (1 / n + mx ** 2 / sxx))
+            tc = t_critical(n - 1)   # df = n - 2
+            c_share[(lib, op)] = abs(c0) / kg_ref
+            fit_rows.append({"session": sess, "library": lib, "scheme": scheme, "N": n_, "category": cat,
+                             "operation": op, "blocks": n, "c_j": c0, "c_ci_low": c0 - tc * se_c,
+                             "c_ci_high": c0 + tc * se_c, "e_j_per_op": e,
+                             "openfhe_keygen_block_j": kg_ref, "abs_c_over_keygen_block": abs(c0) / kg_ref,
+                             "c_ci_bound_over_keygen_block": max(abs(c0 - tc * se_c), abs(c0 + tc * se_c)) / kg_ref})
+        ok20 = all(abs(v) <= WINDOW_REL_LIMIT for v in rel20.values())
+        okc = all(v < WINDOW_C_LIMIT for v in c_share.values())
+        rsd = max(kg_rsd) if kg_rsd else float("nan")
+        reps = 30
+        while kg_rsd and t_critical(reps) * rsd / math.sqrt(reps) > KEYGEN_CI_TARGET:
+            reps += 10
+        decision_rows.append({
+            "session": sess,
+            "largest_abs_deviation_20ms_vs_50ms": max(abs(v) for v in rel20.values()),
+            "criterion_20ms_within_5pct": "met" if ok20 else "NOT met",
+            "largest_abs_c_over_openfhe_keygen_block": max(c_share.values()),
+            "criterion_c_below_5pct": "met" if okc else "NOT met",
+            "largest_rel_std_openfhe_keygen_run": rsd,
+            "keygen_repetitions": reps if (ok20 and okc) else "",
+            "ci95_half_width_rel_at_that_count": t_critical(reps) * rsd / math.sqrt(reps) if (ok20 and okc) else "",
+            "decision": ("single-operation block accepted" if (ok20 and okc)
+                         else "criteria not met: to be reported before any campaign session")})
+
+    def dump(path, rows, fields=None):
+        fields = fields or list(dict.fromkeys(k for r in rows for k in r))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=fields, lineterminator="\n")
+            w.writeheader()
+            for r in rows:
+                w.writerow({k: r.get(k, "") for k in fields})
+    dump(stem + "_invocations.csv", inv_rows)
+    dump(stem + "_cells.csv", cell_rows)
+    dump(stem + "_sessions.csv", sess_rows)
+    dump(stem + "_excluded.csv", excluded, ["session", "invocation", "reason"])
+    if win_rows:
+        dump(stem + "_window.csv", win_rows)
+        dump(stem + "_window_fit.csv", fit_rows)
+        dump(stem + "_window_keygen.csv", kg_rows)
+        dump(stem + "_window_decision.csv", decision_rows)
+    print(f"{len(dirs)} session(s); {len(inv_rows)} valid energy invocations; {len(excluded)} excluded")
+    for s in sess_rows:
+        print(f"  {s['session']}: baseline {s['idle_baseline_w_session_median']:.2f} W, flagged invocations "
+              f"{s['energy_invocations_flagged']}, pair disagreements {s['cells_pair_disagreement']}, "
+              f"session flags [{s['flags']}]")
+    for r in decision_rows:
+        print(f"  window test {r['session']}: {r['decision']}; key-generation repetitions: {r['keygen_repetitions']}")
+    for e in excluded:
+        print(f"EXCLUDED: {e['session']}/{e['invocation']}: {e['reason']}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
                               "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard",
-                              "energy_validation"])
+                              "energy_validation", "energy_campaign"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -2500,6 +2816,10 @@ def main():
 
     if args.scenario == "energy_validation":
         aggregate_energy_validation(args)
+        return
+
+    if args.scenario == "energy_campaign":
+        aggregate_energy_campaign(args)
         return
 
     if args.scenario == "composite_checks":

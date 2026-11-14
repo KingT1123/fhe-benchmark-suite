@@ -1,0 +1,2 @@
+timestamp,tag,reason,kept_in
+2026-11-14T01:39:35+01:00,seal_ckks_N8192_cat1_multiply_energy1,mains lost during the invocation,results/raw/energy_campaign/g2/invalid/20261114T013935

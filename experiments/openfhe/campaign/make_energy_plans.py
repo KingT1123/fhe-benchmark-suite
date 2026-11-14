@@ -23,7 +23,8 @@ energy_reps, energy_runs, memory_runs, label (suffix of the output tag).
 Inner loop: the rule of scripts/make_energy_plan.py (a block of about
 TARGET_WINDOW_MS; key generation always 1). At the fixed frequency of the
 energy runs the blocks last about 1.3 times longer than computed here.
-KEYGEN_REPS is set after the window test.
+KEYGEN_REPS: 30, confirmed by the window test (session w1,
+results/final/energy_campaign_window_decision.csv).
 
 Run from experiments/openfhe/campaign/:  python3 make_energy_plans.py
 """
@@ -32,7 +33,7 @@ import math
 
 TARGET_WINDOW_MS = 50.0
 ENERGY_REPS = 30
-KEYGEN_REPS = 30          # provisional until the window test is analysed
+KEYGEN_REPS = 30          # confirmed by the window test (session w1)
 ENERGY_RUNS, MEMORY_RUNS = 2, 3
 FIXED_FREQ_FACTOR = 1.3   # latency at 3.27 GHz over latency with boost (validation sessions e1/e2)
 FIELDS = ["library", "scheme", "N", "category", "operation", "latency_ms", "inner_loop",

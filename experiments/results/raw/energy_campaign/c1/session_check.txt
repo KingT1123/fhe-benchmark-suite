@@ -1,0 +1,7 @@
+session check: c1
+  plan: 36 cells -> 72 energy invocations, 108 memory invocations
+  energy invocations with their files, valid, energy > 0: 72/72
+  memory invocations with their files, valid, peak RSS > 0: 108/108
+  set aside after a loss of mains power: 0 (original files kept: 0); each measured again: yes
+  power log: 7141 samples; off mains: 0; with boost on: 0
+  RESULT: all expected files present and valid

@@ -1,0 +1,5 @@
+session,plan_cells,invocations_valid,invocations_excluded,energy_invocations_flagged,cells_pair_disagreement,set_aside_mains_lost,idle_baseline_w_session_median,idle_readings_n,idle_reading_w_min,idle_reading_w_max,idle_reading_max_over_median,idle_start_window_w,idle_end_window_w,effective_freq_mhz_max_during_invocations,power_samples,samples_off_mains,samples_boost_on,flags
+c1,36,180,0,2,1,0,5.2727699999999995,72,4.83781,7.51924,1.4260512026885301,5.102108152542373,5.200989813559322,3268.595,7141,0,0,
+g1,2,4,0,0,0,0,5.024345,2,4.90894,5.13975,1.0229691631446487,5.442553169491525,nan,3268.538,282,0,0,
+g2,2,6,0,0,0,1,5.1846499999999995,4,5.13897,5.21957,1.0067352666043032,5.14566766101695,5.022921440677966,3268.525,549,20,0,
+w1,24,48,0,1,1,0,5.20479,48,4.95259,7.33614,1.4094977895361773,5.147352491525424,5.2132967966101695,3272.972,1334,0,0,

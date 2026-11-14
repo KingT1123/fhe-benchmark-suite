@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+OpenFHE,CKKS,16384,1,keygen,1,0,176.704,warmup
+OpenFHE,CKKS,16384,1,keygen,1,1,170.844,warmup
+OpenFHE,CKKS,16384,1,keygen,1,2,170.308,measured
+OpenFHE,CKKS,16384,1,keygen,1,3,170.374,measured
+OpenFHE,CKKS,16384,1,keygen,1,4,170.215,measured
+OpenFHE,CKKS,16384,1,keygen,1,5,169.977,measured
+OpenFHE,CKKS,16384,1,keygen,1,6,170.194,measured
+OpenFHE,CKKS,16384,1,keygen,1,7,164.123,measured
+OpenFHE,CKKS,16384,1,keygen,1,8,162.946,measured
+OpenFHE,CKKS,16384,1,keygen,1,9,164.679,measured
+OpenFHE,CKKS,16384,1,keygen,1,10,163.868,measured
+OpenFHE,CKKS,16384,1,keygen,1,11,163.666,measured

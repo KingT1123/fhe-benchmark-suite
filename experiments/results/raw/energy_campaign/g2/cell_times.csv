@@ -1,0 +1,8 @@
+tag,start,end,exit_code
+seal_ckks_N8192_cat1_multiply_energy1,2026-11-14T01:38:45+01:00,2026-11-14T01:39:33+01:00,0
+seal_ckks_N8192_cat1_multiply_energy1,2026-11-14T01:41:36+01:00,2026-11-14T01:42:24+01:00,0
+seal_ckks_N8192_cat1_multiply_energy2,2026-11-14T01:42:26+01:00,2026-11-14T01:43:14+01:00,0
+seal_ckks_N8192_cat1_multiply_mem1,2026-11-14T01:43:16+01:00,2026-11-14T01:43:17+01:00,0
+openfhe_ckks_N8192_cat1_multiply_energy1,2026-11-14T01:43:19+01:00,2026-11-14T01:44:07+01:00,0
+openfhe_ckks_N8192_cat1_multiply_energy2,2026-11-14T01:44:09+01:00,2026-11-14T01:44:58+01:00,0
+openfhe_ckks_N8192_cat1_multiply_mem1,2026-11-14T01:45:00+01:00,2026-11-14T01:45:01+01:00,0
