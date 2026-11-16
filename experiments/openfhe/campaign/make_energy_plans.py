@@ -21,7 +21,12 @@ latency campaign, boost on; the cell's latest session), inner_loop,
 energy_reps, energy_runs, memory_runs, label (suffix of the output tag).
 
 Inner loop: the rule of scripts/make_energy_plan.py (a block of about
-TARGET_WINDOW_MS; key generation always 1). At the fixed frequency of the
+TARGET_WINDOW_MS). Key generation: 1, except when one key generation lasts
+less than KEYGEN_MIN_WINDOW_MS at fixed frequency (OpenFHE only, N <= 8192):
+the energy counter, updated about once per millisecond, cannot resolve it
+(campaign session d1 stopped on a zero reading for a 0.8 ms key generation),
+so K key generations are timed in one window of about TARGET_WINDOW_MS
+(bench_openfhe --keygen-per-window=K). At the fixed frequency of the
 energy runs the blocks last about 1.3 times longer than computed here.
 KEYGEN_REPS: 30, confirmed by the window test (session w1,
 results/final/energy_campaign_window_decision.csv).
@@ -34,6 +39,7 @@ import math
 TARGET_WINDOW_MS = 50.0
 ENERGY_REPS = 30
 KEYGEN_REPS = 30          # confirmed by the window test (session w1)
+KEYGEN_MIN_WINDOW_MS = 10.0
 ENERGY_RUNS, MEMORY_RUNS = 2, 3
 FIXED_FREQ_FACTOR = 1.3   # latency at 3.27 GHz over latency with boost (validation sessions e1/e2)
 FIELDS = ["library", "scheme", "N", "category", "operation", "latency_ms", "inner_loop",
@@ -52,7 +58,13 @@ def row(k, inner=None, reps=None, eruns=ENERGY_RUNS, mruns=MEMORY_RUNS, label=""
     lib, scheme, n, cat, op = k
     ms = float(latest[k]["mean_ms"])
     if inner is None:
-        inner = 1 if op == "keygen" else max(1, math.ceil(TARGET_WINDOW_MS / ms))
+        if op != "keygen":
+            inner = max(1, math.ceil(TARGET_WINDOW_MS / ms))
+        elif ms * FIXED_FREQ_FACTOR >= KEYGEN_MIN_WINDOW_MS:
+            inner = 1
+        else:
+            assert lib == "openfhe", k   # --keygen-per-window exists in bench_openfhe only
+            inner = math.ceil(TARGET_WINDOW_MS / (ms * FIXED_FREQ_FACTOR))
     if reps is None:
         reps = KEYGEN_REPS if op == "keygen" else ENERGY_REPS
     return dict(zip(FIELDS, [lib, scheme, n, cat, op, f"{ms:.6g}", inner, reps, eruns, mruns, label]))

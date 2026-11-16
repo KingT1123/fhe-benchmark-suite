@@ -103,6 +103,7 @@ struct Args {
     int N = 0, category = 0, reps = 100, warmup = 5, inner_loop = 1000;
     int idle_seconds = 0, idle_settle_seconds = 0, ramp_seconds = 0;
     int inject_mismatch_at = -1;
+    int keygen_per_window = 1;   // energy runs: key generations per RAPL window (see time_keygen)
 };
 
 static std::string arg_value(const std::string &a) {
@@ -131,6 +132,7 @@ static Args parse_args(int argc, char **argv) {
         else if (is("--idle-settle-seconds=")) a.idle_settle_seconds = std::stoi(arg_value(s));
         else if (is("--ramp-seconds=")) a.ramp_seconds = std::stoi(arg_value(s));
         else if (is("--peak-rss-out=")) a.peak_rss_out = arg_value(s);
+        else if (is("--keygen-per-window=")) a.keygen_per_window = std::stoi(arg_value(s));
         else if (is("--inject-mismatch-at=")) a.inject_mismatch_at = std::stoi(arg_value(s));
         else throw std::runtime_error("Unknown argument: " + s);
     }
@@ -139,6 +141,8 @@ static Args parse_args(int argc, char **argv) {
     if (a.scheme != "CKKS" && a.scheme != "BFV" && a.scheme != "BGV")
         throw std::runtime_error("Unsupported scheme: " + a.scheme);
     if (a.inner_loop < 1 || a.reps < 1 || a.warmup < 0) throw std::runtime_error("bad --reps/--warmup/--inner-loop");
+    if (a.keygen_per_window < 1) throw std::runtime_error("bad --keygen-per-window");
+    if (a.keygen_per_window > 1 && a.operation != "keygen") throw std::runtime_error("--keygen-per-window is for keygen only");
     return a;
 }
 
@@ -350,22 +354,38 @@ static double ms(Clock::time_point t0, Clock::time_point t1) {
     return std::chrono::duration<double, std::milli>(t1 - t0).count();
 }
 
+// --keygen-per-window=K (energy campaign, key generations shorter than the
+// energy counter can resolve): K complete key generations in one timed
+// window, latency = window / K. The first release of the context cache is
+// outside the window; the K-1 others are inside it. They only drop the
+// factory's references (every context is kept alive until after the window,
+// so nothing is freed there), so each key generation still starts from an
+// empty cache, as with K = 1. K = 1 is the code path used before.
 static Result time_keygen(const Args &a, const Config &c, Ctx &keys_out) {
+    const int K = a.keygen_per_window;
+    std::vector<CryptoContext<DCRTPoly>> ccs; ccs.reserve(K);
+    std::vector<KeyPair<DCRTPoly>> kps; kps.reserve(K);
     CryptoContextFactory<DCRTPoly>::ReleaseAllContexts();  // untimed: no reuse of cached contexts/NTT tables
     uint64_t e0 = rapl_now();
     auto t0 = Clock::now();
-    CryptoContext<DCRTPoly> cc = make_context(a, c);
-    cc->Enable(PKE); cc->Enable(KEYSWITCH); cc->Enable(LEVELEDSHE);
-    KeyPair<DCRTPoly> kp = cc->KeyGen();
-    if (c.depth > 0) cc->EvalMultKeyGen(kp.secretKey);
+    for (int k = 0; k < K; k++) {
+        if (k > 0) CryptoContextFactory<DCRTPoly>::ReleaseAllContexts();
+        CryptoContext<DCRTPoly> cc = make_context(a, c);
+        cc->Enable(PKE); cc->Enable(KEYSWITCH); cc->Enable(LEVELEDSHE);
+        KeyPair<DCRTPoly> kp = cc->KeyGen();
+        if (c.depth > 0) cc->EvalMultKeyGen(kp.secretKey);
+        ccs.push_back(cc); kps.push_back(kp);
+    }
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    CryptoContext<DCRTPoly> cc = ccs.back();
+    KeyPair<DCRTPoly> kp = kps.back();
     // check: the keys just generated work (fresh input through encrypt -> decrypt)
     keys_out.cc = cc; keys_out.kp = kp;
     keys_out.ckks = a.scheme == "CKKS"; keys_out.slots = keys_out.ckks ? a.N / 2 : a.N;
     keys_out.t = keys_out.ckks ? 0 : seal_t(a.N, a.category);
     Fresh f = fresh_ciphertext(keys_out);
-    return {ms(t0, t1), f.ct, f.x, nullptr};
+    return {ms(t0, t1) / K, f.ct, f.x, nullptr};
 }
 
 static Result time_encrypt(Ctx &c, const Args &a) {
@@ -553,7 +573,7 @@ int main(int argc, char **argv) {
             auto r0 = Clock::now();
             while (Clock::now() - r0 < std::chrono::seconds(a.ramp_seconds)) spin = spin + 1;
         }
-        const int ops_per_window = (op == "keygen" || rotate) ? 1 : a.inner_loop;
+        const int ops_per_window = op == "keygen" ? a.keygen_per_window : rotate ? 1 : a.inner_loop;
 
         const int total = a.warmup + a.reps;
         for (int i = 0; i < total; i++) {

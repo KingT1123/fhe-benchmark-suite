@@ -24,6 +24,8 @@
 # Output: experiments/results/raw/energy_campaign/<session>/
 # GUARD_TEST=1: plan order kept, and the operator is reminded every 8 s,
 #   until it is done, to unplug the charger during the cells (stage-1 guard test).
+# Key generation: a plan inner loop K > 1 (OpenFHE only) is passed as
+#   --keygen-per-window=K (K key generations in one energy window).
 # Test without sudo: DRY=1 (tiny counts, no RAPL, nothing written to the
 # system, session _dry_<session>); AC_FILE overrides the mains-state file.
 set -euo pipefail
@@ -53,6 +55,9 @@ for f in "$EXP/seal/build/bench_seal" "$EXP/openfhe/build/bench_openfhe" "$PLAN_
 done
 if grep -q ',rotate,' "$PLAN_SRC"; then
     echo "ERROR: the plan contains rotation; its energy and peak RSS are not measured (not available)" >&2; exit 1
+fi
+if awk -F, 'NR > 1 && $5 == "keygen" && $7 > 1 && $1 != "openfhe"' "$PLAN_SRC" | grep -q .; then
+    echo "ERROR: several key generations per window are implemented in bench_openfhe only" >&2; exit 1
 fi
 [ "$(cat "$AC")" = 1 ] || { echo "ERROR: the charger must be plugged in at the start" >&2; exit 1; }
 
@@ -174,6 +179,8 @@ for cell in "${ORDER[@]}"; do
         if [[ "$KIND" == energy* ]]; then
             E_ARGS=(--rapl-dir=/rapl --idle-settle-seconds="$SETTLE" --idle-seconds="$IDLE" --ramp-seconds="$RAMP")
             [ "$DRY" = 1 ] && E_ARGS=()
+            # key generation: the plan's inner loop = key generations per window (bench_openfhe)
+            [ "$OP" = keygen ] && [ "$INNER_E" -gt 1 ] && E_ARGS+=(--keygen-per-window="$INNER_E")
             run_cell "$LIB" "$TAG" $((REPS + EW)) "$EW" "${ARGS[@]}" --reps="$REPS" --warmup="$EW" --inner-loop="$INNER_E" "${E_ARGS[@]}"
         else
             run_cell "$LIB" "$TAG" $((MR + MW)) "$MW" "${ARGS[@]}" --reps="$MR" --warmup="$MW" --inner-loop=1 \

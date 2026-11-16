@@ -22,7 +22,7 @@ after seeing campaign data.
   idle-corrected energy (secondary) with the session baseline = median of the
   session's own idle readings, and its sensitivity (lowest and highest
   reading, the two session idle windows); observed peak process RSS.
-- Two sessions on two different days (d1, d2). Results are reported by
+- Two sessions on two different days (`day1`, `day2`; see section 5). Results are reported by
   session. A ratio between the libraries is formed only for matched-profile
   cells with equivalent boundaries, within one session.
 
@@ -100,3 +100,30 @@ Treatment:
 
 All data of the stage-1 sessions are kept under
 `results/raw/energy_campaign/`.
+
+## 5. Change after session d1 (16 November 2026)
+
+Session d1 (started 15 November) stopped at invocation 484 of 1030, as the
+validator requires: an OpenFHE key generation at CKKS N=2048 lasts about
+0.8 ms, and the energy counter (updated about once per millisecond) read 0
+for one repetition. The window test had covered key generations of about
+18 ms only; eleven OpenFHE key-generation cells of the matrix last 0.6-7.4 ms
+(boost on), and the valid d1 readings of the shortest ones varied by up to
+40% (relative standard deviation), mostly from the counter's resolution.
+
+Change, made before any campaign result was analysed:
+
+- a key generation shorter than 10 ms at fixed frequency (OpenFHE only;
+  every SEAL key generation lasts at least 11 ms) is timed as K complete key
+  generations in one window of about 50 ms, like every other operation
+  (`bench_openfhe --keygen-per-window=K`, K in the plan's inner_loop column);
+  latency and energy are divided by K. Each key generation still starts from
+  an empty context cache. Other key generations are unchanged (K = 1);
+- effect on latency, measured before the campaign (BFV N=4096 cat 3, 30
+  repetitions, twice): 1.72 ms per key generation with K = 26 against
+  1.89 ms with K = 1 (-9%), the warm-up effect already present in every
+  block of the other operations. This is stated with the results;
+- d1 is kept as it is (`results/raw/energy_campaign/d1/`, with its console
+  log) and is not used for results. The campaign is run as two new sessions,
+  `day1` and `day2`, with the new plan; a session may be stopped (Ctrl+C) and
+  resumed with the same command: valid invocations are kept and skipped.
