@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,CKKS,16384,1,relinearize,1,0,22.6114,warmup
+SEAL,CKKS,16384,1,relinearize,1,1,22.4416,warmup
+SEAL,CKKS,16384,1,relinearize,1,2,22.4025,measured
+SEAL,CKKS,16384,1,relinearize,1,3,22.4178,measured
+SEAL,CKKS,16384,1,relinearize,1,4,22.2265,measured
+SEAL,CKKS,16384,1,relinearize,1,5,22.5462,measured
+SEAL,CKKS,16384,1,relinearize,1,6,22.5202,measured
+SEAL,CKKS,16384,1,relinearize,1,7,22.5483,measured
+SEAL,CKKS,16384,1,relinearize,1,8,22.302,measured
+SEAL,CKKS,16384,1,relinearize,1,9,22.4968,measured
+SEAL,CKKS,16384,1,relinearize,1,10,22.5553,measured
+SEAL,CKKS,16384,1,relinearize,1,11,22.4125,measured

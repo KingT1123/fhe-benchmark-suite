@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+OpenFHE,CKKS,2048,1,decrypt,0,0.00051732,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,1,0.000395124,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,2,0.000389381,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,3,0.00054772,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,4,0.000439634,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,5,0.000375251,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,6,0.000414734,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,7,0.000414843,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,8,0.000486421,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,9,0.00043535,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,10,0.000353842,max_norm_error,correct
+OpenFHE,CKKS,2048,1,decrypt,11,0.000543318,max_norm_error,correct

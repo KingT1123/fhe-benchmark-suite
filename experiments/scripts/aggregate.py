@@ -2478,6 +2478,8 @@ FREQ_LIMIT_MHZ = 3300.0
 WINDOW_REL_LIMIT = 0.05      # section 4.2: 20 ms blocks within 5% of 50 ms blocks
 WINDOW_C_LIMIT = 0.05        # |c| below 5% of one OpenFHE key-generation block
 KEYGEN_CI_TARGET = 0.05      # 95% CI half-width of the mean, relative
+# sessions kept but not used (ENERGY_CAMPAIGN_RULES.md, section 5)
+ENERGY_CAMPAIGN_STOPPED_SESSIONS = {"d1"}
 
 
 def aggregate_energy_campaign(args):
@@ -2512,7 +2514,8 @@ def aggregate_energy_campaign(args):
         dirs = [root]
     else:
         dirs = sorted(d for d in glob.glob(os.path.join(root, "*")) if os.path.isdir(d)
-                      and not os.path.basename(d).startswith("_"))
+                      and not os.path.basename(d).startswith("_")
+                      and os.path.basename(d) not in ENERGY_CAMPAIGN_STOPPED_SESSIONS)
     stem = (args.out or "../results/final/energy_campaign.csv")[:-4]
     inv_rows, cell_rows, sess_rows, excluded = [], [], [], []
     win_rows, fit_rows, kg_rows, decision_rows = [], [], [], []

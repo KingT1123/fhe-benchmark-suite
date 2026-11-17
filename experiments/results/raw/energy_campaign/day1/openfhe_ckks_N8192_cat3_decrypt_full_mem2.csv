@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+OpenFHE,CKKS,8192,3,decrypt_full,1,0,4.40183,warmup
+OpenFHE,CKKS,8192,3,decrypt_full,1,1,4.1376,warmup
+OpenFHE,CKKS,8192,3,decrypt_full,1,2,4.12068,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,3,4.07925,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,4,4.06428,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,5,4.12122,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,6,4.35594,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,7,4.48884,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,8,4.06689,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,9,4.05616,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,10,4.05864,measured
+OpenFHE,CKKS,8192,3,decrypt_full,1,11,4.05636,measured

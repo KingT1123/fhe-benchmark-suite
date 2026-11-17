@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+OpenFHE,BGV,8192,3,keygen,1,0,11.5974,warmup
+OpenFHE,BGV,8192,3,keygen,1,1,9.99815,warmup
+OpenFHE,BGV,8192,3,keygen,1,2,9.32848,measured
+OpenFHE,BGV,8192,3,keygen,1,3,9.4661,measured
+OpenFHE,BGV,8192,3,keygen,1,4,9.47011,measured
+OpenFHE,BGV,8192,3,keygen,1,5,9.52417,measured
+OpenFHE,BGV,8192,3,keygen,1,6,9.55318,measured
+OpenFHE,BGV,8192,3,keygen,1,7,9.45892,measured
+OpenFHE,BGV,8192,3,keygen,1,8,9.49161,measured
+OpenFHE,BGV,8192,3,keygen,1,9,9.45418,measured
+OpenFHE,BGV,8192,3,keygen,1,10,9.49072,measured
+OpenFHE,BGV,8192,3,keygen,1,11,9.48291,measured

@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,batch_size,iteration,latency_ms,status
+SEAL,CKKS,4096,5,encrypt,1,0,1.21593,warmup
+SEAL,CKKS,4096,5,encrypt,1,1,1.17701,warmup
+SEAL,CKKS,4096,5,encrypt,1,2,1.15462,measured
+SEAL,CKKS,4096,5,encrypt,1,3,1.16274,measured
+SEAL,CKKS,4096,5,encrypt,1,4,1.15394,measured
+SEAL,CKKS,4096,5,encrypt,1,5,1.17634,measured
+SEAL,CKKS,4096,5,encrypt,1,6,1.17044,measured
+SEAL,CKKS,4096,5,encrypt,1,7,1.17301,measured
+SEAL,CKKS,4096,5,encrypt,1,8,1.17778,measured
+SEAL,CKKS,4096,5,encrypt,1,9,1.18498,measured
+SEAL,CKKS,4096,5,encrypt,1,10,1.17035,measured
+SEAL,CKKS,4096,5,encrypt,1,11,1.16456,measured

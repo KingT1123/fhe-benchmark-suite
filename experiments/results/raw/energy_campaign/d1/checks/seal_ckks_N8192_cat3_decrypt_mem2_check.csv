@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+SEAL,CKKS,8192,3,decrypt,0,8.08455e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,1,7.16228e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,2,7.47874e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,3,7.7071e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,4,8.70331e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,5,8.29131e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,6,6.28924e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,7,7.61718e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,8,6.88742e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,9,8.73001e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,10,6.26063e-09,max_norm_error,correct
+SEAL,CKKS,8192,3,decrypt,11,9.58691e-09,max_norm_error,correct

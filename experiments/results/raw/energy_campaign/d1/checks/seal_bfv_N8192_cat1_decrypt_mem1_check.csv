@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+SEAL,BFV,8192,1,decrypt,0,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,1,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,2,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,3,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,4,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,5,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,6,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,7,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,8,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,9,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,10,0,mismatching_slots,correct
+SEAL,BFV,8192,1,decrypt,11,0,mismatching_slots,correct

@@ -1,0 +1,972 @@
+[17:38:20] session idle window idle_start: 30s settle, then 60s with nothing running
+[1/1030] 17:39:51 openfhe_ckks_N8192_cat3_add_inplace_mem2  (CPU 50 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_add_inplace_mem2.csv (all 12 checks correct)
+[2/1030] 17:39:54 seal_ckks_N8192_cat1_multiply_energy2  (CPU 51 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_multiply_energy2.csv
+[3/1030] 17:40:44 openfhe_ckks_N8192_cat5_encrypt_energy2  (CPU 55 °C, 3.18 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_encrypt_energy2.csv (all 32 checks correct)
+[4/1030] 17:41:01 seal_bgv_N8192_cat3_encrypt_mem3  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_encrypt_mem3.csv
+[5/1030] 17:41:04 seal_bgv_N8192_cat1_encrypt_mem2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_encrypt_mem2.csv
+[6/1030] 17:41:06 seal_bfv_N8192_cat3_multiply_energy2  (CPU 52 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_multiply_energy2.csv
+[7/1030] 17:41:25 seal_ckks_N16384_cat1_decrypt_energy2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_decrypt_energy2.csv
+[8/1030] 17:42:21 openfhe_ckks_N2048_cat1_decrypt_mem1  (CPU 56 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_decrypt_mem1.csv (all 12 checks correct)
+[9/1030] 17:42:23 seal_ckks_N8192_cat5_decrypt_mem1  (CPU 53 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_decrypt_mem1.csv
+[10/1030] 17:42:26 openfhe_bfv_N16384_cat1_add_energy2  (CPU 52 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_energy2.csv (all 32 checks correct)
+[11/1030] 17:45:21 seal_ckks_N8192_cat3_decrypt_mem3  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_decrypt_mem3.csv
+[12/1030] 17:45:24 openfhe_bgv_N8192_cat3_encrypt_mem1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_encrypt_mem1.csv (all 12 checks correct)
+[13/1030] 17:45:26 openfhe_bfv_N4096_cat3_decrypt_mem2  (CPU 56 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_decrypt_mem2.csv (all 12 checks correct)
+[14/1030] 17:45:29 openfhe_bfv_N8192_cat5_add_inplace_mem2  (CPU 56 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_inplace_mem2.csv (all 12 checks correct)
+[15/1030] 17:45:32 seal_bgv_N8192_cat1_keygen_energy2  (CPU 56 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_keygen_energy2.csv
+[16/1030] 17:45:49 seal_ckks_N4096_cat1_multiply_energy2  (CPU 56 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_multiply_energy2.csv
+[17/1030] 17:46:44 openfhe_ckks_N16384_cat1_decrypt_full_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_decrypt_full_mem1.csv (all 12 checks correct)
+[18/1030] 17:46:48 seal_bfv_N8192_cat3_relinearize_mem2  (CPU 60 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_relinearize_mem2.csv
+[19/1030] 17:46:51 seal_bfv_N4096_cat3_add_energy1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_add_energy1.csv
+[20/1030] 17:52:44 seal_bfv_N8192_cat3_relinearize_energy2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_relinearize_energy2.csv
+[21/1030] 17:53:18 seal_ckks_N4096_cat3_keygen_mem3  (CPU 60 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_keygen_mem3.csv
+[22/1030] 17:53:21 openfhe_bfv_N8192_cat3_add_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_add_mem2.csv (all 12 checks correct)
+[23/1030] 17:53:24 openfhe_ckks_N4096_cat3_keygen_mem1  (CPU 58 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_keygen_mem1.csv (all 12 checks correct)
+[24/1030] 17:53:26 openfhe_bgv_N8192_cat3_multiply_energy2  (CPU 58 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_multiply_energy2.csv (all 32 checks correct)
+[25/1030] 17:54:25 openfhe_ckks_N8192_cat3_decrypt_mem1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_decrypt_mem1.csv (all 12 checks correct)
+[26/1030] 17:54:28 seal_bfv_N8192_cat5_keygen_mem3  (CPU 58 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_keygen_mem3.csv
+[27/1030] 17:54:31 openfhe_bfv_N8192_cat3_encrypt_mem3  (CPU 58 °C, 3.19 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_encrypt_mem3.csv (all 12 checks correct)
+[28/1030] 17:54:33 seal_bfv_N16384_cat1_decrypt_energy1  (CPU 58 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_decrypt_energy1.csv
+[29/1030] 17:54:56 openfhe_bgv_N8192_cat3_add_inplace_mem1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_add_inplace_mem1.csv (all 12 checks correct)
+[30/1030] 17:54:59 seal_ckks_N2048_cat5_add_energy1  (CPU 58 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_add_energy1.csv
+[31/1030] 17:59:39 seal_bgv_N8192_cat1_decrypt_mem3  (CPU 60 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_decrypt_mem3.csv
+[32/1030] 17:59:41 seal_ckks_N4096_cat5_keygen_mem3  (CPU 58 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_keygen_mem3.csv
+[33/1030] 17:59:44 openfhe_bfv_N16384_cat1_relinearize_mem1  (CPU 58 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_relinearize_mem1.csv (all 12 checks correct)
+[34/1030] 17:59:49 seal_ckks_N4096_cat5_keygen_energy2  (CPU 61 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_keygen_energy2.csv
+[35/1030] 18:00:04 openfhe_ckks_N16384_cat1_add_inplace_mem2  (CPU 59 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_inplace_mem2.csv (all 12 checks correct)
+[36/1030] 18:00:07 openfhe_bfv_N4096_cat3_add_inplace_energy1  (CPU 62 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_add_inplace_energy1.csv (all 32 checks correct)
+[37/1030] 18:09:48 openfhe_ckks_N2048_cat5_decrypt_mem2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_decrypt_mem2.csv (all 12 checks correct)
+[38/1030] 18:09:50 openfhe_ckks_N16384_cat1_decrypt_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_decrypt_energy1.csv (all 32 checks correct)
+[39/1030] 18:11:13 openfhe_ckks_N2048_cat1_encrypt_mem1  (CPU 61 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_encrypt_mem1.csv (all 12 checks correct)
+[40/1030] 18:11:16 openfhe_bfv_N8192_cat5_decrypt_mem3  (CPU 59 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_mem3.csv (all 12 checks correct)
+[41/1030] 18:11:19 openfhe_bfv_N16384_cat1_add_inplace_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_inplace_energy2.csv (all 32 checks correct)
+[42/1030] 18:18:23 seal_bfv_N8192_cat1_keygen_mem3  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_keygen_mem3.csv
+[43/1030] 18:18:27 seal_ckks_N8192_cat1_encrypt_mem3  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_encrypt_mem3.csv
+[44/1030] 18:18:29 openfhe_ckks_N8192_cat3_keygen_mem3  (CPU 59 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_keygen_mem3.csv (all 12 checks correct)
+[45/1030] 18:18:32 seal_bfv_N4096_cat3_encrypt_energy2  (CPU 59 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_encrypt_energy2.csv
+[46/1030] 18:18:49 seal_bfv_N8192_cat5_decrypt_mem2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_decrypt_mem2.csv
+[47/1030] 18:18:52 openfhe_bgv_N8192_cat3_add_inplace_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_add_inplace_energy1.csv (all 32 checks correct)
+[48/1030] 18:22:34 seal_ckks_N4096_cat1_decrypt_energy1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_decrypt_energy1.csv
+[49/1030] 18:23:48 seal_bfv_N16384_cat1_relinearize_energy1  (CPU 61 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_relinearize_energy1.csv
+[50/1030] 18:24:14 seal_bfv_N4096_cat3_keygen_energy1  (CPU 61 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_keygen_energy1.csv
+[51/1030] 18:24:30 seal_bgv_N8192_cat5_decrypt_energy2  (CPU 57 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_decrypt_energy2.csv
+[52/1030] 18:25:08 seal_ckks_N4096_cat1_add_energy2  (CPU 60 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_add_energy2.csv
+[53/1030] 18:30:21 openfhe_ckks_N2048_cat1_encrypt_mem2  (CPU 61 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_encrypt_mem2.csv (all 12 checks correct)
+[54/1030] 18:30:24 openfhe_bfv_N8192_cat5_keygen_energy2  (CPU 59 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_keygen_energy2.csv (all 32 checks correct)
+[55/1030] 18:30:39 openfhe_bfv_N8192_cat1_add_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_add_energy2.csv (all 32 checks correct)
+[56/1030] 18:34:44 seal_ckks_N2048_cat5_keygen_energy2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_keygen_energy2.csv
+[57/1030] 18:34:59 openfhe_ckks_N4096_cat5_add_mem3  (CPU 58 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_mem3.csv (all 12 checks correct)
+[58/1030] 18:35:01 openfhe_ckks_N16384_cat1_multiply_mem3  (CPU 58 °C, 3.19 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_multiply_mem3.csv (all 12 checks correct)
+[59/1030] 18:35:05 openfhe_bfv_N16384_cat1_decrypt_full_mem1  (CPU 61 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_decrypt_full_mem1.csv (all 12 checks correct)
+[60/1030] 18:35:08 seal_ckks_N2048_cat5_decrypt_mem1  (CPU 61 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_decrypt_mem1.csv
+[61/1030] 18:35:11 seal_bgv_N8192_cat3_multiply_mem3  (CPU 59 °C, 3.19 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_multiply_mem3.csv
+[62/1030] 18:35:13 openfhe_bfv_N8192_cat3_decrypt_full_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_full_mem1.csv (all 12 checks correct)
+[63/1030] 18:35:16 seal_ckks_N16384_cat1_add_mem3  (CPU 58 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_add_mem3.csv
+[64/1030] 18:35:20 openfhe_bfv_N8192_cat5_decrypt_mem2  (CPU 62 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_mem2.csv (all 12 checks correct)
+[65/1030] 18:35:22 seal_ckks_N2048_cat5_add_mem3  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_add_mem3.csv
+[66/1030] 18:35:25 openfhe_bfv_N8192_cat1_decrypt_energy2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_decrypt_energy2.csv (all 32 checks correct)
+[67/1030] 18:35:55 openfhe_ckks_N4096_cat1_multiply_mem1  (CPU 60 °C, 3.19 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_multiply_mem1.csv (all 12 checks correct)
+[68/1030] 18:35:58 seal_ckks_N4096_cat3_keygen_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_keygen_mem2.csv
+[69/1030] 18:36:00 openfhe_bgv_N8192_cat5_add_inplace_energy2  (CPU 58 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_add_inplace_energy2.csv (all 32 checks correct)
+[70/1030] 18:41:32 openfhe_ckks_N4096_cat5_keygen_energy1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_keygen_energy1.csv (all 32 checks correct)
+[71/1030] 18:41:47 openfhe_ckks_N4096_cat5_add_energy1  (CPU 58 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_energy1.csv (all 32 checks correct)
+[72/1030] 18:46:33 seal_ckks_N4096_cat5_keygen_mem2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_keygen_mem2.csv
+[73/1030] 18:46:36 openfhe_ckks_N8192_cat3_add_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_add_energy1.csv (all 32 checks correct)
+[74/1030] 18:47:57 openfhe_ckks_N8192_cat1_decrypt_mem2  (CPU 60 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_decrypt_mem2.csv (all 12 checks correct)
+[75/1030] 18:48:00 openfhe_bgv_N8192_cat5_decrypt_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_decrypt_mem2.csv (all 12 checks correct)
+[76/1030] 18:48:03 seal_bgv_N8192_cat1_multiply_mem2  (CPU 58 °C, 3.19 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_multiply_mem2.csv
+[77/1030] 18:48:05 seal_bgv_N8192_cat1_decrypt_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_decrypt_mem1.csv
+[78/1030] 18:48:08 openfhe_ckks_N4096_cat3_encrypt_mem3  (CPU 59 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_encrypt_mem3.csv (all 12 checks correct)
+[79/1030] 18:48:11 seal_ckks_N2048_cat1_keygen_mem2  (CPU 58 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_keygen_mem2.csv
+[80/1030] 18:48:13 openfhe_ckks_N4096_cat1_add_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_add_energy1.csv (all 32 checks correct)
+[81/1030] 18:50:05 openfhe_bfv_N8192_cat3_add_inplace_mem3  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_add_inplace_mem3.csv (all 12 checks correct)
+[82/1030] 18:50:08 openfhe_bgv_N8192_cat5_decrypt_full_mem1  (CPU 59 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_decrypt_full_mem1.csv (all 12 checks correct)
+[83/1030] 18:50:11 openfhe_ckks_N8192_cat1_relinearize_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[84/1030] 18:50:14 seal_bfv_N8192_cat3_decrypt_mem3  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_decrypt_mem3.csv
+[85/1030] 18:50:16 openfhe_ckks_N8192_cat3_relinearize_mem3  (CPU 58 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_relinearize_mem3.csv (all 12 checks correct)
+[86/1030] 18:50:19 openfhe_ckks_N4096_cat5_encrypt_mem1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_encrypt_mem1.csv (all 12 checks correct)
+[87/1030] 18:50:22 seal_bgv_N8192_cat5_decrypt_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_decrypt_mem1.csv
+[88/1030] 18:50:24 openfhe_ckks_N2048_cat1_encrypt_energy2  (CPU 59 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_encrypt_energy2.csv (all 32 checks correct)
+[89/1030] 18:50:41 seal_ckks_N16384_cat1_multiply_energy2  (CPU 60 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_multiply_energy2.csv
+[90/1030] 18:51:24 seal_ckks_N4096_cat3_decrypt_mem1  (CPU 60 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_decrypt_mem1.csv
+[91/1030] 18:51:26 seal_ckks_N8192_cat1_keygen_energy2  (CPU 58 °C, 3.18 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_keygen_energy2.csv
+[92/1030] 18:51:43 seal_bgv_N8192_cat5_encrypt_energy1  (CPU 57 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_encrypt_energy1.csv
+[93/1030] 18:52:00 openfhe_ckks_N8192_cat1_decrypt_full_mem2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_decrypt_full_mem2.csv (all 12 checks correct)
+[94/1030] 18:52:03 openfhe_bgv_N8192_cat1_add_inplace_mem3  (CPU 58 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_add_inplace_mem3.csv (all 12 checks correct)
+[95/1030] 18:52:05 seal_ckks_N16384_cat1_keygen_energy1  (CPU 58 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_keygen_energy1.csv
+[96/1030] 18:52:30 seal_ckks_N4096_cat3_decrypt_energy2  (CPU 58 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_decrypt_energy2.csv
+[97/1030] 18:54:13 seal_bfv_N16384_cat1_keygen_energy1  (CPU 60 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_keygen_energy1.csv
+[98/1030] 18:54:38 seal_ckks_N8192_cat1_encrypt_mem1  (CPU 58 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_encrypt_mem1.csv
+[99/1030] 18:54:41 openfhe_ckks_N4096_cat1_add_inplace_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_add_inplace_energy1.csv (all 32 checks correct)
+[100/1030] 18:58:48 openfhe_bfv_N8192_cat5_add_inplace_energy2  (CPU 60 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_inplace_energy2.csv (all 32 checks correct)
+[101/1030] 19:09:23 seal_ckks_N2048_cat5_encrypt_energy2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_encrypt_energy2.csv
+[102/1030] 19:09:40 seal_ckks_N8192_cat1_encrypt_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_encrypt_energy1.csv
+[103/1030] 19:09:57 openfhe_ckks_N4096_cat5_encrypt_energy2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_encrypt_energy2.csv (all 32 checks correct)
+[104/1030] 19:10:14 seal_bfv_N8192_cat1_relinearize_mem1  (CPU 58 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_relinearize_mem1.csv
+[105/1030] 19:10:17 openfhe_bfv_N8192_cat5_add_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_mem1.csv (all 12 checks correct)
+[106/1030] 19:10:20 seal_bfv_N4096_cat3_decrypt_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_decrypt_energy2.csv
+[107/1030] 19:10:47 openfhe_bfv_N8192_cat5_keygen_mem3  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_keygen_mem3.csv (all 12 checks correct)
+[108/1030] 19:10:50 openfhe_ckks_N4096_cat5_decrypt_full_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_decrypt_full_mem2.csv (all 12 checks correct)
+[109/1030] 19:10:52 seal_ckks_N8192_cat5_keygen_mem1  (CPU 57 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_keygen_mem1.csv
+[110/1030] 19:10:55 openfhe_bfv_N8192_cat3_decrypt_full_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_full_mem2.csv (all 12 checks correct)
+[111/1030] 19:10:58 openfhe_bfv_N8192_cat1_encrypt_mem3  (CPU 58 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_encrypt_mem3.csv (all 12 checks correct)
+[112/1030] 19:11:01 seal_bfv_N4096_cat3_keygen_energy2  (CPU 58 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_keygen_energy2.csv
+[113/1030] 19:11:16 openfhe_ckks_N4096_cat1_decrypt_mem3  (CPU 57 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_decrypt_mem3.csv (all 12 checks correct)
+[114/1030] 19:11:19 seal_bgv_N8192_cat3_relinearize_energy1  (CPU 57 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_relinearize_energy1.csv
+[115/1030] 19:11:44 openfhe_ckks_N4096_cat5_decrypt_full_mem3  (CPU 60 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_decrypt_full_mem3.csv (all 12 checks correct)
+[116/1030] 19:11:46 seal_ckks_N2048_cat1_add_mem1  (CPU 58 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_add_mem1.csv
+[117/1030] 19:11:49 openfhe_ckks_N4096_cat3_add_inplace_mem1  (CPU 57 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_add_inplace_mem1.csv (all 12 checks correct)
+[118/1030] 19:11:51 seal_bgv_N8192_cat3_keygen_energy1  (CPU 57 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_keygen_energy1.csv
+[119/1030] 19:12:07 seal_ckks_N8192_cat5_add_mem2  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_add_mem2.csv
+[120/1030] 19:12:10 seal_ckks_N4096_cat1_decrypt_mem2  (CPU 58 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_decrypt_mem2.csv
+[121/1030] 19:12:12 openfhe_bfv_N16384_cat1_encrypt_energy2  (CPU 57 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_encrypt_energy2.csv (all 32 checks correct)
+[122/1030] 19:12:30 openfhe_ckks_N4096_cat1_encrypt_energy2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_encrypt_energy2.csv (all 32 checks correct)
+[123/1030] 19:12:47 seal_ckks_N4096_cat1_encrypt_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_encrypt_mem1.csv
+[124/1030] 19:12:50 openfhe_bgv_N8192_cat1_add_inplace_energy1  (CPU 57 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_add_inplace_energy1.csv (all 32 checks correct)
+[125/1030] 19:16:03 seal_bgv_N8192_cat5_add_energy2  (CPU 60 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_add_energy2.csv
+[126/1030] 19:24:06 seal_ckks_N8192_cat3_keygen_energy2  (CPU 60 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_keygen_energy2.csv
+[127/1030] 19:24:22 openfhe_bfv_N8192_cat3_decrypt_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_mem2.csv (all 12 checks correct)
+[128/1030] 19:24:25 seal_bfv_N8192_cat5_encrypt_mem3  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_encrypt_mem3.csv
+[129/1030] 19:24:27 openfhe_ckks_N8192_cat3_encrypt_energy1  (CPU 58 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_encrypt_energy1.csv (all 32 checks correct)
+[130/1030] 19:24:45 seal_ckks_N2048_cat5_decrypt_energy2  (CPU 59 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_decrypt_energy2.csv
+[131/1030] 19:25:58 openfhe_ckks_N8192_cat5_add_inplace_energy2  (CPU 60 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_add_inplace_energy2.csv (all 32 checks correct)
+[132/1030] 19:32:20 seal_ckks_N4096_cat1_multiply_energy1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_multiply_energy1.csv
+[133/1030] 19:33:16 openfhe_bfv_N16384_cat1_multiply_energy2  (CPU 60 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_multiply_energy2.csv (all 32 checks correct)
+[134/1030] 19:33:38 openfhe_ckks_N8192_cat1_decrypt_full_mem3  (CPU 59 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_decrypt_full_mem3.csv (all 12 checks correct)
+[135/1030] 19:33:40 seal_ckks_N16384_cat1_multiply_mem3  (CPU 58 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_multiply_mem3.csv
+[136/1030] 19:33:44 openfhe_bfv_N8192_cat3_relinearize_mem3  (CPU 60 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_relinearize_mem3.csv (all 12 checks correct)
+[137/1030] 19:33:47 seal_ckks_N2048_cat1_add_mem3  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_add_mem3.csv
+[138/1030] 19:33:49 seal_bfv_N16384_cat1_encrypt_mem1  (CPU 58 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_encrypt_mem1.csv
+[139/1030] 19:33:53 seal_ckks_N2048_cat1_keygen_mem1  (CPU 60 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_keygen_mem1.csv
+[140/1030] 19:33:55 seal_ckks_N4096_cat5_decrypt_energy2  (CPU 58 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_decrypt_energy2.csv
+[141/1030] 19:35:38 openfhe_ckks_N2048_cat5_decrypt_full_energy1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_decrypt_full_energy1.csv (all 32 checks correct)
+[142/1030] 19:36:02 seal_bfv_N8192_cat1_multiply_mem2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_multiply_mem2.csv
+[143/1030] 19:36:05 seal_bfv_N8192_cat5_add_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_add_energy1.csv
+[144/1030] 19:42:16 openfhe_bgv_N8192_cat5_keygen_energy2  (CPU 60 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_keygen_energy2.csv (all 32 checks correct)
+[145/1030] 19:42:31 seal_bfv_N8192_cat1_keygen_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_keygen_mem2.csv
+[146/1030] 19:42:35 openfhe_ckks_N16384_cat1_decrypt_full_energy2  (CPU 59 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_decrypt_full_energy2.csv (all 32 checks correct)
+[147/1030] 19:42:54 openfhe_ckks_N4096_cat1_keygen_energy1  (CPU 60 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_keygen_energy1.csv (all 32 checks correct)
+[148/1030] 19:43:09 seal_bgv_N8192_cat3_keygen_mem2  (CPU 57 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_keygen_mem2.csv
+[149/1030] 19:43:12 openfhe_bfv_N16384_cat1_decrypt_full_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_decrypt_full_energy1.csv (all 32 checks correct)
+[150/1030] 19:43:40 openfhe_ckks_N4096_cat5_add_mem1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_mem1.csv (all 12 checks correct)
+[151/1030] 19:43:42 openfhe_ckks_N8192_cat3_add_mem1  (CPU 58 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_add_mem1.csv (all 12 checks correct)
+[152/1030] 19:43:45 openfhe_bfv_N8192_cat3_encrypt_energy2  (CPU 58 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_encrypt_energy2.csv (all 32 checks correct)
+[153/1030] 19:44:02 seal_bfv_N8192_cat5_add_mem3  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_add_mem3.csv
+[154/1030] 19:44:05 seal_ckks_N8192_cat1_decrypt_mem1  (CPU 57 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_decrypt_mem1.csv
+[155/1030] 19:44:08 openfhe_ckks_N4096_cat1_add_inplace_energy2  (CPU 58 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_add_inplace_energy2.csv (all 32 checks correct)
+[156/1030] 19:48:16 openfhe_bgv_N8192_cat5_decrypt_mem1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_decrypt_mem1.csv (all 12 checks correct)
+[157/1030] 19:48:19 openfhe_ckks_N8192_cat5_encrypt_energy1  (CPU 58 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_encrypt_energy1.csv (all 32 checks correct)
+[158/1030] 19:48:36 openfhe_bfv_N4096_cat3_decrypt_full_energy2  (CPU 59 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_decrypt_full_energy2.csv (all 32 checks correct)
+[159/1030] 19:49:06 openfhe_ckks_N16384_cat1_decrypt_energy2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_decrypt_energy2.csv (all 32 checks correct)
+[160/1030] 19:50:32 openfhe_bgv_N8192_cat1_multiply_mem1  (CPU 59 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[161/1030] 19:50:35 openfhe_ckks_N8192_cat1_relinearize_mem3  (CPU 58 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_relinearize_mem3.csv (all 12 checks correct)
+[162/1030] 19:50:38 seal_ckks_N4096_cat1_multiply_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_multiply_mem2.csv
+[163/1030] 19:50:40 seal_ckks_N2048_cat5_keygen_energy1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_keygen_energy1.csv
+[164/1030] 19:50:55 openfhe_bfv_N16384_cat1_keygen_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_keygen_mem2.csv (all 12 checks correct)
+[165/1030] 19:51:00 openfhe_ckks_N16384_cat1_add_inplace_energy1  (CPU 60 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_inplace_energy1.csv (all 32 checks correct)
+[166/1030] 19:53:54 seal_bfv_N8192_cat1_decrypt_energy1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_decrypt_energy1.csv
+[167/1030] 19:54:18 openfhe_ckks_N8192_cat5_add_inplace_mem3  (CPU 60 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_add_inplace_mem3.csv (all 12 checks correct)
+[168/1030] 19:54:20 seal_ckks_N8192_cat3_decrypt_mem1  (CPU 58 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_decrypt_mem1.csv
+[169/1030] 19:54:23 openfhe_ckks_N16384_cat1_add_mem3  (CPU 58 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_mem3.csv (all 12 checks correct)
+[170/1030] 19:54:27 seal_ckks_N8192_cat5_add_energy1  (CPU 61 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_add_energy1.csv
+[171/1030] 20:02:21 seal_ckks_N4096_cat5_encrypt_mem3  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_encrypt_mem3.csv
+[172/1030] 20:02:24 openfhe_bfv_N16384_cat1_decrypt_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_decrypt_energy1.csv (all 32 checks correct)
+[173/1030] 20:02:54 openfhe_bgv_N8192_cat1_add_energy1  (CPU 60 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_add_energy1.csv (all 32 checks correct)
+[174/1030] 20:03:58 openfhe_ckks_N8192_cat5_encrypt_mem1  (CPU 60 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_encrypt_mem1.csv (all 12 checks correct)
+[175/1030] 20:04:01 seal_bfv_N8192_cat1_keygen_energy1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_keygen_energy1.csv
+[176/1030] 20:04:18 openfhe_bfv_N8192_cat1_relinearize_mem2  (CPU 57 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[177/1030] 20:04:21 openfhe_ckks_N8192_cat5_decrypt_mem2  (CPU 59 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_decrypt_mem2.csv (all 12 checks correct)
+[178/1030] 20:04:23 seal_bgv_N8192_cat1_add_energy2  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_add_energy2.csv
+[179/1030] 20:09:08 seal_bgv_N8192_cat5_decrypt_mem3  (CPU 61 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_decrypt_mem3.csv
+[180/1030] 20:09:11 seal_bfv_N8192_cat3_encrypt_energy1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_encrypt_energy1.csv
+[181/1030] 20:09:28 openfhe_bfv_N8192_cat3_encrypt_energy1  (CPU 60 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_encrypt_energy1.csv (all 32 checks correct)
+[182/1030] 20:09:45 openfhe_bgv_N8192_cat3_decrypt_mem3  (CPU 59 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_decrypt_mem3.csv (all 12 checks correct)
+[183/1030] 20:09:47 seal_ckks_N16384_cat1_keygen_mem1  (CPU 57 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_keygen_mem1.csv
+[184/1030] 20:09:54 openfhe_bfv_N8192_cat3_keygen_mem1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_keygen_mem1.csv (all 12 checks correct)
+[185/1030] 20:09:57 openfhe_bfv_N4096_cat3_add_mem1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_add_mem1.csv (all 12 checks correct)
+[186/1030] 20:10:00 openfhe_bgv_N8192_cat5_encrypt_energy1  (CPU 58 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_encrypt_energy1.csv (all 32 checks correct)
+[187/1030] 20:10:17 openfhe_ckks_N16384_cat1_encrypt_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_encrypt_mem2.csv (all 12 checks correct)
+[188/1030] 20:10:20 seal_bgv_N8192_cat5_encrypt_mem3  (CPU 60 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_encrypt_mem3.csv
+[189/1030] 20:10:23 seal_ckks_N8192_cat5_keygen_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_keygen_energy2.csv
+[190/1030] 20:10:38 openfhe_bfv_N4096_cat3_add_inplace_mem2  (CPU 57 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_add_inplace_mem2.csv (all 12 checks correct)
+[191/1030] 20:10:41 openfhe_ckks_N2048_cat1_add_inplace_energy1  (CPU 57 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_add_inplace_energy1.csv (all 32 checks correct)
+[192/1030] 20:15:38 openfhe_bgv_N8192_cat3_keygen_mem1  (CPU 60 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_keygen_mem1.csv (all 12 checks correct)
+[193/1030] 20:15:41 seal_bfv_N8192_cat1_multiply_energy2  (CPU 58 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_multiply_energy2.csv
+[194/1030] 20:15:59 openfhe_bfv_N16384_cat1_add_inplace_mem3  (CPU 60 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_inplace_mem3.csv (all 12 checks correct)
+[195/1030] 20:16:03 seal_bgv_N8192_cat3_multiply_mem1  (CPU 61 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_multiply_mem1.csv
+[196/1030] 20:16:06 openfhe_bfv_N8192_cat3_decrypt_energy1  (CPU 58 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_energy1.csv (all 32 checks correct)
+[197/1030] 20:16:38 openfhe_ckks_N4096_cat3_add_inplace_mem2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_add_inplace_mem2.csv (all 12 checks correct)
+[198/1030] 20:16:41 openfhe_ckks_N4096_cat3_decrypt_mem3  (CPU 58 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_decrypt_mem3.csv (all 12 checks correct)
+[199/1030] 20:16:43 seal_bgv_N8192_cat1_decrypt_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_decrypt_energy2.csv
+[200/1030] 20:17:15 openfhe_bfv_N8192_cat1_keygen_energy2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_keygen_energy2.csv (all 32 checks correct)
+[201/1030] 20:17:30 openfhe_ckks_N4096_cat5_add_inplace_mem2  (CPU 58 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_inplace_mem2.csv (all 12 checks correct)
+[202/1030] 20:17:33 openfhe_ckks_N4096_cat1_add_inplace_mem2  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_add_inplace_mem2.csv (all 12 checks correct)
+[203/1030] 20:17:36 openfhe_ckks_N8192_cat1_decrypt_energy2  (CPU 57 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_decrypt_energy2.csv (all 32 checks correct)
+[204/1030] 20:19:20 openfhe_bgv_N8192_cat5_encrypt_mem3  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_encrypt_mem3.csv (all 12 checks correct)
+[205/1030] 20:19:23 openfhe_bgv_N8192_cat3_decrypt_full_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_decrypt_full_mem1.csv (all 12 checks correct)
+[206/1030] 20:19:25 openfhe_ckks_N8192_cat1_multiply_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[207/1030] 20:20:16 openfhe_ckks_N4096_cat1_multiply_energy1  (CPU 60 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_multiply_energy1.csv (all 32 checks correct)
+[208/1030] 20:21:14 openfhe_ckks_N4096_cat5_add_inplace_mem1  (CPU 59 °C, 3.19 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_inplace_mem1.csv (all 12 checks correct)
+[209/1030] 20:21:16 seal_bfv_N8192_cat3_add_energy1  (CPU 58 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_add_energy1.csv
+[210/1030] 20:25:28 openfhe_ckks_N2048_cat5_add_inplace_mem3  (CPU 60 °C, 3.18 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_add_inplace_mem3.csv (all 12 checks correct)
+[211/1030] 20:25:30 openfhe_ckks_N4096_cat3_encrypt_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_encrypt_mem2.csv (all 12 checks correct)
+[212/1030] 20:25:33 seal_bfv_N8192_cat1_relinearize_mem2  (CPU 58 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_relinearize_mem2.csv
+[213/1030] 20:25:36 openfhe_ckks_N8192_cat3_multiply_mem1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_multiply_mem1.csv (all 12 checks correct)
+[214/1030] 20:25:38 openfhe_ckks_N4096_cat5_add_inplace_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_inplace_energy2.csv (all 32 checks correct)
+[215/1030] 20:31:19 seal_bgv_N8192_cat5_decrypt_mem2  (CPU 60 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_decrypt_mem2.csv
+[216/1030] 20:31:21 openfhe_ckks_N8192_cat5_decrypt_energy2  (CPU 58 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_decrypt_energy2.csv (all 32 checks correct)
+[217/1030] 20:34:10 seal_ckks_N8192_cat1_add_mem2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_add_mem2.csv
+[218/1030] 20:34:13 seal_ckks_N16384_cat1_add_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_add_energy2.csv
+[219/1030] 20:37:47 openfhe_ckks_N16384_cat1_relinearize_energy1  (CPU 61 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_relinearize_energy1.csv (all 32 checks correct)
+[220/1030] 20:38:09 seal_bgv_N8192_cat5_encrypt_mem1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_encrypt_mem1.csv
+[221/1030] 20:38:12 openfhe_ckks_N4096_cat5_add_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_energy2.csv (all 32 checks correct)
+[222/1030] 20:42:58 openfhe_ckks_N4096_cat5_encrypt_energy1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_encrypt_energy1.csv (all 32 checks correct)
+[223/1030] 20:43:15 seal_bfv_N8192_cat3_add_mem3  (CPU 58 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_add_mem3.csv
+[224/1030] 20:43:18 openfhe_ckks_N8192_cat3_decrypt_energy1  (CPU 58 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_decrypt_energy1.csv (all 32 checks correct)
+[225/1030] 20:45:15 openfhe_ckks_N2048_cat5_encrypt_mem2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_encrypt_mem2.csv (all 12 checks correct)
+[226/1030] 20:45:18 openfhe_bgv_N8192_cat1_decrypt_full_mem1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_decrypt_full_mem1.csv (all 12 checks correct)
+[227/1030] 20:45:20 openfhe_bfv_N8192_cat5_add_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_mem2.csv (all 12 checks correct)
+[228/1030] 20:45:23 openfhe_ckks_N4096_cat3_decrypt_full_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_decrypt_full_energy2.csv (all 32 checks correct)
+[229/1030] 20:45:47 openfhe_ckks_N2048_cat1_decrypt_mem3  (CPU 59 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_decrypt_mem3.csv (all 12 checks correct)
+[230/1030] 20:45:50 openfhe_ckks_N2048_cat1_decrypt_energy1  (CPU 57 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_decrypt_energy1.csv (all 32 checks correct)
+[231/1030] 20:48:08 openfhe_bfv_N16384_cat1_decrypt_mem3  (CPU 60 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_decrypt_mem3.csv (all 12 checks correct)
+[232/1030] 20:48:11 seal_bfv_N8192_cat1_encrypt_energy2  (CPU 60 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_encrypt_energy2.csv
+[233/1030] 20:48:28 seal_bfv_N8192_cat1_encrypt_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_encrypt_energy1.csv
+[234/1030] 20:48:45 seal_ckks_N8192_cat3_encrypt_energy1  (CPU 59 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_encrypt_energy1.csv
+[235/1030] 20:49:02 seal_bgv_N8192_cat5_keygen_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_keygen_energy1.csv
+[236/1030] 20:49:17 openfhe_bfv_N8192_cat5_add_energy2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_energy2.csv (all 32 checks correct)
+[237/1030] 20:58:20 openfhe_bgv_N8192_cat3_add_inplace_energy2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_add_inplace_energy2.csv (all 32 checks correct)
+[238/1030] 21:02:04 openfhe_bgv_N8192_cat3_decrypt_energy2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_decrypt_energy2.csv (all 32 checks correct)
+[239/1030] 21:02:30 seal_ckks_N16384_cat1_encrypt_mem3  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_encrypt_mem3.csv
+[240/1030] 21:02:34 seal_ckks_N2048_cat1_encrypt_mem1  (CPU 60 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_encrypt_mem1.csv
+[241/1030] 21:02:36 seal_ckks_N8192_cat3_keygen_energy1  (CPU 58 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_keygen_energy1.csv
+[242/1030] 21:02:52 openfhe_ckks_N8192_cat3_add_inplace_mem1  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_add_inplace_mem1.csv (all 12 checks correct)
+[243/1030] 21:02:55 seal_bgv_N8192_cat1_relinearize_energy2  (CPU 58 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_relinearize_energy2.csv
+[244/1030] 21:03:19 openfhe_ckks_N16384_cat1_encrypt_mem3  (CPU 60 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_encrypt_mem3.csv (all 12 checks correct)
+[245/1030] 21:03:22 openfhe_ckks_N4096_cat3_decrypt_mem1  (CPU 60 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_decrypt_mem1.csv (all 12 checks correct)
+[246/1030] 21:03:25 openfhe_ckks_N2048_cat5_encrypt_energy1  (CPU 58 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_encrypt_energy1.csv (all 32 checks correct)
+[247/1030] 21:03:42 openfhe_ckks_N8192_cat3_encrypt_mem3  (CPU 59 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_encrypt_mem3.csv (all 12 checks correct)
+[248/1030] 21:03:45 openfhe_bfv_N8192_cat3_multiply_mem2  (CPU 57 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_multiply_mem2.csv (all 12 checks correct)
+[249/1030] 21:03:47 openfhe_bgv_N8192_cat3_decrypt_full_energy2  (CPU 58 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_decrypt_full_energy2.csv (all 32 checks correct)
+[250/1030] 21:04:12 openfhe_ckks_N2048_cat5_decrypt_full_mem3  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_decrypt_full_mem3.csv (all 12 checks correct)
+[251/1030] 21:04:14 seal_ckks_N4096_cat5_keygen_energy1  (CPU 57 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_keygen_energy1.csv
+[252/1030] 21:04:30 openfhe_bgv_N8192_cat1_relinearize_energy2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_relinearize_energy2.csv (all 32 checks correct)
+[253/1030] 21:04:51 openfhe_ckks_N4096_cat1_keygen_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_keygen_mem2.csv (all 12 checks correct)
+[254/1030] 21:04:54 seal_bfv_N8192_cat1_relinearize_mem3  (CPU 57 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_relinearize_mem3.csv
+[255/1030] 21:04:57 openfhe_ckks_N2048_cat1_decrypt_full_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_decrypt_full_energy2.csv (all 32 checks correct)
+[256/1030] 21:05:21 seal_ckks_N4096_cat5_encrypt_mem1  (CPU 59 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_encrypt_mem1.csv
+[257/1030] 21:05:23 openfhe_ckks_N8192_cat3_decrypt_full_mem1  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_decrypt_full_mem1.csv (all 12 checks correct)
+[258/1030] 21:05:26 openfhe_ckks_N16384_cat1_multiply_mem1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_multiply_mem1.csv (all 12 checks correct)
+[259/1030] 21:05:29 openfhe_bfv_N8192_cat5_decrypt_full_mem1  (CPU 60 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_full_mem1.csv (all 12 checks correct)
+[260/1030] 21:05:32 openfhe_bfv_N8192_cat1_multiply_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_multiply_energy2.csv (all 32 checks correct)
+[261/1030] 21:05:52 openfhe_ckks_N2048_cat5_add_inplace_energy1  (CPU 59 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_add_inplace_energy1.csv (all 32 checks correct)
+[262/1030] 21:10:57 seal_bfv_N16384_cat1_decrypt_mem1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_decrypt_mem1.csv
+[263/1030] 21:11:01 openfhe_ckks_N2048_cat5_decrypt_full_mem2  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_decrypt_full_mem2.csv (all 12 checks correct)
+[264/1030] 21:11:03 seal_ckks_N2048_cat1_add_energy1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_add_energy1.csv
+[265/1030] 21:17:50 openfhe_ckks_N2048_cat1_encrypt_energy1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_encrypt_energy1.csv (all 32 checks correct)
+[266/1030] 21:18:07 openfhe_ckks_N8192_cat1_multiply_mem3  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_multiply_mem3.csv (all 12 checks correct)
+[267/1030] 21:18:10 seal_bfv_N8192_cat5_encrypt_energy2  (CPU 57 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_encrypt_energy2.csv
+[268/1030] 21:18:27 openfhe_bfv_N8192_cat5_add_inplace_mem3  (CPU 58 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_inplace_mem3.csv (all 12 checks correct)
+[269/1030] 21:18:29 openfhe_bfv_N16384_cat1_encrypt_energy1  (CPU 57 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_encrypt_energy1.csv (all 32 checks correct)
+[270/1030] 21:18:47 openfhe_ckks_N2048_cat5_keygen_mem1  (CPU 58 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_keygen_mem1.csv (all 12 checks correct)
+[271/1030] 21:18:49 openfhe_bgv_N8192_cat5_decrypt_full_mem3  (CPU 57 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_decrypt_full_mem3.csv (all 12 checks correct)
+[272/1030] 21:18:52 openfhe_bfv_N8192_cat3_keygen_energy1  (CPU 57 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_keygen_energy1.csv (all 32 checks correct)
+[273/1030] 21:19:07 openfhe_bgv_N8192_cat1_multiply_mem3  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_multiply_mem3.csv (all 12 checks correct)
+[274/1030] 21:19:10 openfhe_bfv_N8192_cat1_relinearize_energy1  (CPU 57 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_relinearize_energy1.csv (all 32 checks correct)
+[275/1030] 21:19:42 openfhe_ckks_N2048_cat1_add_energy2  (CPU 59 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_add_energy2.csv (all 32 checks correct)
+[276/1030] 21:23:54 openfhe_bfv_N8192_cat3_add_mem1  (CPU 59 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_add_mem1.csv (all 12 checks correct)
+[277/1030] 21:23:57 openfhe_bfv_N8192_cat1_keygen_mem1  (CPU 58 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_keygen_mem1.csv (all 12 checks correct)
+[278/1030] 21:24:00 seal_ckks_N2048_cat1_encrypt_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_encrypt_energy2.csv
+[279/1030] 21:24:17 seal_ckks_N4096_cat5_encrypt_mem2  (CPU 58 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_encrypt_mem2.csv
+[280/1030] 21:24:19 openfhe_bfv_N16384_cat1_add_inplace_mem2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_inplace_mem2.csv (all 12 checks correct)
+[281/1030] 21:24:23 openfhe_ckks_N8192_cat5_decrypt_mem1  (CPU 60 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_decrypt_mem1.csv (all 12 checks correct)
+[282/1030] 21:24:25 seal_bgv_N8192_cat3_add_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_add_energy2.csv
+[283/1030] 21:30:01 openfhe_ckks_N4096_cat3_decrypt_full_mem1  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_decrypt_full_mem1.csv (all 12 checks correct)
+[284/1030] 21:30:03 seal_ckks_N8192_cat3_relinearize_energy2  (CPU 58 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_relinearize_energy2.csv
+[285/1030] 21:30:30 openfhe_bfv_N8192_cat5_encrypt_mem2  (CPU 60 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_encrypt_mem2.csv (all 12 checks correct)
+[286/1030] 21:30:32 seal_ckks_N4096_cat3_encrypt_energy2  (CPU 57 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_encrypt_energy2.csv
+[287/1030] 21:30:49 seal_ckks_N8192_cat3_multiply_energy1  (CPU 58 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_multiply_energy1.csv
+[288/1030] 21:31:46 seal_bgv_N8192_cat1_decrypt_mem2  (CPU 60 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_decrypt_mem2.csv
+[289/1030] 21:31:49 openfhe_bfv_N8192_cat5_decrypt_full_energy2  (CPU 58 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_full_energy2.csv (all 32 checks correct)
+[290/1030] 21:32:18 seal_bfv_N16384_cat1_keygen_mem1  (CPU 59 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_keygen_mem1.csv
+[291/1030] 21:32:25 seal_bfv_N16384_cat1_encrypt_energy2  (CPU 57 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_encrypt_energy2.csv
+[292/1030] 21:32:42 openfhe_bgv_N8192_cat3_encrypt_energy1  (CPU 59 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_encrypt_energy1.csv (all 32 checks correct)
+[293/1030] 21:32:59 seal_ckks_N2048_cat5_add_energy2  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_add_energy2.csv
+[294/1030] 21:37:39 openfhe_bgv_N8192_cat3_keygen_energy2  (CPU 59 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_keygen_energy2.csv (all 32 checks correct)
+[295/1030] 21:37:54 seal_bgv_N8192_cat1_relinearize_mem1  (CPU 57 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_relinearize_mem1.csv
+[296/1030] 21:37:57 seal_ckks_N2048_cat1_decrypt_mem2  (CPU 57 °C, 3.17 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_decrypt_mem2.csv
+[297/1030] 21:38:00 seal_bfv_N8192_cat3_encrypt_energy2  (CPU 57 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_encrypt_energy2.csv
+[298/1030] 21:38:17 openfhe_bfv_N8192_cat5_decrypt_full_energy1  (CPU 58 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_full_energy1.csv (all 32 checks correct)
+[299/1030] 21:38:46 seal_ckks_N4096_cat1_relinearize_mem2  (CPU 59 °C, 3.18 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_relinearize_mem2.csv
+[300/1030] 21:38:48 seal_bgv_N8192_cat1_encrypt_mem3  (CPU 57 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_encrypt_mem3.csv
+[301/1030] 21:38:51 seal_ckks_N16384_cat1_encrypt_energy1  (CPU 57 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_encrypt_energy1.csv
+[302/1030] 21:39:09 openfhe_bfv_N8192_cat1_add_mem2  (CPU 58 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_add_mem2.csv (all 12 checks correct)
+[303/1030] 21:39:12 openfhe_bfv_N8192_cat1_add_inplace_energy1  (CPU 58 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_add_inplace_energy1.csv (all 32 checks correct)
+[304/1030] 21:46:35 seal_ckks_N8192_cat3_keygen_mem2  (CPU 59 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_keygen_mem2.csv
+[305/1030] 21:46:38 seal_bgv_N8192_cat5_encrypt_mem2  (CPU 58 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_encrypt_mem2.csv
+[306/1030] 21:46:41 openfhe_ckks_N4096_cat5_keygen_energy2  (CPU 58 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_keygen_energy2.csv (all 32 checks correct)
+[307/1030] 21:46:55 seal_bgv_N8192_cat1_add_energy1  (CPU 57 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_add_energy1.csv
+[308/1030] 21:51:41 openfhe_bgv_N8192_cat5_decrypt_full_energy1  (CPU 58 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_decrypt_full_energy1.csv (all 32 checks correct)
+[309/1030] 21:52:08 openfhe_ckks_N16384_cat1_relinearize_mem3  (CPU 57 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_relinearize_mem3.csv (all 12 checks correct)
+[310/1030] 21:52:12 seal_ckks_N8192_cat1_multiply_mem2  (CPU 56 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_multiply_mem2.csv
+[311/1030] 21:52:15 openfhe_ckks_N8192_cat1_add_energy2  (CPU 54 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_add_energy2.csv (all 32 checks correct)
+[312/1030] 21:53:28 seal_bfv_N4096_cat3_decrypt_mem1  (CPU 56 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_decrypt_mem1.csv
+[313/1030] 21:53:31 openfhe_ckks_N4096_cat3_encrypt_energy2  (CPU 54 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_encrypt_energy2.csv (all 32 checks correct)
+[314/1030] 21:53:48 openfhe_bfv_N16384_cat1_add_mem1  (CPU 56 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_mem1.csv (all 12 checks correct)
+[315/1030] 21:53:51 seal_ckks_N4096_cat5_decrypt_mem3  (CPU 54 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_decrypt_mem3.csv
+[316/1030] 21:53:54 openfhe_ckks_N16384_cat1_add_mem1  (CPU 54 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_mem1.csv (all 12 checks correct)
+[317/1030] 21:53:57 seal_bfv_N8192_cat1_add_mem3  (CPU 54 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_add_mem3.csv
+[318/1030] 21:54:00 openfhe_bgv_N8192_cat1_add_mem3  (CPU 53 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_add_mem3.csv (all 12 checks correct)
+[319/1030] 21:54:03 openfhe_ckks_N16384_cat1_add_inplace_mem3  (CPU 53 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_inplace_mem3.csv (all 12 checks correct)
+[320/1030] 21:54:06 seal_ckks_N4096_cat3_decrypt_mem3  (CPU 54 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_decrypt_mem3.csv
+[321/1030] 21:54:09 seal_bfv_N4096_cat3_add_energy2  (CPU 53 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_add_energy2.csv
+[322/1030] 22:00:01 openfhe_ckks_N8192_cat3_multiply_energy1  (CPU 57 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_multiply_energy1.csv (all 32 checks correct)
+[323/1030] 22:00:58 openfhe_bfv_N8192_cat3_decrypt_mem1  (CPU 56 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_mem1.csv (all 12 checks correct)
+[324/1030] 22:01:00 seal_ckks_N4096_cat1_multiply_mem3  (CPU 55 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_multiply_mem3.csv
+[325/1030] 22:01:03 openfhe_bfv_N16384_cat1_add_inplace_energy1  (CPU 53 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_inplace_energy1.csv (all 32 checks correct)
+[326/1030] 22:08:09 openfhe_ckks_N8192_cat3_relinearize_energy2  (CPU 57 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_relinearize_energy2.csv (all 32 checks correct)
+[327/1030] 22:08:38 openfhe_bgv_N8192_cat3_relinearize_mem2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_relinearize_mem2.csv (all 12 checks correct)
+[328/1030] 22:08:41 openfhe_bfv_N16384_cat1_encrypt_mem1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_encrypt_mem1.csv (all 12 checks correct)
+[329/1030] 22:08:44 openfhe_bfv_N16384_cat1_add_energy1  (CPU 54 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_add_energy1.csv (all 32 checks correct)
+[330/1030] 22:11:40 openfhe_bfv_N8192_cat3_keygen_mem2  (CPU 57 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_keygen_mem2.csv (all 12 checks correct)
+[331/1030] 22:11:42 seal_ckks_N8192_cat3_add_mem3  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_add_mem3.csv
+[332/1030] 22:11:45 openfhe_bfv_N4096_cat3_decrypt_full_mem3  (CPU 54 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_decrypt_full_mem3.csv (all 12 checks correct)
+[333/1030] 22:11:48 openfhe_bgv_N8192_cat1_add_mem2  (CPU 53 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_add_mem2.csv (all 12 checks correct)
+[334/1030] 22:11:50 seal_bfv_N8192_cat3_keygen_mem3  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_keygen_mem3.csv
+[335/1030] 22:11:53 openfhe_ckks_N8192_cat1_relinearize_energy2  (CPU 53 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_relinearize_energy2.csv (all 32 checks correct)
+[336/1030] 22:12:15 openfhe_bgv_N8192_cat3_multiply_mem1  (CPU 56 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_multiply_mem1.csv (all 12 checks correct)
+[337/1030] 22:12:18 openfhe_ckks_N16384_cat1_keygen_mem3  (CPU 54 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_keygen_mem3.csv (all 12 checks correct)
+[338/1030] 22:12:23 seal_bfv_N4096_cat3_decrypt_mem2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_decrypt_mem2.csv
+[339/1030] 22:12:25 seal_ckks_N4096_cat3_decrypt_energy1  (CPU 53 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_decrypt_energy1.csv
+[340/1030] 22:14:08 openfhe_ckks_N4096_cat1_encrypt_mem3  (CPU 57 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_encrypt_mem3.csv (all 12 checks correct)
+[341/1030] 22:14:11 seal_ckks_N8192_cat3_add_energy2  (CPU 54 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_add_energy2.csv
+[342/1030] 22:19:27 seal_bfv_N16384_cat1_add_mem3  (CPU 57 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_add_mem3.csv
+[343/1030] 22:19:31 openfhe_bgv_N8192_cat1_decrypt_mem3  (CPU 55 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_decrypt_mem3.csv (all 12 checks correct)
+[344/1030] 22:19:33 openfhe_ckks_N4096_cat1_decrypt_energy1  (CPU 54 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_decrypt_energy1.csv (all 32 checks correct)
+[345/1030] 22:21:25 openfhe_bfv_N8192_cat3_multiply_mem1  (CPU 56 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_multiply_mem1.csv (all 12 checks correct)
+[346/1030] 22:21:28 openfhe_bfv_N8192_cat3_add_energy1  (CPU 54 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_add_energy1.csv (all 32 checks correct)
+[347/1030] 22:28:07 openfhe_ckks_N16384_cat1_decrypt_full_energy1  (CPU 56 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_decrypt_full_energy1.csv (all 32 checks correct)
+[348/1030] 22:28:26 openfhe_bfv_N8192_cat3_decrypt_energy2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_energy2.csv (all 32 checks correct)
+[349/1030] 22:28:59 openfhe_ckks_N16384_cat1_decrypt_full_mem2  (CPU 56 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_decrypt_full_mem2.csv (all 12 checks correct)
+[350/1030] 22:29:03 seal_bgv_N8192_cat3_relinearize_mem3  (CPU 54 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_relinearize_mem3.csv
+[351/1030] 22:29:05 seal_bfv_N8192_cat1_decrypt_mem2  (CPU 53 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_decrypt_mem2.csv
+[352/1030] 22:29:08 openfhe_ckks_N8192_cat5_keygen_mem3  (CPU 52 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_keygen_mem3.csv (all 12 checks correct)
+[353/1030] 22:29:11 openfhe_ckks_N2048_cat1_add_mem2  (CPU 52 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_add_mem2.csv (all 12 checks correct)
+[354/1030] 22:29:13 openfhe_bfv_N8192_cat3_multiply_mem3  (CPU 52 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_multiply_mem3.csv (all 12 checks correct)
+[355/1030] 22:29:16 seal_ckks_N4096_cat1_relinearize_mem3  (CPU 53 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_relinearize_mem3.csv
+[356/1030] 22:29:19 seal_bfv_N8192_cat5_keygen_energy1  (CPU 52 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_keygen_energy1.csv
+[357/1030] 22:29:34 openfhe_bfv_N8192_cat1_encrypt_energy1  (CPU 52 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_encrypt_energy1.csv (all 32 checks correct)
+[358/1030] 22:29:51 seal_bgv_N8192_cat3_decrypt_mem2  (CPU 54 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_decrypt_mem2.csv
+[359/1030] 22:29:54 openfhe_ckks_N8192_cat3_relinearize_energy1  (CPU 52 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_relinearize_energy1.csv (all 32 checks correct)
+[360/1030] 22:30:23 seal_ckks_N8192_cat3_add_mem2  (CPU 55 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_add_mem2.csv
+[361/1030] 22:30:26 openfhe_bfv_N8192_cat3_decrypt_full_energy1  (CPU 53 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_full_energy1.csv (all 32 checks correct)
+[362/1030] 22:30:54 openfhe_ckks_N16384_cat1_encrypt_energy1  (CPU 55 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_encrypt_energy1.csv (all 32 checks correct)
+[363/1030] 22:31:13 seal_ckks_N4096_cat1_decrypt_energy2  (CPU 54 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_decrypt_energy2.csv
+[364/1030] 22:32:27 seal_bfv_N8192_cat5_keygen_mem1  (CPU 56 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_keygen_mem1.csv
+[365/1030] 22:32:30 openfhe_bfv_N8192_cat5_decrypt_full_mem3  (CPU 53 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_full_mem3.csv (all 12 checks correct)
+[366/1030] 22:32:32 openfhe_bfv_N8192_cat1_add_inplace_energy2  (CPU 52 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_add_inplace_energy2.csv (all 32 checks correct)
+[367/1030] 22:39:54 openfhe_ckks_N8192_cat1_add_mem2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_add_mem2.csv (all 12 checks correct)
+[368/1030] 22:39:57 seal_ckks_N8192_cat5_decrypt_mem2  (CPU 54 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_decrypt_mem2.csv
+[369/1030] 22:40:00 openfhe_ckks_N4096_cat3_decrypt_energy1  (CPU 53 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_decrypt_energy1.csv (all 32 checks correct)
+[370/1030] 22:42:35 seal_ckks_N2048_cat5_add_mem2  (CPU 56 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_add_mem2.csv
+[371/1030] 22:42:37 openfhe_bfv_N8192_cat3_relinearize_energy2  (CPU 53 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_relinearize_energy2.csv (all 32 checks correct)
+[372/1030] 22:43:13 seal_bfv_N16384_cat1_add_mem2  (CPU 56 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_add_mem2.csv
+[373/1030] 22:43:17 seal_bfv_N8192_cat1_decrypt_mem1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_decrypt_mem1.csv
+[374/1030] 22:43:19 openfhe_bfv_N8192_cat3_add_inplace_mem1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_add_inplace_mem1.csv (all 12 checks correct)
+[375/1030] 22:43:22 seal_bfv_N8192_cat1_multiply_energy1  (CPU 53 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_multiply_energy1.csv
+[376/1030] 22:43:41 seal_ckks_N4096_cat1_keygen_mem2  (CPU 55 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_keygen_mem2.csv
+[377/1030] 22:43:44 seal_ckks_N8192_cat1_encrypt_energy2  (CPU 53 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_encrypt_energy2.csv
+[378/1030] 22:44:01 seal_bgv_N8192_cat3_keygen_mem3  (CPU 54 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_keygen_mem3.csv
+[379/1030] 22:44:04 openfhe_ckks_N8192_cat3_decrypt_full_mem3  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_decrypt_full_mem3.csv (all 12 checks correct)
+[380/1030] 22:44:07 openfhe_bfv_N8192_cat5_add_inplace_mem1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_add_inplace_mem1.csv (all 12 checks correct)
+[381/1030] 22:44:09 openfhe_ckks_N8192_cat1_encrypt_energy1  (CPU 52 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_encrypt_energy1.csv (all 32 checks correct)
+[382/1030] 22:44:27 openfhe_ckks_N4096_cat3_add_inplace_energy1  (CPU 54 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_add_inplace_energy1.csv (all 32 checks correct)
+[383/1030] 22:50:01 openfhe_ckks_N16384_cat1_keygen_mem2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_keygen_mem2.csv (all 12 checks correct)
+[384/1030] 22:50:06 seal_ckks_N8192_cat3_add_energy1  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_add_energy1.csv
+[385/1030] 22:55:20 openfhe_ckks_N4096_cat1_add_energy2  (CPU 56 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_add_energy2.csv (all 32 checks correct)
+[386/1030] 22:57:12 openfhe_bgv_N8192_cat3_multiply_energy1  (CPU 55 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_multiply_energy1.csv (all 32 checks correct)
+[387/1030] 22:58:11 openfhe_ckks_N4096_cat5_add_inplace_mem3  (CPU 55 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_add_inplace_mem3.csv (all 12 checks correct)
+[388/1030] 22:58:14 seal_ckks_N4096_cat5_decrypt_energy1  (CPU 53 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_decrypt_energy1.csv
+[389/1030] 22:59:57 openfhe_bgv_N8192_cat1_multiply_energy1  (CPU 55 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_multiply_energy1.csv (all 32 checks correct)
+[390/1030] 23:00:42 seal_bfv_N16384_cat1_decrypt_mem3  (CPU 55 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_decrypt_mem3.csv
+[391/1030] 23:00:45 openfhe_bfv_N8192_cat3_relinearize_mem1  (CPU 53 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_relinearize_mem1.csv (all 12 checks correct)
+[392/1030] 23:00:48 seal_ckks_N2048_cat1_keygen_mem3  (CPU 52 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_keygen_mem3.csv
+[393/1030] 23:00:51 seal_bgv_N8192_cat3_add_mem3  (CPU 52 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_add_mem3.csv
+[394/1030] 23:00:54 openfhe_ckks_N8192_cat1_encrypt_mem3  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_encrypt_mem3.csv (all 12 checks correct)
+[395/1030] 23:00:56 seal_bfv_N8192_cat1_decrypt_mem3  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_decrypt_mem3.csv
+[396/1030] 23:00:59 openfhe_bgv_N8192_cat5_keygen_mem1  (CPU 52 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_keygen_mem1.csv (all 12 checks correct)
+[397/1030] 23:01:02 seal_ckks_N2048_cat5_decrypt_mem2  (CPU 51 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_decrypt_mem2.csv
+[398/1030] 23:01:04 openfhe_ckks_N8192_cat1_add_inplace_mem2  (CPU 51 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_add_inplace_mem2.csv (all 12 checks correct)
+[399/1030] 23:01:07 openfhe_ckks_N4096_cat3_add_inplace_energy2  (CPU 52 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_add_inplace_energy2.csv (all 32 checks correct)
+[400/1030] 23:06:42 openfhe_ckks_N8192_cat5_add_inplace_energy1  (CPU 55 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_add_inplace_energy1.csv (all 32 checks correct)
+[401/1030] 23:13:03 openfhe_ckks_N16384_cat1_add_energy2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_energy2.csv (all 32 checks correct)
+[402/1030] 23:13:58 seal_bfv_N8192_cat3_keygen_mem1  (CPU 55 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_keygen_mem1.csv
+[403/1030] 23:14:02 openfhe_ckks_N4096_cat3_add_mem2  (CPU 52 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_add_mem2.csv (all 12 checks correct)
+[404/1030] 23:14:04 openfhe_ckks_N2048_cat5_add_mem1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_add_mem1.csv (all 12 checks correct)
+[405/1030] 23:14:07 openfhe_ckks_N8192_cat5_add_mem2  (CPU 51 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_add_mem2.csv (all 12 checks correct)
+[406/1030] 23:14:09 openfhe_ckks_N4096_cat1_add_mem3  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_add_mem3.csv (all 12 checks correct)
+[407/1030] 23:14:12 openfhe_bgv_N8192_cat1_relinearize_mem2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_relinearize_mem2.csv (all 12 checks correct)
+[408/1030] 23:14:15 openfhe_ckks_N8192_cat5_keygen_mem2  (CPU 52 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_keygen_mem2.csv (all 12 checks correct)
+[409/1030] 23:14:17 seal_ckks_N4096_cat1_encrypt_mem3  (CPU 52 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_encrypt_mem3.csv
+[410/1030] 23:14:20 openfhe_ckks_N8192_cat5_encrypt_mem2  (CPU 51 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_encrypt_mem2.csv (all 12 checks correct)
+[411/1030] 23:14:22 openfhe_ckks_N4096_cat1_relinearize_mem3  (CPU 52 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_relinearize_mem3.csv (all 12 checks correct)
+[412/1030] 23:14:25 openfhe_bfv_N8192_cat1_add_inplace_mem1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_add_inplace_mem1.csv (all 12 checks correct)
+[413/1030] 23:14:28 openfhe_ckks_N4096_cat5_encrypt_mem3  (CPU 52 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_encrypt_mem3.csv (all 12 checks correct)
+[414/1030] 23:14:30 seal_bfv_N8192_cat1_multiply_mem3  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat1_multiply_mem3.csv
+[415/1030] 23:14:33 openfhe_bfv_N8192_cat1_add_inplace_mem3  (CPU 52 °C, 3.20 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_add_inplace_mem3.csv (all 12 checks correct)
+[416/1030] 23:14:36 seal_bgv_N8192_cat3_encrypt_energy2  (CPU 52 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_encrypt_energy2.csv
+[417/1030] 23:14:53 seal_bfv_N16384_cat1_decrypt_energy2  (CPU 54 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N16384_cat1_decrypt_energy2.csv
+[418/1030] 23:15:16 seal_bgv_N8192_cat3_multiply_mem2  (CPU 55 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat3_multiply_mem2.csv
+[419/1030] 23:15:18 openfhe_bfv_N16384_cat1_decrypt_full_energy2  (CPU 52 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_decrypt_full_energy2.csv (all 32 checks correct)
+[420/1030] 23:15:46 openfhe_bgv_N8192_cat1_add_inplace_mem1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_add_inplace_mem1.csv (all 12 checks correct)
+[421/1030] 23:15:49 seal_bfv_N8192_cat5_encrypt_energy1  (CPU 52 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat5_encrypt_energy1.csv
+[422/1030] 23:16:06 openfhe_ckks_N8192_cat1_multiply_mem1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[423/1030] 23:16:09 openfhe_bfv_N16384_cat1_multiply_energy1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_multiply_energy1.csv (all 32 checks correct)
+[424/1030] 23:16:31 seal_ckks_N4096_cat3_decrypt_mem2  (CPU 54 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat3_decrypt_mem2.csv
+[425/1030] 23:16:33 seal_bfv_N4096_cat3_keygen_mem1  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N4096_cat3_keygen_mem1.csv
+[426/1030] 23:16:36 seal_ckks_N2048_cat5_decrypt_energy1  (CPU 51 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat5_decrypt_energy1.csv
+[427/1030] 23:17:49 seal_bfv_N8192_cat3_encrypt_mem2  (CPU 54 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_encrypt_mem2.csv
+[428/1030] 23:17:52 openfhe_ckks_N2048_cat1_decrypt_full_mem2  (CPU 52 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_decrypt_full_mem2.csv (all 12 checks correct)
+[429/1030] 23:17:54 openfhe_ckks_N4096_cat1_decrypt_full_energy1  (CPU 52 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_decrypt_full_energy1.csv (all 32 checks correct)
+[430/1030] 23:18:13 openfhe_bgv_N8192_cat5_add_inplace_mem3  (CPU 55 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_add_inplace_mem3.csv (all 12 checks correct)
+[431/1030] 23:18:15 openfhe_ckks_N8192_cat5_decrypt_full_energy1  (CPU 52 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_decrypt_full_energy1.csv (all 32 checks correct)
+[432/1030] 23:18:40 openfhe_bfv_N4096_cat3_keygen_mem1  (CPU 54 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_keygen_mem1.csv (all 12 checks correct)
+[433/1030] 23:18:42 openfhe_bgv_N8192_cat1_encrypt_mem1  (CPU 52 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_encrypt_mem1.csv (all 12 checks correct)
+[434/1030] 23:18:45 seal_bgv_N8192_cat1_decrypt_energy1  (CPU 52 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat1_decrypt_energy1.csv
+[435/1030] 23:19:17 openfhe_ckks_N8192_cat3_relinearize_mem1  (CPU 55 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat3_relinearize_mem1.csv (all 12 checks correct)
+[436/1030] 23:19:19 openfhe_ckks_N4096_cat1_encrypt_mem2  (CPU 53 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_encrypt_mem2.csv (all 12 checks correct)
+[437/1030] 23:19:22 openfhe_bfv_N4096_cat3_encrypt_mem2  (CPU 52 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_encrypt_mem2.csv (all 12 checks correct)
+[438/1030] 23:19:24 seal_bfv_N8192_cat3_decrypt_mem2  (CPU 52 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_decrypt_mem2.csv
+[439/1030] 23:19:27 openfhe_bgv_N8192_cat1_decrypt_full_mem2  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_decrypt_full_mem2.csv (all 12 checks correct)
+[440/1030] 23:19:30 seal_bgv_N8192_cat5_keygen_mem2  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_keygen_mem2.csv
+[441/1030] 23:19:33 openfhe_bfv_N16384_cat1_multiply_mem3  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_multiply_mem3.csv (all 12 checks correct)
+[442/1030] 23:19:37 openfhe_ckks_N8192_cat1_keygen_energy1  (CPU 53 °C, 3.24 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat1_keygen_energy1.csv (all 32 checks correct)
+[443/1030] 23:19:52 openfhe_bfv_N8192_cat5_decrypt_full_mem2  (CPU 53 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_decrypt_full_mem2.csv (all 12 checks correct)
+[444/1030] 23:19:55 openfhe_bfv_N8192_cat1_multiply_mem1  (CPU 52 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat1_multiply_mem1.csv (all 12 checks correct)
+[445/1030] 23:19:58 seal_ckks_N8192_cat1_keygen_mem1  (CPU 52 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_keygen_mem1.csv
+[446/1030] 23:20:01 seal_bfv_N8192_cat3_encrypt_mem1  (CPU 51 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bfv_N8192_cat3_encrypt_mem1.csv
+[447/1030] 23:20:04 openfhe_bgv_N8192_cat1_decrypt_energy1  (CPU 50 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_decrypt_energy1.csv (all 32 checks correct)
+[448/1030] 23:20:29 openfhe_ckks_N16384_cat1_add_mem2  (CPU 54 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_add_mem2.csv (all 12 checks correct)
+[449/1030] 23:20:33 openfhe_bfv_N8192_cat5_encrypt_energy2  (CPU 53 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat5_encrypt_energy2.csv (all 32 checks correct)
+[450/1030] 23:20:50 seal_ckks_N8192_cat1_keygen_mem2  (CPU 53 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_keygen_mem2.csv
+[451/1030] 23:20:53 seal_bgv_N8192_cat5_encrypt_energy2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_encrypt_energy2.csv
+[452/1030] 23:21:10 openfhe_ckks_N4096_cat5_decrypt_mem1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_decrypt_mem1.csv (all 12 checks correct)
+[453/1030] 23:21:13 seal_ckks_N8192_cat5_keygen_mem2  (CPU 51 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_keygen_mem2.csv
+[454/1030] 23:21:16 seal_ckks_N8192_cat3_decrypt_mem2  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_decrypt_mem2.csv
+[455/1030] 23:21:18 seal_ckks_N8192_cat5_decrypt_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_decrypt_energy1.csv
+[456/1030] 23:23:10 seal_bgv_N8192_cat5_add_mem2  (CPU 55 °C, 3.22 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_add_mem2.csv
+[457/1030] 23:23:12 openfhe_bfv_N8192_cat3_decrypt_full_mem3  (CPU 53 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_decrypt_full_mem3.csv (all 12 checks correct)
+[458/1030] 23:23:15 seal_ckks_N8192_cat3_encrypt_mem3  (CPU 52 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat3_encrypt_mem3.csv
+[459/1030] 23:23:18 openfhe_ckks_N4096_cat5_keygen_mem2  (CPU 52 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat5_keygen_mem2.csv (all 12 checks correct)
+[460/1030] 23:23:20 openfhe_bfv_N16384_cat1_relinearize_mem3  (CPU 51 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_relinearize_mem3.csv (all 12 checks correct)
+[461/1030] 23:23:25 seal_ckks_N8192_cat1_add_mem1  (CPU 54 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat1_add_mem1.csv
+[462/1030] 23:23:28 openfhe_bfv_N4096_cat3_add_energy2  (CPU 52 °C, 3.26 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N4096_cat3_add_energy2.csv (all 32 checks correct)
+[463/1030] 23:31:39 seal_ckks_N4096_cat1_relinearize_mem1  (CPU 57 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat1_relinearize_mem1.csv
+[464/1030] 23:31:42 openfhe_bfv_N16384_cat1_relinearize_energy1  (CPU 53 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_relinearize_energy1.csv (all 32 checks correct)
+[465/1030] 23:32:10 seal_ckks_N8192_cat5_encrypt_mem1  (CPU 55 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_encrypt_mem1.csv
+[466/1030] 23:32:12 openfhe_ckks_N4096_cat1_multiply_energy2  (CPU 53 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat1_multiply_energy2.csv (all 32 checks correct)
+[467/1030] 23:33:10 openfhe_bgv_N8192_cat5_add_inplace_energy1  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_add_inplace_energy1.csv (all 32 checks correct)
+[468/1030] 23:38:40 seal_bgv_N8192_cat5_keygen_mem1  (CPU 56 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_keygen_mem1.csv
+[469/1030] 23:38:43 openfhe_ckks_N2048_cat1_add_mem3  (CPU 53 °C, 3.23 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat1_add_mem3.csv (all 12 checks correct)
+[470/1030] 23:38:46 seal_ckks_N2048_cat1_add_mem2  (CPU 53 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N2048_cat1_add_mem2.csv
+[471/1030] 23:38:48 openfhe_bgv_N8192_cat1_keygen_energy2  (CPU 52 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat1_keygen_energy2.csv (all 32 checks correct)
+[472/1030] 23:39:04 seal_ckks_N8192_cat5_encrypt_mem3  (CPU 54 °C, 3.21 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N8192_cat5_encrypt_mem3.csv
+[473/1030] 23:39:06 seal_bgv_N8192_cat5_keygen_mem3  (CPU 53 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_bgv_N8192_cat5_keygen_mem3.csv
+[474/1030] 23:39:09 seal_ckks_N16384_cat1_keygen_energy2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_keygen_energy2.csv
+[475/1030] 23:39:34 seal_ckks_N16384_cat1_add_energy1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N16384_cat1_add_energy1.csv
+[476/1030] 23:43:10 openfhe_bfv_N8192_cat3_encrypt_mem2  (CPU 56 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N8192_cat3_encrypt_mem2.csv (all 12 checks correct)
+[477/1030] 23:43:13 seal_ckks_N4096_cat5_add_mem2  (CPU 53 °C, 3.25 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/seal_ckks_N4096_cat5_add_mem2.csv
+[478/1030] 23:43:15 openfhe_ckks_N16384_cat1_encrypt_energy2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N16384_cat1_encrypt_energy2.csv (all 32 checks correct)
+[479/1030] 23:43:34 openfhe_bgv_N8192_cat5_decrypt_full_mem2  (CPU 55 °C, 3.24 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat5_decrypt_full_mem2.csv (all 12 checks correct)
+[480/1030] 23:43:36 openfhe_bfv_N16384_cat1_decrypt_full_mem2  (CPU 52 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bfv_N16384_cat1_decrypt_full_mem2.csv (all 12 checks correct)
+[481/1030] 23:43:39 openfhe_ckks_N8192_cat5_decrypt_full_mem2  (CPU 53 °C, 3.26 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N8192_cat5_decrypt_full_mem2.csv (all 12 checks correct)
+[482/1030] 23:43:42 openfhe_ckks_N4096_cat3_decrypt_full_mem2  (CPU 52 °C, 1.10 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N4096_cat3_decrypt_full_mem2.csv (all 12 checks correct)
+[483/1030] 23:43:44 openfhe_bgv_N8192_cat3_add_mem2  (CPU 51 °C, 3.27 GHz)
+OK: wrote 12 rows to /work/results/raw/energy_campaign/d1/openfhe_bgv_N8192_cat3_add_mem2.csv (all 12 checks correct)
+[484/1030] 23:43:47 openfhe_ckks_N2048_cat5_keygen_energy1  (CPU 51 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/d1/openfhe_ckks_N2048_cat5_keygen_energy1.csv (all 32 checks correct)
+STOPPED: openfhe_ckks_N2048_cat5_keygen_energy1 does not validate: row 1: energy columns out of range
+   moved the invalid/partial files of openfhe_ckks_N2048_cat5_keygen_energy1 to results/raw/energy_campaign/d1/invalid/20261115T234400
+boost restored (1)
