@@ -2892,13 +2892,63 @@ def energy_campaign_comparisons(cell_rows, stem, dump):
         print(f"  comparisons: {len(comps)} OpenFHE cells in sessions {', '.join(ENERGY_CAMPAIGN_SESSIONS)}; "
               f"{n_ratio} with a ratio (matched profile, equivalent boundary)")
 
+
+# ---------- HEProfiler reproduction (validation/heprofiler/, validation only) ----------
+
+def aggregate_heprofiler_validation(args):
+    """--scenario=heprofiler_validation reads ../../validation/heprofiler/ (see its
+    README). Outputs results/final/:
+      heprofiler_validation_seal.csv   per depth: SEAL latency this laptop / paper
+          (mult, add, rot, relin), ciphertext size relative difference, CKKS
+          error of multiplication as a fraction for both (the reproduction
+          recorded a percentage);
+      heprofiler_validation_helib.csv  per depth: HElib multiplication, paper,
+          HEProfiler's code on this laptop (the mean its report gives) and the
+          first own program, with their ratios to the paper."""
+    src = args.raw_dir or "../../validation/heprofiler"
+    out = os.path.dirname(args.out) if args.out else "../results/final"
+    seal = []
+    for r in csv.DictReader(open(os.path.join(src, "seal_comparison.csv"))):
+        row = {"depth": int(r["depth"])}
+        for op in ("mult", "add", "rot", "relin"):
+            row[f"{op}_ms_paper"], row[f"{op}_ms_laptop"] = float(r[f"{op}_ms"]), float(r[f"our_{op}_ms"])
+            row[f"{op}_laptop_over_paper"] = float(r[f"our_{op}_ms"]) / float(r[f"{op}_ms"])
+        row["ct_mb_rel_diff"] = float(r["our_ct_mb"]) / float(r["ct_mb"]) - 1
+        row["mult_err_paper"], row["mult_err_laptop"] = float(r["mult_err"]), float(r["our_mult_err"]) / 100
+        seal.append(row)
+    paper = {int(r["depth"]): float(r["paper_mult_ms"])
+             for r in csv.DictReader(open(os.path.join(src, "helib_paper_multiplication.csv")))}
+    own = {int(r["depth"]): float(r["latency_ms"])
+           for r in csv.DictReader(open(os.path.join(src, "helib_own_harness_multiplication.csv")))}
+    code, cur = {}, None
+    for line in open(os.path.join(src, "helib_heprofiler_code_report.csv")):
+        p = line.strip().split(",")
+        if line.strip().isdigit():
+            cur = int(line.strip())
+        elif p[0] == "HElibProfiler" and len(p) > 3 and p[1] == "mult" and p[2] == "runtimes":
+            code[cur] = float(p[3]) / 1e6        # HEProfiler writes: mean, standard deviation (ns)
+    helib = []
+    for d in sorted(paper):
+        row = {"depth": d, "paper_ms": paper[d], "heprofiler_code_ms": code.get(d, ""), "own_program_ms": own.get(d, "")}
+        row["heprofiler_code_over_paper"] = code[d] / paper[d] if d in code else ""
+        row["own_program_over_paper"] = own[d] / paper[d] if d in own else ""
+        row["own_program_over_heprofiler_code"] = own[d] / code[d] if d in own and d in code else ""
+        helib.append(row)
+    for name, rows in (("seal", seal), ("helib", helib)):
+        with open(os.path.join(out, f"heprofiler_validation_{name}.csv"), "w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(rows[0]), lineterminator="\n")
+            w.writeheader()
+            w.writerows(rows)
+    print(f"heprofiler_validation: {len(seal)} SEAL depths, {len(helib)} HElib depths "
+          f"({sum(1 for r in helib if r['heprofiler_code_ms'] != '')} with HEProfiler's code on this laptop)")
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
                               "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard",
-                              "energy_validation", "energy_campaign"])
+                              "energy_validation", "energy_campaign", "heprofiler_validation"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -2926,6 +2976,10 @@ def main():
 
     if args.scenario == "energy_campaign":
         aggregate_energy_campaign(args)
+        return
+
+    if args.scenario == "heprofiler_validation":
+        aggregate_heprofiler_validation(args)
         return
 
     if args.scenario == "composite_checks":
