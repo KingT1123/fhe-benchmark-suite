@@ -2506,7 +2506,8 @@ def aggregate_energy_campaign(args):
           block length relative to the 50 ms block; least-squares line
           E_block = c + e x n with the 95% CI of c; relative standard deviation
           of the key-generation runs; and the decision rule of section 4.2.
-    No ratio between libraries is computed here."""
+    Library comparison: energy_campaign_comparisons() (below), campaign
+    sessions only."""
     from validate_cell import validate
     from datetime import datetime
     root = (args.raw_dir or "../results/raw/energy_campaign").rstrip("/")
@@ -2788,7 +2789,108 @@ def aggregate_energy_campaign(args):
         print(f"  window test {r['session']}: {r['decision']}; key-generation repetitions: {r['keygen_repetitions']}")
     for e in excluded:
         print(f"EXCLUDED: {e['session']}/{e['invocation']}: {e['reason']}")
+    energy_campaign_comparisons(cell_rows, stem, dump)
 
+
+
+ENERGY_CAMPAIGN_SESSIONS = ("day1", "day2")   # stage-2 sessions (rules, sections 1 and 5)
+
+
+def energy_campaign_comparisons(cell_rows, stem, dump):
+    """OpenFHE vs SEAL, energy and peak RSS, per campaign session (rules,
+    section 1): a ratio OpenFHE/SEAL is formed ONLY for matched-profile cells
+    (openfhe/probe/operations_v2.csv) with an equivalent computational boundary
+    (EQUIVALENT_OPS), and only within one session; for end-to-end API costs and
+    for configurations requiring separate analysis both values are given, no
+    ratio. Energy ratios are given with all valid invocations (gross, PRIMARY),
+    without the flagged invocations, and idle-corrected (secondary); the range
+    of the ratio over the four pairings of the two invocations of each library
+    shows the between-invocation spread. Peak RSS is the whole process
+    (library, context, keys and ciphertexts), not the operation alone.
+    Outputs: _comparisons.csv, _comparisons_summary.csv (per session, over the
+    ratio cells: median and range), _comparisons_reproducibility.csv (the same
+    ratio in day1 and day2), _across_sessions.csv (every cell of both
+    libraries: day2 / day1, gross energy and peak RSS)."""
+    cls = {(r["scheme"], r["N"], r["category"], r["operation"]): r
+           for r in csv.DictReader(open("../openfhe/probe/operations_v2.csv"))}
+    cells = {(c["session"], c["library"], c["scheme"], c["N"], c["category"], c["operation"]): c
+             for c in cell_rows if c["session"] in ENERGY_CAMPAIGN_SESSIONS and not c.get("label")}
+
+    def f(x):
+        try:
+            return float(x)
+        except (TypeError, ValueError):
+            return float("nan")
+    comps = []
+    for (sess, lib, sch, N, cat, op), o in sorted(cells.items()):
+        if lib != "openfhe":
+            continue
+        sop = {"decrypt_full": "decrypt", "add_inplace": "add"}.get(op, op)
+        s = cells.get((sess, "seal", sch, N, cat, sop))
+        c = cls.get((sch, N, cat, sop), {})
+        row = {"session": sess, "scheme": sch, "N": N, "category": cat, "operation": op, "seal_operation": sop,
+               "boundary": "equivalent computation" if op in EQUIVALENT_OPS else "end-to-end API cost",
+               "comparability_class": c.get("verdict", ""), "remaining_differences": c.get("differences", ""),
+               "openfhe_inner_loop": o["inner_loop"],
+               "openfhe_gross_j": o["gross_j_mean"], "seal_gross_j": s["gross_j_mean"] if s else "",
+               "openfhe_net_j": o["net_j_mean"], "seal_net_j": s["net_j_mean"] if s else "",
+               "openfhe_peak_rss_mb": o["peak_rss_mb_mean"], "seal_peak_rss_mb": s["peak_rss_mb_mean"] if s else "",
+               "openfhe_flags": o.get("flags", ""), "seal_flags": s.get("flags", "") if s else ""}
+        if s is None:
+            row["note"] = "SEAL counterpart missing in this session"
+        elif c.get("verdict") not in ("matched-profile comparison", "exact-parameter comparison"):
+            row["note"] = "configuration requires separate analysis: values per library, no ratio"
+        elif op not in EQUIVALENT_OPS:
+            row["note"] = "API costs of different computations: no ratio"
+        else:
+            pairs = [f(a) / f(b) for a in (o["gross_j_inv1"], o["gross_j_inv2"])
+                     for b in (s["gross_j_inv1"], s["gross_j_inv2"]) if f(a) > 0 and f(b) > 0]
+            row.update({"ratio_gross": f(o["gross_j_mean"]) / f(s["gross_j_mean"]),
+                        "ratio_gross_without_flagged": f(o["gross_j_mean_without_flagged"]) / f(s["gross_j_mean_without_flagged"]),
+                        "ratio_gross_pairing_min": min(pairs) if pairs else "",
+                        "ratio_gross_pairing_max": max(pairs) if pairs else "",
+                        "ratio_net": f(o["net_j_mean"]) / f(s["net_j_mean"]),
+                        "ratio_peak_rss": f(o["peak_rss_mb_mean"]) / f(s["peak_rss_mb_mean"])})
+            if op == "keygen" and int(o["inner_loop"]) > 1:
+                row["note"] = (f"OpenFHE timed as {o['inner_loop']} key generations per window "
+                               "(rules, section 5: about -9% per key generation)")
+        comps.append(row)
+    summ = []
+    for sess in ENERGY_CAMPAIGN_SESSIONS:
+        rs = [r for r in comps if r["session"] == sess and r.get("ratio_gross", "") != ""]
+        for k in ("ratio_gross", "ratio_gross_without_flagged", "ratio_net", "ratio_peak_rss"):
+            v = sorted(r[k] for r in rs if not math.isnan(r[k]))
+            if v:
+                summ.append({"session": sess, "quantity": k, "cells": len(v), "median": statistics.median(v),
+                             "min": v[0], "max": v[-1], "cells_openfhe_lower": sum(x < 1 for x in v)})
+    rep = []
+    d = {(r["session"], r["scheme"], r["N"], r["category"], r["operation"]): r for r in comps if r.get("ratio_gross", "") != ""}
+    for (sess, sch, N, cat, op), r1 in sorted(d.items()):
+        r2 = d.get(("day2", sch, N, cat, op))
+        if sess == "day1" and r2:
+            rep.append({"scheme": sch, "N": N, "category": cat, "operation": op,
+                        "ratio_gross_day1": r1["ratio_gross"], "ratio_gross_day2": r2["ratio_gross"],
+                        "day2_over_day1": r2["ratio_gross"] / r1["ratio_gross"],
+                        "ratio_peak_rss_day1": r1["ratio_peak_rss"], "ratio_peak_rss_day2": r2["ratio_peak_rss"]})
+    # the same cell in the two campaign sessions (every cell, both libraries)
+    across = []
+    for (sess, lib, sch, N, cat, op), c1 in sorted(cells.items()):
+        c2 = cells.get(("day2", lib, sch, N, cat, op))
+        if sess == "day1" and c2:
+            across.append({"library": lib, "scheme": sch, "N": N, "category": cat, "operation": op,
+                           "gross_j_day1": c1["gross_j_mean"], "gross_j_day2": c2["gross_j_mean"],
+                           "gross_day2_over_day1": f(c2["gross_j_mean"]) / f(c1["gross_j_mean"]),
+                           "peak_rss_mb_day1": c1["peak_rss_mb_mean"], "peak_rss_mb_day2": c2["peak_rss_mb_mean"],
+                           "peak_rss_day2_over_day1": f(c2["peak_rss_mb_mean"]) / f(c1["peak_rss_mb_mean"])})
+    if across:
+        dump(stem + "_across_sessions.csv", across)
+    if comps:
+        dump(stem + "_comparisons.csv", comps)
+        dump(stem + "_comparisons_summary.csv", summ)
+        dump(stem + "_comparisons_reproducibility.csv", rep)
+        n_ratio = sum(r.get("ratio_gross", "") != "" for r in comps)
+        print(f"  comparisons: {len(comps)} OpenFHE cells in sessions {', '.join(ENERGY_CAMPAIGN_SESSIONS)}; "
+              f"{n_ratio} with a ratio (matched profile, equivalent boundary)")
 
 def main():
     ap = argparse.ArgumentParser()
