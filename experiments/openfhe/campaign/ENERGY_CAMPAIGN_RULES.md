@@ -127,3 +127,34 @@ Change, made before any campaign result was analysed:
   log) and is not used for results. The campaign is run as two new sessions,
   `day1` and `day2`, with the new plan; a session may be stopped (Ctrl+C) and
   resumed with the same command: valid invocations are kept and skipped.
+
+## 6. Time-based set-aside after a recorded disturbance (17-18 November 2026)
+
+Besides the automatic set-aside on a loss of mains power (section 3), a block
+of energy invocations may be set aside **by time** when an external
+disturbance with a recorded cause covers a known period. The decision uses
+only the start time of the disturbance, never the measured values: every
+energy invocation whose valid attempt started at or after that time is moved
+(`tools/set_aside_after.sh SESSION ISO_TIME LABEL REASON`) to
+`<session>/invalid/<timestamp>_<label>/`, listed in `set_aside.csv` with its
+reason, and measured again by resuming the session with the same command.
+Nothing is deleted; memory invocations are not touched. Before a resume,
+`tools/energy_preflight.sh` checks the charger, sets the platform profile to
+balanced and refuses to start while a process uses more than 20% of a core.
+
+Used twice:
+
+- **day1**: after an unexplained restart at 06:56 (16 November), a browser
+  renderer process used 100% of one core until it was closed; 243 energy
+  invocations from that time were set aside and measured again;
+- **day2**: a power cut of about 7 hours (from 14:41, 17 November) with
+  repeated sleeps; after mains returned (resume at 22:52) the battery was
+  recharging from 23% and the idle readings were about twice the session
+  median; 24 energy invocations from 22:52:30 were set aside and measured
+  again the same night (00:57-02:13, 18 November, battery full). During the
+  power cut the system clock jumped by one hour; it was corrected by network
+  time before the repeat, so the set-aside entries recorded with the wrong
+  clock (22:54-23:39 local, real 21:54-22:39) precede the repeat in time.
+
+The session summary (`energy_campaign_sessions.csv`) counts the two kinds
+separately (`set_aside_mains_lost`, `set_aside_recorded_disturbance`).

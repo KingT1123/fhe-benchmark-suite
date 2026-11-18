@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,iteration,error,metric,correctness
+SEAL,CKKS,16384,1,add,0,2.41548e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,1,2.44698e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,2,2.35611e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,3,2.31799e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,4,2.35757e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,5,2.40184e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,6,2.46369e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,7,2.14589e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,8,2.29706e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,9,2.30397e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,10,2.66477e-08,max_norm_error,correct
+SEAL,CKKS,16384,1,add,11,2.09666e-08,max_norm_error,correct

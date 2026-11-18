@@ -103,7 +103,7 @@ def main():
     print(f"  plan: {len(plan)} cells -> {want_e} energy invocations, {want_m} memory invocations")
     print(f"  energy invocations with their files, valid, energy > 0: {n_energy}/{want_e}")
     print(f"  memory invocations with their files, valid, peak RSS > 0: {n_mem}/{want_m}")
-    print(f"  set aside after a loss of mains power: {len(aside)} (original files kept: {kept}); each measured again: "
+    print(f"  set aside (mains loss, or time-based after a recorded disturbance): {len(aside)} (original files kept: {kept}); each measured again: "
           f"{'yes' if not any(p_.startswith(s['tag'] + ':') for s in aside for p_ in problems) else 'NO'}")
     print(f"  power log: {len(power)} samples; off mains: {off}; with boost on: {boost}")
     for p_ in problems:
