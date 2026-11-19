@@ -1,0 +1,87 @@
+[01:42:53] session idle window idle_start: 30s settle, then 60s with nothing running
+[1/38] 01:44:23 openfhe_ckks_N4096_cat1_keygen_k5_energy2  (CPU 50 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k5_energy2.csv (all 32 checks correct); key generations per window: 5, every one checked (160 key pairs)
+[2/38] 01:44:40 openfhe_ckks_N16384_cat1_relinearize_c_energy2  (CPU 55 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N16384_cat1_relinearize_c_energy2.csv (all 32 checks correct)
+[3/38] 01:45:01 openfhe_bfv_N4096_cat3_keygen_k7_energy3  (CPU 56 °C, 3.22 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k7_energy3.csv (all 32 checks correct); key generations per window: 7, every one checked (224 key pairs)
+[4/38] 01:45:17 openfhe_ckks_N2048_cat5_keygen_k32_energy3  (CPU 54 °C, 3.18 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k32_energy3.csv (all 32 checks correct); key generations per window: 32, every one checked (1024 key pairs)
+[5/38] 01:45:33 seal_ckks_N2048_cat5_keygen_k1_energy3  (CPU 54 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N2048_cat5_keygen_k1_energy3.csv
+[6/38] 01:45:48 seal_ckks_N16384_cat1_relinearize_c_energy1  (CPU 53 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N16384_cat1_relinearize_c_energy1.csv
+[7/38] 01:46:09 openfhe_ckks_N4096_cat1_keygen_k5_energy3  (CPU 56 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k5_energy3.csv (all 32 checks correct); key generations per window: 5, every one checked (160 key pairs)
+[8/38] 01:46:25 openfhe_ckks_N4096_cat1_keygen_k10_energy1  (CPU 55 °C, 3.18 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k10_energy1.csv (all 32 checks correct); key generations per window: 10, every one checked (320 key pairs)
+[9/38] 01:46:43 openfhe_ckks_N4096_cat1_keygen_k10_energy2  (CPU 55 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k10_energy2.csv (all 32 checks correct); key generations per window: 10, every one checked (320 key pairs)
+[10/38] 01:47:00 openfhe_bfv_N4096_cat3_keygen_k26_energy2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k26_energy2.csv (all 32 checks correct); key generations per window: 26, every one checked (832 key pairs)
+[11/38] 01:47:18 openfhe_ckks_N4096_cat1_keygen_k1_energy1  (CPU 54 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k1_energy1.csv (all 32 checks correct)
+[12/38] 01:47:33 seal_ckks_N2048_cat5_keygen_k1_energy1  (CPU 53 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N2048_cat5_keygen_k1_energy1.csv
+[13/38] 01:47:48 openfhe_ckks_N16384_cat1_relinearize_c_energy3  (CPU 52 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N16384_cat1_relinearize_c_energy3.csv (all 32 checks correct)
+[14/38] 01:48:10 openfhe_bfv_N4096_cat3_keygen_k26_energy1  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k26_energy1.csv (all 32 checks correct); key generations per window: 26, every one checked (832 key pairs)
+[15/38] 01:48:28 openfhe_ckks_N2048_cat5_keygen_k65_energy3  (CPU 54 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k65_energy3.csv (all 32 checks correct); key generations per window: 65, every one checked (2080 key pairs)
+[16/38] 01:48:46 openfhe_bfv_N4096_cat3_keygen_k7_energy2  (CPU 54 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k7_energy2.csv (all 32 checks correct); key generations per window: 7, every one checked (224 key pairs)
+[17/38] 01:49:01 openfhe_ckks_N16384_cat1_relinearize_c_energy1  (CPU 53 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N16384_cat1_relinearize_c_energy1.csv (all 32 checks correct)
+[18/38] 01:49:23 openfhe_ckks_N2048_cat5_keygen_k16_energy2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k16_energy2.csv (all 32 checks correct); key generations per window: 16, every one checked (512 key pairs)
+[19/38] 01:49:38 openfhe_bfv_N4096_cat3_keygen_k13_energy3  (CPU 53 °C, 3.25 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k13_energy3.csv (all 32 checks correct); key generations per window: 13, every one checked (416 key pairs)
+[20/38] 01:49:55 openfhe_ckks_N2048_cat5_keygen_k65_energy2  (CPU 54 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k65_energy2.csv (all 32 checks correct); key generations per window: 65, every one checked (2080 key pairs)
+[21/38] 01:50:13 openfhe_bfv_N4096_cat3_keygen_k13_energy1  (CPU 54 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k13_energy1.csv (all 32 checks correct); key generations per window: 13, every one checked (416 key pairs)
+[22/38] 01:50:29 seal_ckks_N16384_cat1_relinearize_c_energy4  (CPU 54 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N16384_cat1_relinearize_c_energy4.csv
+[23/38] 01:50:50 openfhe_bfv_N4096_cat3_keygen_k7_energy1  (CPU 55 °C, 3.23 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k7_energy1.csv (all 32 checks correct); key generations per window: 7, every one checked (224 key pairs)
+[24/38] 01:51:05 openfhe_ckks_N2048_cat5_keygen_k16_energy1  (CPU 53 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k16_energy1.csv (all 32 checks correct); key generations per window: 16, every one checked (512 key pairs)
+[25/38] 01:51:21 seal_ckks_N16384_cat1_relinearize_c_energy2  (CPU 52 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N16384_cat1_relinearize_c_energy2.csv
+[26/38] 01:51:42 openfhe_ckks_N2048_cat5_keygen_k32_energy2  (CPU 55 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k32_energy2.csv (all 32 checks correct); key generations per window: 32, every one checked (1024 key pairs)
+[27/38] 01:51:58 openfhe_ckks_N2048_cat5_keygen_k65_energy1  (CPU 53 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k65_energy1.csv (all 32 checks correct); key generations per window: 65, every one checked (2080 key pairs)
+[28/38] 01:52:16 seal_ckks_N2048_cat5_keygen_k1_energy2  (CPU 54 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N2048_cat5_keygen_k1_energy2.csv
+[29/38] 01:52:31 openfhe_bfv_N4096_cat3_keygen_k26_energy3  (CPU 52 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k26_energy3.csv (all 32 checks correct); key generations per window: 26, every one checked (832 key pairs)
+[30/38] 01:52:49 openfhe_ckks_N4096_cat1_keygen_k1_energy3  (CPU 53 °C, 3.21 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k1_energy3.csv (all 32 checks correct)
+[31/38] 01:53:03 seal_ckks_N16384_cat1_relinearize_c_energy3  (CPU 52 °C, 3.19 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/seal_ckks_N16384_cat1_relinearize_c_energy3.csv
+[32/38] 01:53:25 openfhe_ckks_N4096_cat1_keygen_k10_energy3  (CPU 54 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k10_energy3.csv (all 32 checks correct); key generations per window: 10, every one checked (320 key pairs)
+[33/38] 01:53:42 openfhe_bfv_N4096_cat3_keygen_k13_energy2  (CPU 54 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_bfv_N4096_cat3_keygen_k13_energy2.csv (all 32 checks correct); key generations per window: 13, every one checked (416 key pairs)
+[34/38] 01:53:58 openfhe_ckks_N4096_cat1_keygen_k5_energy1  (CPU 53 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k5_energy1.csv (all 32 checks correct); key generations per window: 5, every one checked (160 key pairs)
+[35/38] 01:54:15 openfhe_ckks_N16384_cat1_relinearize_c_energy4  (CPU 53 °C, 3.27 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N16384_cat1_relinearize_c_energy4.csv (all 32 checks correct)
+[36/38] 01:54:37 openfhe_ckks_N2048_cat5_keygen_k16_energy3  (CPU 54 °C, 1.10 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k16_energy3.csv (all 32 checks correct); key generations per window: 16, every one checked (512 key pairs)
+[37/38] 01:54:52 openfhe_ckks_N2048_cat5_keygen_k32_energy1  (CPU 52 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N2048_cat5_keygen_k32_energy1.csv (all 32 checks correct); key generations per window: 32, every one checked (1024 key pairs)
+[38/38] 01:55:08 openfhe_ckks_N4096_cat1_keygen_k1_energy2  (CPU 53 °C, 3.20 GHz)
+OK: wrote 32 rows to /work/results/raw/energy_campaign/sens1/openfhe_ckks_N4096_cat1_keygen_k1_energy2.csv (all 32 checks correct)
+[01:55:23] session idle window idle_end: 30s settle, then 60s with nothing running
+Session sens1 complete: 01:56:53.
+session check: sens1
+  plan: 12 cells -> 38 energy invocations, 0 memory invocations
+  energy invocations with their files, valid, energy > 0: 38/38
+  memory invocations with their files, valid, peak RSS > 0: 0/0
+  set aside (mains loss, or time-based after a recorded disturbance): 0 (original files kept: 0); each measured again: yes
+  power log: 825 samples; off mains: 0; with boost on: 0
+  RESULT: all expected files present and valid
+boost restored (1)

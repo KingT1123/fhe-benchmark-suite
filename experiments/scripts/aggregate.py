@@ -2516,7 +2516,8 @@ def aggregate_energy_campaign(args):
     else:
         dirs = sorted(d for d in glob.glob(os.path.join(root, "*")) if os.path.isdir(d)
                       and not os.path.basename(d).startswith("_")
-                      and os.path.basename(d) not in ENERGY_CAMPAIGN_STOPPED_SESSIONS)
+                      and os.path.basename(d) not in ENERGY_CAMPAIGN_STOPPED_SESSIONS
+                      and os.path.basename(d) not in ENERGY_SENSITIVITY_SESSIONS)
     stem = (args.out or "../results/final/energy_campaign.csv")[:-4]
     inv_rows, cell_rows, sess_rows, excluded = [], [], [], []
     win_rows, fit_rows, kg_rows, decision_rows = [], [], [], []
@@ -2790,7 +2791,60 @@ def aggregate_energy_campaign(args):
     for e in excluded:
         print(f"EXCLUDED: {e['session']}/{e['invocation']}: {e['reason']}")
     energy_campaign_comparisons(cell_rows, stem, dump)
+    energy_sensitivity_summary(cell_rows, stem, dump)
 
+
+ENERGY_SENSITIVITY_SESSIONS = ("sens1",)   # analysed on their own (rules, section 7): pass --raw-dir=<session>
+
+
+def energy_sensitivity_summary(cell_rows, stem, dump):
+    """Sensitivity session (rules, section 7), from its own cells only.
+    keygen rows: gross CPU-package energy per key generation for each K
+    (mean of the invocations, lowest and highest invocation, their relative
+    spread), relative difference to the largest K of the same configuration,
+    and, where SEAL measured the same configuration in the session, the
+    OpenFHE/SEAL ratio (ratio of means; lowest and highest over all pairs of
+    invocations). pair rows (label c): the same ratio for the relinearization
+    pair. Nothing is decided by these values."""
+    cells = [c for c in cell_rows if c["session"] in ENERGY_SENSITIVITY_SESSIONS
+             and isinstance(c.get("gross_j_mean"), float)]
+    if not cells:
+        return
+    def invs(c):
+        return [c[k] for k in sorted(c) if k.startswith("gross_j_inv")]
+    def key(c):
+        return (c["session"], c["scheme"], c["N"], c["category"], c["operation"])
+    seal = {key(c): c for c in cells if c["library"] == "seal"}
+    out = []
+    for c in cells:
+        if c["library"] != "openfhe":
+            continue
+        v = invs(c)
+        r = {"session": c["session"], "kind": "keygen_K" if c["operation"] == "keygen" else "pair",
+             "scheme": c["scheme"], "N": c["N"], "category": c["category"], "operation": c["operation"],
+             "label": c["label"], "K": int(c["inner_loop"]), "invocations": len(v),
+             "openfhe_mj_mean": c["gross_j_mean"] * 1e3, "openfhe_mj_min": min(v) * 1e3,
+             "openfhe_mj_max": max(v) * 1e3, "openfhe_rel_spread": (max(v) - min(v)) / c["gross_j_mean"]}
+        if c["operation"] == "keygen":
+            same = [x for x in cells if x["library"] == "openfhe" and key(x) == key(c)]
+            top = max(same, key=lambda x: int(x["inner_loop"]))
+            r["rel_to_largest_K"] = c["gross_j_mean"] / top["gross_j_mean"] - 1
+            r["largest_K"] = int(top["inner_loop"])
+        s = seal.get(key(c))
+        if s:
+            w = invs(s)
+            r.update({"seal_mj_mean": s["gross_j_mean"] * 1e3, "seal_mj_min": min(w) * 1e3,
+                      "seal_mj_max": max(w) * 1e3, "seal_rel_spread": (max(w) - min(w)) / s["gross_j_mean"],
+                      "seal_invocations": len(w), "ratio_openfhe_seal": c["gross_j_mean"] / s["gross_j_mean"],
+                      "ratio_pairs_min": min(a / b for a in v for b in w),
+                      "ratio_pairs_max": max(a / b for a in v for b in w)})
+        out.append(r)
+    out.sort(key=lambda r: (r["kind"], r["scheme"], int(r["N"]), r["category"], r["K"]))
+    dump(stem + "_sensitivity.csv", out,
+         ["session", "kind", "scheme", "N", "category", "operation", "label", "K", "largest_K", "invocations",
+          "openfhe_mj_mean", "openfhe_mj_min", "openfhe_mj_max", "openfhe_rel_spread", "rel_to_largest_K",
+          "seal_invocations", "seal_mj_mean", "seal_mj_min", "seal_mj_max", "seal_rel_spread",
+          "ratio_openfhe_seal", "ratio_pairs_min", "ratio_pairs_max"])
 
 
 ENERGY_CAMPAIGN_SESSIONS = ("day1", "day2")   # stage-2 sessions (rules, sections 1 and 5)

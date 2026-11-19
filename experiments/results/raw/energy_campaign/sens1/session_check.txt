@@ -1,0 +1,7 @@
+session check: sens1
+  plan: 12 cells -> 38 energy invocations, 0 memory invocations
+  energy invocations with their files, valid, energy > 0: 38/38
+  memory invocations with their files, valid, peak RSS > 0: 0/0
+  set aside (mains loss, or time-based after a recorded disturbance): 0 (original files kept: 0); each measured again: yes
+  power log: 825 samples; off mains: 0; with boost on: 0
+  RESULT: all expected files present and valid

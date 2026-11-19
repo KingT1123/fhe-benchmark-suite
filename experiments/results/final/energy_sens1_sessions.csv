@@ -1,0 +1,2 @@
+session,plan_cells,invocations_valid,invocations_excluded,energy_invocations_flagged,cells_pair_disagreement,set_aside_mains_lost,set_aside_recorded_disturbance,idle_baseline_w_session_median,idle_readings_n,idle_reading_w_min,idle_reading_w_max,idle_reading_max_over_median,idle_start_window_w,idle_end_window_w,effective_freq_mhz_max_during_invocations,power_samples,samples_off_mains,samples_boost_on,flags
+sens1,12,38,0,0,0,0,0,5.339824999999999,38,4.93236,5.64937,1.0579691282017671,5.268389033898305,5.33850006779661,3273.778,825,0,0,
