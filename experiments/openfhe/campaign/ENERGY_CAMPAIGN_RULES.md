@@ -158,3 +158,35 @@ Used twice:
 
 The session summary (`energy_campaign_sessions.csv`) counts the two kinds
 separately (`set_aside_mains_lost`, `set_aside_recorded_disturbance`).
+
+## 7. Sensitivity session `sens1` (after the supervisor's review, 18 November 2026)
+
+Written before the session is run. Plan: `campaign/energy_plan_sensitivity.csv`
+(12 cells, 38 energy invocations, no memory invocations), same runner and
+protocol as the campaign. Purpose and analysis, fixed here:
+
+1. **Key generations timed K per window.** For OpenFHE CKKS 2048/5 (K = 16,
+   32, 65) and BFV 4096/3 (K = 7, 13, 26), both of depth 0, and CKKS 4096/1
+   (K = 1, 5, 10; depth 1, about 5 ms, so K = 1 is measurable), three energy
+   invocations per K: gross CPU-package energy per key generation for each K,
+   its spread between invocations, and the relative difference between the
+   values of K. SEAL's CKKS 2048/5 key generation (three invocations) gives
+   the OpenFHE/SEAL ratio of that cell with each K. Nothing is decided by
+   these values: they qualify the grouped measurements of the campaign.
+2. **Complete work per key generation.** Before this session the program was
+   changed to check, outside the window, every key pair of a window (recorded
+   primes; a fresh value encrypted and decrypted correctly), not only the last.
+   Writing this check showed that OpenFHE's release of its context cache also
+   empties its static map of evaluation keys: with depth > 0, the window also
+   holds the deletion of the K-1 previous relinearization keys. In the
+   campaign this concerns three OpenFHE cells without a ratio (CKKS 4096/1,
+   BGV 8192/3, CKKS 8192/3, K = 10, 6, 6); the CKKS 4096/1 comparison of K = 1
+   with K = 5 and 10 measures its effect.
+3. **CKKS 16384/1 relinearization.** SEAL and OpenFHE, four energy
+   invocations each, in the same session: an independent confirmation of
+   the ratio of this cell (campaign: 2.28 in day1, 1.88 in day2 with all
+   valid runs, 2.34 in day2 without the flagged SEAL run). Reported with the
+   spread between invocations; the campaign values are kept as they are.
+
+Flags and repeated runs follow sections 2 and 3. The session is analysed on
+its own; its cells (labels k<K> and c) are not merged into day1 or day2.

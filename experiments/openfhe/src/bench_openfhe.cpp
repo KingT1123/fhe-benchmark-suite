@@ -297,6 +297,7 @@ static std::vector<double> rotated(const Ctx &c, const std::vector<double> &x) {
 
 static std::string g_rapl_energy_path;
 static uint64_t g_rapl_max_uj = 0, g_last_window_uj = 0;
+static uint64_t g_keygen_pairs_checked = 0;   // --keygen-per-window: key pairs checked (all of every window)
 
 static uint64_t rapl_now() {
     if (g_rapl_energy_path.empty()) return 0;
@@ -358,9 +359,12 @@ static double ms(Clock::time_point t0, Clock::time_point t1) {
 // energy counter can resolve): K complete key generations in one timed
 // window, latency = window / K. The first release of the context cache is
 // outside the window; the K-1 others are inside it. They only drop the
-// factory's references (every context is kept alive until after the window,
-// so nothing is freed there), so each key generation still starts from an
-// empty cache, as with K = 1. K = 1 is the code path used before.
+// factory's references (every context is kept alive until after the window),
+// so each key generation still starts from an empty cache, as with K = 1.
+// Exception found on 19 Nov 2026: the release also empties OpenFHE's static
+// map of evaluation keys, so with depth > 0 the previous repetition's
+// relinearization key is deleted inside the window (K-1 deletions per window).
+// K = 1 is the code path used before.
 static Result time_keygen(const Args &a, const Config &c, Ctx &keys_out) {
     const int K = a.keygen_per_window;
     std::vector<CryptoContext<DCRTPoly>> ccs; ccs.reserve(K);
@@ -378,6 +382,35 @@ static Result time_keygen(const Args &a, const Config &c, Ctx &keys_out) {
     }
     auto t1 = Clock::now();
     g_last_window_uj = rapl_delta(e0, rapl_now());
+    // K > 1: every key pair of the window, not only the last, is checked
+    // (outside the window): the context has the recorded primes, and a fresh
+    // value encrypted with its public key decrypts correctly with its secret
+    // key. The last pair is checked again below by the caller, as for K = 1.
+    if (K > 1) {
+        for (int k = 0; k < K; k++) {
+            Ctx t;
+            t.cc = ccs[k]; t.kp = kps[k];
+            t.ckks = a.scheme == "CKKS"; t.slots = t.ckks ? a.N / 2 : a.N;
+            t.t = t.ckks ? 0 : seal_t(a.N, a.category);
+            auto cp = std::dynamic_pointer_cast<CryptoParametersRNS>(t.cc->GetCryptoParameters());
+            if (primes_of(t.cc->GetElementParams()) != c.q_primes || primes_of(cp->GetParamsP()) != c.p_primes)
+                throw std::runtime_error("key generation " + std::to_string(k + 1) + " of " + std::to_string(K) +
+                                         " in the window: other primes than eligible_v2.csv records");
+            // relinearization key: OpenFHE keeps evaluation keys in a static map
+            // that ReleaseAllContexts() empties, so at the end of the window only
+            // the last key generation's key is still there (each earlier one was
+            // generated, then deleted by the next repetition's release, inside the
+            // window: with depth > 0 the window also holds K-1 key deletions).
+            if (c.depth > 0 && k == K - 1 &&
+                t.cc->GetAllEvalMultKeys().find(kps[k].secretKey->GetKeyTag()) == t.cc->GetAllEvalMultKeys().end())
+                throw std::runtime_error("last key generation of the window: relinearization key missing");
+            Fresh f = fresh_ciphertext(t);
+            if (!passes(t, check_error(t, f.ct, f.x)))
+                throw std::runtime_error("key generation " + std::to_string(k + 1) + " of " + std::to_string(K) +
+                                         " in the window: encrypt/decrypt check failed");
+        }
+        g_keygen_pairs_checked += K;
+    }
     CryptoContext<DCRTPoly> cc = ccs.back();
     KeyPair<DCRTPoly> kp = kps.back();
     // check: the keys just generated work (fresh input through encrypt -> decrypt)
@@ -616,7 +649,11 @@ int main(int argc, char **argv) {
         write_atomically(a.out, out.str());
         if (!a.peak_rss_out.empty())
             write_atomically(a.peak_rss_out, "Maximum resident set size (kbytes): " + std::to_string(read_vmhwm_kb()) + "\n");
-        std::cerr << "OK: wrote " << total << " rows to " << a.out << " (all " << total << " checks correct)" << std::endl;
+        std::cerr << "OK: wrote " << total << " rows to " << a.out << " (all " << total << " checks correct)";
+        if (a.keygen_per_window > 1)
+            std::cerr << "; key generations per window: " << a.keygen_per_window << ", every one checked ("
+                      << g_keygen_pairs_checked << " key pairs)";
+        std::cerr << std::endl;
         return 0;
     } catch (const std::exception &e) {
         std::cerr << "ERROR: " << e.what() << " -- no output written" << std::endl;

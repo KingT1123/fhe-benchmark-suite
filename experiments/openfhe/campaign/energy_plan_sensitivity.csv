@@ -1,0 +1,13 @@
+library,scheme,N,category,operation,latency_ms,inner_loop,energy_reps,energy_runs,memory_runs,label
+openfhe,CKKS,2048,5,keygen,0.598108,16,30,3,0,k16
+openfhe,CKKS,2048,5,keygen,0.598108,32,30,3,0,k32
+openfhe,CKKS,2048,5,keygen,0.598108,65,30,3,0,k65
+openfhe,BFV,4096,3,keygen,1.51654,7,30,3,0,k7
+openfhe,BFV,4096,3,keygen,1.51654,13,30,3,0,k13
+openfhe,BFV,4096,3,keygen,1.51654,26,30,3,0,k26
+openfhe,CKKS,4096,1,keygen,3.8894,1,30,3,0,k1
+openfhe,CKKS,4096,1,keygen,3.8894,5,30,3,0,k5
+openfhe,CKKS,4096,1,keygen,3.8894,10,30,3,0,k10
+seal,CKKS,2048,5,keygen,9.08709,1,30,3,0,k1
+seal,CKKS,16384,1,relinearize,17.2684,3,30,4,0,c
+openfhe,CKKS,16384,1,relinearize,38.6297,2,30,4,0,c

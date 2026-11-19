@@ -15,6 +15,14 @@
       operation depend on the block length; is there a fixed cost per
       counter read), and key generation with 100 repetitions.
   energy_plan_guard.csv     stage-1 mains-guard test: two cells.
+  energy_plan_sensitivity.csv  supervisor's review of the campaign (18 Nov
+      2026): (1) OpenFHE key generations timed K per window, each with three
+      values of K: CKKS 2048/5 and BFV 4096/3 (depth 0; K=1 is below the
+      counter's resolution there) and CKKS 4096/1 (depth 1, about 5 ms: K=1
+      is possible, so grouped and single key generations are compared
+      directly), with SEAL's CKKS 2048/5 key generation (the matched cell);
+      (2) the CKKS 16384/1 relinearization pair measured again (independent
+      confirmation of one cell). Energy only, more invocations per cell.
 
 Columns: library, scheme, N, category, operation, latency_ms (mean of the
 latency campaign, boost on; the cell's latest session), inner_loop,
@@ -103,3 +111,15 @@ for lib in ("seal", "openfhe"):
 dump("energy_plan_window.csv", window)
 
 dump("energy_plan_guard.csv", [row((lib, "CKKS", "8192", "1", "multiply"), eruns=2, mruns=1) for lib in ("seal", "openfhe")])
+
+# sensitivity session (supervisor's review, 18 Nov 2026): energy only, 3
+# invocations per grouping, 4 per relinearization cell; labels k<K> and c
+sens = []
+for (scheme, n, cat), ks in ((("CKKS", "2048", "5"), (16, 32, 65)), (("BFV", "4096", "3"), (7, 13, 26)),
+                             (("CKKS", "4096", "1"), (1, 5, 10))):
+    for K in ks:
+        sens.append(row(("openfhe", scheme, n, cat, "keygen"), inner=K, eruns=3, mruns=0, label=f"k{K}"))
+sens.append(row(("seal", "CKKS", "2048", "5", "keygen"), eruns=3, mruns=0, label="k1"))
+for lib in ("seal", "openfhe"):
+    sens.append(row((lib, "CKKS", "16384", "1", "relinearize"), eruns=4, mruns=0, label="c"))
+dump("energy_plan_sensitivity.csv", sens)
