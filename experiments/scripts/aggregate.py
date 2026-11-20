@@ -2638,6 +2638,16 @@ def aggregate_energy_campaign(args):
                         for name, w in baselines.items()}
                 nm = nets["session median"]
                 c.update({"gross_j_mean": gm,
+                          # same runs, fixed frequency: time per operation and package power in the window
+                          "ms_per_op_mean": statistics.mean(float(r["latency_ms"]) for r in rows),
+                          "package_power_w_mean": statistics.mean(
+                              int(r["energy_uj"]) / 1e6 / (float(r["latency_ms"]) * int(r["inner_loop"]) / 1000)
+                              for r in rows),
+                          # within an invocation: spread of the repetitions, and 95% CI half-width of its mean
+                          "gross_within_rel_std_mean": statistics.mean(g[k]["std"] / g[k]["mean"] for k in g),
+                          "gross_within_ci_half_rel_max": max((g[k]["ci_high"] - g[k]["mean"]) / g[k]["mean"] for k in g),
+                          # between invocations of the same session
+                          "gross_between_inv_rel_range": (max(g[k]["mean"] for k in g) - min(g[k]["mean"] for k in g)) / gm,
                           "gross_j_mean_without_flagged": statistics.mean(clean) if clean else "",
                           "flagged_invocations": sum(flagged.values()),
                           "net_j_mean": nm, "net_share_of_gross": nm / gm})
@@ -2864,7 +2874,12 @@ def energy_campaign_comparisons(cell_rows, stem, dump):
     Outputs: _comparisons.csv, _comparisons_summary.csv (per session, over the
     ratio cells: median and range), _comparisons_reproducibility.csv (the same
     ratio in day1 and day2), _across_sessions.csv (every cell of both
-    libraries: day2 / day1, gross energy and peak RSS)."""
+    libraries: day2 / day1, gross energy and peak RSS, with and without the
+    flagged invocations; within-invocation and between-invocation spread),
+    _variability.csv (the three levels of variability over every cell).
+    The ratio rows also give, from the same runs at fixed frequency, the
+    ratio of time per operation and of average package power (energy ratio
+    = time ratio x power ratio, up to the averaging)."""
     cls = {(r["scheme"], r["N"], r["category"], r["operation"]): r
            for r in csv.DictReader(open("../openfhe/probe/operations_v2.csv"))}
     cells = {(c["session"], c["library"], c["scheme"], c["N"], c["category"], c["operation"]): c
@@ -2889,7 +2904,10 @@ def energy_campaign_comparisons(cell_rows, stem, dump):
                "openfhe_gross_j": o["gross_j_mean"], "seal_gross_j": s["gross_j_mean"] if s else "",
                "openfhe_net_j": o["net_j_mean"], "seal_net_j": s["net_j_mean"] if s else "",
                "openfhe_peak_rss_mb": o["peak_rss_mb_mean"], "seal_peak_rss_mb": s["peak_rss_mb_mean"] if s else "",
-               "openfhe_flags": o.get("flags", ""), "seal_flags": s.get("flags", "") if s else ""}
+               "openfhe_flags": o.get("flags", ""), "seal_flags": s.get("flags", "") if s else "",
+               "openfhe_ms_per_op": o.get("ms_per_op_mean", ""), "seal_ms_per_op": s.get("ms_per_op_mean", "") if s else "",
+               "openfhe_power_w": o.get("package_power_w_mean", ""),
+               "seal_power_w": s.get("package_power_w_mean", "") if s else ""}
         if s is None:
             row["note"] = "SEAL counterpart missing in this session"
         elif c.get("verdict") not in ("matched-profile comparison", "exact-parameter comparison"):
@@ -2904,7 +2922,10 @@ def energy_campaign_comparisons(cell_rows, stem, dump):
                         "ratio_gross_pairing_min": min(pairs) if pairs else "",
                         "ratio_gross_pairing_max": max(pairs) if pairs else "",
                         "ratio_net": f(o["net_j_mean"]) / f(s["net_j_mean"]),
-                        "ratio_peak_rss": f(o["peak_rss_mb_mean"]) / f(s["peak_rss_mb_mean"])})
+                        "ratio_peak_rss": f(o["peak_rss_mb_mean"]) / f(s["peak_rss_mb_mean"]),
+                        # energy ratio = time ratio x power ratio (same runs, fixed frequency)
+                        "ratio_time_fixed_freq": f(o["ms_per_op_mean"]) / f(s["ms_per_op_mean"]),
+                        "ratio_power": f(o["package_power_w_mean"]) / f(s["package_power_w_mean"])})
             if op == "keygen" and int(o["inner_loop"]) > 1:
                 row["note"] = (f"OpenFHE timed as {o['inner_loop']} key generations per window "
                                "(rules, section 5: about -9% per key generation)")
@@ -2934,10 +2955,36 @@ def energy_campaign_comparisons(cell_rows, stem, dump):
             across.append({"library": lib, "scheme": sch, "N": N, "category": cat, "operation": op,
                            "gross_j_day1": c1["gross_j_mean"], "gross_j_day2": c2["gross_j_mean"],
                            "gross_day2_over_day1": f(c2["gross_j_mean"]) / f(c1["gross_j_mean"]),
+                           "flagged_day1": c1["flagged_invocations"], "flagged_day2": c2["flagged_invocations"],
+                           "gross_day2_over_day1_without_flagged":
+                               f(c2["gross_j_mean_without_flagged"]) / f(c1["gross_j_mean_without_flagged"])
+                               if c1["gross_j_mean_without_flagged"] != "" and c2["gross_j_mean_without_flagged"] != ""
+                               else "",
+                           "within_rel_std_day1": c1["gross_within_rel_std_mean"],
+                           "within_rel_std_day2": c2["gross_within_rel_std_mean"],
+                           "within_ci_half_rel_max": max(c1["gross_within_ci_half_rel_max"], c2["gross_within_ci_half_rel_max"]),
+                           "between_inv_rel_range_day1": c1["gross_between_inv_rel_range"],
+                           "between_inv_rel_range_day2": c2["gross_between_inv_rel_range"],
                            "peak_rss_mb_day1": c1["peak_rss_mb_mean"], "peak_rss_mb_day2": c2["peak_rss_mb_mean"],
                            "peak_rss_day2_over_day1": f(c2["peak_rss_mb_mean"]) / f(c1["peak_rss_mb_mean"])})
     if across:
         dump(stem + "_across_sessions.csv", across)
+        # three levels of variability, over every cell of both sessions (median, 90th percentile, max)
+        def lv(v):
+            v = sorted(x for x in v if not math.isnan(x))
+            return {"cells": len(v), "median": statistics.median(v),
+                    "p90": v[min(len(v) - 1, int(math.ceil(0.9 * len(v))) - 1)], "max": v[-1]}
+        var = [{"level": "within invocation: relative std of the repetitions",
+                **lv([f(a[k]) for a in across for k in ("within_rel_std_day1", "within_rel_std_day2")])},
+               {"level": "within invocation: relative 95% CI half-width of the mean",
+                **lv([f(a["within_ci_half_rel_max"]) for a in across])},
+               {"level": "between the invocations of a session: (max-min)/mean",
+                **lv([f(a[k]) for a in across for k in ("between_inv_rel_range_day1", "between_inv_rel_range_day2")])},
+               {"level": "between sessions: |day2/day1 - 1|",
+                **lv([abs(f(a["gross_day2_over_day1"]) - 1) for a in across])},
+               {"level": "between sessions without flagged invocations: |day2/day1 - 1|",
+                **lv([abs(f(a["gross_day2_over_day1_without_flagged"]) - 1) for a in across])}]
+        dump(stem + "_variability.csv", var)
     if comps:
         dump(stem + "_comparisons.csv", comps)
         dump(stem + "_comparisons_summary.csv", summ)
