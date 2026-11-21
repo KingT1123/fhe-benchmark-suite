@@ -15,6 +15,8 @@ experiments/seal/build/*
 experiments/openfhe/build/
 experiments/helib/build/
 experiments/helib/helib.log
+experiments/lattigo/build/
+experiments/lattigo/gomodcache/
 !experiments/seal/build/.gitkeep
 
 # Local-only results archives — not for the public repo. These are

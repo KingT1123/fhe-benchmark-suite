@@ -63,8 +63,8 @@ session_start() {  # $1 = scenario name for run_metadata.csv, $2 = seed
         echo "run_order_seed: $2"
         echo "cpu: $(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2-)"
         echo "kernel: $(uname -r)"
-        echo "code commit: $("${G[@]}" rev-parse HEAD 2>/dev/null || echo unknown); uncommitted changes in experiments/{openfhe,seal/src,helib,scripts}: $("${G[@]}" status --porcelain --untracked-files=no -- experiments/openfhe experiments/seal/src experiments/helib experiments/scripts 2>/dev/null | wc -l)"
-        echo "images: seal-env $(docker image inspect -f '{{.Id}}' seal-env) openfhe-env $(docker image inspect -f '{{.Id}}' openfhe-env) helib-env $(docker image inspect -f '{{.Id}}' helib-env 2>/dev/null || echo absent)"
+        echo "code commit: $("${G[@]}" rev-parse HEAD 2>/dev/null || echo unknown); uncommitted changes in experiments/{openfhe,seal/src,helib,lattigo,scripts}: $("${G[@]}" status --porcelain --untracked-files=no -- experiments/openfhe experiments/seal/src experiments/helib experiments/lattigo experiments/scripts 2>/dev/null | wc -l)"
+        echo "images: seal-env $(docker image inspect -f '{{.Id}}' seal-env) openfhe-env $(docker image inspect -f '{{.Id}}' openfhe-env) helib-env $(docker image inspect -f '{{.Id}}' helib-env 2>/dev/null || echo absent) lattigo-env $(docker image inspect -f '{{.Id}}' lattigo-env 2>/dev/null || echo absent)"
     } > "$SESSION_DIR/cpu_state.txt"
 }
 
@@ -100,7 +100,7 @@ quarantine() {
 # explanation -- it is never silently reused, nor deleted.
 #
 # run_cell LIB TAG ROWS WARMUP ARGS... : resume-aware, fail-closed.
-# LIB = seal | openfhe | helib. ARGS are the harness arguments without --out/--check-out.
+# LIB = seal | openfhe | helib | lattigo. ARGS are the harness arguments without --out/--check-out.
 # With RUN_DIRECT=1 the harness is started directly under taskset, without
 # _inner_measure.sh's /proc polling loop -- as run_energy_memory_docker.sh does
 # for energy and memory cells, so no extra process draws power during a RAPL
@@ -129,7 +129,12 @@ run_cell() {
     local rc=0
     local launch=(bash /work/scripts/_inner_measure.sh) memlog=("/work/${LOG_DIR#$EXP/}/${tag}_mem.log")
     [ "${RUN_DIRECT:-0}" = 1 ] && { launch=(taskset -c "$TASKSET_CORE"); memlog=(); }
-    if [ "$lib" = "helib" ]; then
+    if [ "$lib" = "lattigo" ]; then
+        docker run --rm -e TASKSET_CORE="$TASKSET_CORE" "${DOCKER_EXTRA[@]}" \
+            -v "$EXP":/work -w /work/lattigo lattigo-env \
+            "${launch[@]}" /work/lattigo/build/bench_lattigo "${memlog[@]}" \
+            "$@" "${io[@]}" --params=/work/lattigo/probe/lattigo_params.csv || rc=$?
+    elif [ "$lib" = "helib" ]; then
         # working directory = the session directory: HElib appends its own
         # warnings to ./helib.log, which is thereby kept with the session's data
         docker run --rm -e TASKSET_CORE="$TASKSET_CORE" "${DOCKER_EXTRA[@]}" \
