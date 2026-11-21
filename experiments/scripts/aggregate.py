@@ -3043,13 +3043,110 @@ def aggregate_heprofiler_validation(args):
     print(f"heprofiler_validation: {len(seal)} SEAL depths, {len(helib)} HElib depths "
           f"({sum(1 for r in helib if r['heprofiler_code_ms'] != '')} with HEProfiler's code on this laptop)")
 
+def aggregate_helib_pilot(args):
+    """--scenario=helib_pilot reads experiments/results/raw/helib_pilot/
+    (experiments/helib/run_helib_pilot.sh): HElib 2.2.0 and SEAL, CKKS and
+    BGV, N=8192, category 1, one session. Fail-closed: only cells that
+    validate_cell.py accepts, with their correctness checks, enter. Per cell:
+    the latency statistics of every scenario (aggregate_latency_file) and the
+    number of correct repetitions; for CKKS, the error of the results
+    (normalized max error of each repetition's check: median and maximum over
+    the repetitions, and -log2 of the maximum, the precision achieved in bits).
+    Comparisons (latency):
+      seal_reproduction  SEAL in this session vs the archived SEAL campaign
+                         (seal_standard.csv, seal_composite.csv), TOST +/-10%:
+                         are the session's conditions those of the campaign?
+                         (This session: inner loop 10, the campaign's larger.)
+      helib_and_seal     the two libraries' means side by side, NO ratio:
+                         none of HElib's operation boundaries is SEAL's, and
+                         HElib's parameters are its own (helib/probe/).
+    Outputs: results/final/helib_pilot.csv, helib_pilot_comparisons.csv."""
+    from validate_cell import validate
+    raw_dir = args.raw_dir or "../results/raw/helib_pilot"
+    out_path = args.out or "../results/final/helib_pilot.csv"
+    state = open(os.path.join(raw_dir, "cpu_state.txt")).read()
+    m_r = re.search(r"reps:\s*(\d+)\s+warmup:\s*(\d+)", state)
+    n_reps, n_warm = int(m_r.group(1)), int(m_r.group(2))
+    rows, stats, excluded = [], {}, []
+    for f in sorted(glob.glob(os.path.join(raw_dir, "*_N*_cat*_*.csv"))):
+        tag = Path(f).stem
+        chk = os.path.join(raw_dir, "checks", f"{tag}_check.csv")
+        ok, why = validate(f, n_reps + n_warm, n_warm, chk)
+        if not ok:
+            excluded.append((tag, why))
+            continue
+        summary = aggregate_latency_file(f)
+        base = {k: summary[k] for k in ("library", "scheme", "N", "category", "operation")}
+        rows.append({**base, "metric": "latency_ms", "n": summary["n_measured"], "mean": summary["mean_ms"],
+                     "std": summary["std_ms"], "ci_low": summary["ci_low_ms"], "ci_high": summary["ci_high_ms"],
+                     "median": summary["median_ms"], "iqr_low": summary["iqr_low_ms"],
+                     "iqr_high": summary["iqr_high_ms"], "flag": summary["flag"]})
+        stats[(summary["library"], summary["scheme"], summary["operation"])] = summary
+        c = list(csv.DictReader(open(chk)))
+        good = sum(r["correctness"] == "correct" for r in c)
+        rows.append({**base, "metric": "correct_repetitions", "n": len(c), "mean": good,
+                     "flag": "" if good == len(c) else "CORRECTNESS_FAILURE"})
+        ecol = "norm_error" if c and "norm_error" in c[0] else "error"   # HElib / SEAL check files
+        if summary["scheme"] == "CKKS" and c and ecol in c[0]:
+            e = [float(r[ecol]) for r in c]
+            rows.append({**base, "metric": "ckks_norm_error", "n": len(e), "mean": statistics.mean(e),
+                         "median": statistics.median(e), "ci_high": max(e), "flag": "ci_high = maximum"})
+            rows.append({**base, "metric": "ckks_precision_bits_min", "n": len(e), "mean": -math.log2(max(e)),
+                         "flag": "-log2(maximum normalized error)"})
+    fields = ["library", "scheme", "N", "category", "operation", "metric", "n",
+              "mean", "std", "ci_low", "ci_high", "median", "iqr_low", "iqr_high", "flag"]
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=fields, lineterminator="\n")
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r.get(k, "") for k in fields})
+
+    archived = {}
+    for path in ("../results/final/seal_standard.csv", "../results/final/seal_composite.csv"):
+        for r in csv.DictReader(open(path)):
+            if r["N"] == "8192" and r["category"] == "1" and r["metric"] == "latency_ms" \
+                    and r["mean"] and not r.get("vec_len"):
+                archived[(r["scheme"], r["operation"])] = r
+    comps = []
+    msd = lambda x: (x["mean_ms"], x["std_ms"], x["n_measured"])
+    for (lib, sch, op), x in sorted(stats.items()):
+        if lib == "SEAL" and (sch, op) in archived:
+            a = archived[(sch, op)]
+            t = tost_equivalence(float(a["mean"]), float(a["std"]), 100, *msd(x), 0.10)
+            comps.append({"comparison": "seal_reproduction", "scheme": sch, "operation": op,
+                          "reference": "SEAL archived campaign", "compared": "SEAL this session",
+                          "ref_mean_ms": float(a["mean"]), "new_mean_ms": x["mean_ms"],
+                          "ratio": x["mean_ms"] / float(a["mean"]), "diff_ci90_low": t["ci_low"],
+                          "diff_ci90_high": t["ci_high"], "margin_pct": 10, "verdict": t["verdict"]})
+    for (lib, sch, op), x in sorted(stats.items()):
+        if lib == "HElib":
+            sop = {"decrypt_full": "decrypt", "add_inplace": "add"}.get(op, op)
+            sv = stats.get(("SEAL", sch, sop))
+            comps.append({"comparison": "helib_and_seal", "scheme": sch, "operation": op,
+                          "reference": "SEAL this session (" + sop + ")", "compared": "HElib this session",
+                          "ref_mean_ms": sv["mean_ms"] if sv else "", "new_mean_ms": x["mean_ms"],
+                          "verdict": "no ratio: different boundaries and parameters"})
+    cf = ["comparison", "scheme", "operation", "reference", "compared", "ref_mean_ms", "new_mean_ms", "ratio",
+          "diff_ci90_low", "diff_ci90_high", "margin_pct", "verdict"]
+    with open(out_path[:-4] + "_comparisons.csv", "w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=cf, lineterminator="\n")
+        w.writeheader()
+        for r in comps:
+            w.writerow({k: r.get(k, "") for k in cf})
+    print(f"helib_pilot: {len(stats)} valid cells, {len(excluded)} excluded -> {out_path}")
+    for tag, why in excluded:
+        print(f"EXCLUDED: {tag}: {why}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True,
                      choices=["standard", "constrained", "edge_batch", "packing",
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
                               "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard",
-                              "energy_validation", "energy_campaign", "heprofiler_validation"])
+                              "energy_validation", "energy_campaign", "heprofiler_validation",
+                              "helib_pilot"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -3061,6 +3158,10 @@ def main():
 
     if args.scenario == "pilot":
         aggregate_pilot(args)
+        return
+
+    if args.scenario == "helib_pilot":
+        aggregate_helib_pilot(args)
         return
 
     if args.scenario == "validation":

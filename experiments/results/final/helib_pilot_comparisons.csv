@@ -1,0 +1,31 @@
+comparison,scheme,operation,reference,compared,ref_mean_ms,new_mean_ms,ratio,diff_ci90_low,diff_ci90_high,margin_pct,verdict
+seal_reproduction,BGV,add,SEAL archived campaign,SEAL this session,0.057699738,0.064954285,1.1257292884068208,0.006048230558068489,0.008460863441931511,10,equivalence_not_established
+seal_reproduction,BGV,decrypt,SEAL archived campaign,SEAL this session,0.52700823,0.50717746,0.9623710430480374,-0.022061191888908302,-0.017600348111091693,10,equivalent_within_margin
+seal_reproduction,BGV,encrypt,SEAL archived campaign,SEAL this session,3.4213682,3.3368276,0.9752904115961561,-0.12562065929177704,-0.043460540708222896,10,equivalent_within_margin
+seal_reproduction,BGV,keygen,SEAL archived campaign,SEAL this session,66.481094,66.510191,1.0004376733030298,-0.25014306382222934,0.30833706382224385,10,equivalent_within_margin
+seal_reproduction,BGV,multiply,SEAL archived campaign,SEAL this session,0.4454177,0.45361027,1.0183930050377432,0.005296903996459611,0.011088236003540298,10,equivalent_within_margin
+seal_reproduction,BGV,relinearize,SEAL archived campaign,SEAL this session,2.4190173,2.2946082,0.9485703967474726,-0.14579584179213334,-0.1030223582078672,10,equivalent_within_margin
+seal_reproduction,BGV,rotate,SEAL archived campaign,SEAL this session,2.2673799,2.6804342,1.1821725155100828,0.3735819237617144,0.452526676238286,10,equivalence_not_established
+seal_reproduction,CKKS,add,SEAL archived campaign,SEAL this session,0.058538171,0.059239318,1.011977603468342,-0.0004662565084174429,0.0018685505084174412,10,equivalent_within_margin
+seal_reproduction,CKKS,decrypt,SEAL archived campaign,SEAL this session,0.14863115,0.15198177,1.0225431882885923,0.0014027991823117787,0.005298440817688219,10,equivalent_within_margin
+seal_reproduction,CKKS,encrypt,SEAL archived campaign,SEAL this session,2.9753109,2.8051337,0.9428035571005369,-0.1818881002140855,-0.15846629978591523,10,equivalent_within_margin
+seal_reproduction,CKKS,keygen,SEAL archived campaign,SEAL this session,65.289162,64.542833,0.9885688684440459,-1.0636844736045081,-0.4289735263954977,10,equivalent_within_margin
+seal_reproduction,CKKS,multiply,SEAL archived campaign,SEAL this session,0.45126305,0.45691572,1.0125263302634684,0.0017443415650875496,0.009560998434912503,10,equivalent_within_margin
+seal_reproduction,CKKS,relinearize,SEAL archived campaign,SEAL this session,2.1785712,1.942701,0.8917317001161128,-0.2510643307197903,-0.22067606928020955,10,equivalence_not_established
+seal_reproduction,CKKS,rotate,SEAL archived campaign,SEAL this session,1.9000145,1.9409488,1.0215442040047589,0.029069804192397748,0.05279879580760221,10,equivalent_within_margin
+helib_and_seal,BGV,add_inplace,SEAL this session (add),HElib this session,0.064954285,0.037268953,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,decrypt,SEAL this session (decrypt),HElib this session,0.50717746,1.5750708,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,decrypt_full,SEAL this session (decrypt),HElib this session,0.50717746,570.2698,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,encrypt,SEAL this session (encrypt),HElib this session,3.3368276,3.9029826,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,keygen,SEAL this session (keygen),HElib this session,66.510191,2866.0863,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,multiply,SEAL this session (multiply),HElib this session,0.45361027,9.7788282,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,relinearize,SEAL this session (relinearize),HElib this session,2.2946082,13.597696000000001,,,,,no ratio: different boundaries and parameters
+helib_and_seal,BGV,rotate,SEAL this session (rotate),HElib this session,2.6804342,6.8185998,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,add_inplace,SEAL this session (add),HElib this session,0.059239318,0.041604221,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,decrypt,SEAL this session (decrypt),HElib this session,0.15198177,1.04630958,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,decrypt_full,SEAL this session (decrypt),HElib this session,0.15198177,21.665362,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,encrypt,SEAL this session (encrypt),HElib this session,2.8051337,2.9513837,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,keygen,SEAL this session (keygen),HElib this session,64.542833,51.028259,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,multiply,SEAL this session (multiply),HElib this session,0.45691572,0.2698247,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,relinearize,SEAL this session (relinearize),HElib this session,1.942701,4.1355045,,,,,no ratio: different boundaries and parameters
+helib_and_seal,CKKS,rotate,SEAL this session (rotate),HElib this session,1.9409488,4.4556986,,,,,no ratio: different boundaries and parameters

@@ -1,0 +1,62 @@
+HElib pilot: 30 cells, order seed 296410050, governor enforced: 1
+[1/30] 05:56:55 helib_ckks_N8192_cat1_add_inplace  (CPU 53 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_add_inplace.csv (all 105 checks correct)
+[2/30] 05:57:06 seal_bgv_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_add.csv
+[3/30] 05:57:14 helib_bgv_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_multiply.csv (all 105 checks correct)
+[4/30] 05:59:28 helib_bgv_N8192_cat1_rotate  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_rotate.csv (all 105 checks correct)
+[5/30] 06:00:35 helib_bgv_N8192_cat1_decrypt_full  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_decrypt_full.csv (all 105 checks correct)
+[6/30] 06:02:42 seal_bgv_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_decrypt.csv
+[7/30] 06:02:46 seal_ckks_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_encrypt.csv
+[8/30] 06:02:50 seal_ckks_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_add.csv
+[9/30] 06:02:58 seal_ckks_N8192_cat1_rotate  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_rotate.csv (galois_keygen_ms=5.3727, galois_keys_size_bytes=1638795)
+[10/30] 06:02:59 helib_ckks_N8192_cat1_keygen  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_keygen.csv (all 105 checks correct)
+[11/30] 06:03:08 helib_bgv_N8192_cat1_add_inplace  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_add_inplace.csv (all 105 checks correct)
+[12/30] 06:05:11 helib_ckks_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_encrypt.csv (all 105 checks correct)
+[13/30] 06:05:17 helib_ckks_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_decrypt.csv (all 105 checks correct)
+[14/30] 06:05:25 seal_bgv_N8192_cat1_multiply  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_multiply.csv
+[15/30] 06:05:34 seal_ckks_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_multiply.csv
+[16/30] 06:05:42 helib_bgv_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_encrypt.csv (all 105 checks correct)
+[17/30] 06:06:38 seal_ckks_N8192_cat1_relinearize  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_relinearize.csv
+[18/30] 06:06:48 seal_bgv_N8192_cat1_rotate  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_rotate.csv (galois_keygen_ms=5.63575, galois_keys_size_bytes=1638795)
+[19/30] 06:06:49 helib_bgv_N8192_cat1_relinearize  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_relinearize.csv (all 105 checks correct)
+[20/30] 06:09:17 helib_bgv_N8192_cat1_keygen  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_keygen.csv (all 105 checks correct)
+[21/30] 06:15:22 helib_ckks_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_multiply.csv (all 105 checks correct)
+[22/30] 06:15:34 helib_ckks_N8192_cat1_relinearize  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_relinearize.csv (all 105 checks correct)
+[23/30] 06:15:50 seal_ckks_N8192_cat1_keygen  (CPU 93 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_keygen.csv
+[24/30] 06:15:58 seal_bgv_N8192_cat1_keygen  (CPU 81 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_keygen.csv
+[25/30] 06:16:05 helib_ckks_N8192_cat1_rotate  (CPU 81 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_rotate.csv (all 105 checks correct)
+[26/30] 06:16:10 seal_bgv_N8192_cat1_relinearize  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_relinearize.csv
+[27/30] 06:16:21 seal_ckks_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_ckks_N8192_cat1_decrypt.csv
+[28/30] 06:16:25 helib_bgv_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_bgv_N8192_cat1_decrypt.csv (all 105 checks correct)
+[29/30] 06:18:59 seal_bgv_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/seal_bgv_N8192_cat1_encrypt.csv
+[30/30] 06:19:03 helib_ckks_N8192_cat1_decrypt_full  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/helib_pilot/helib_ckks_N8192_cat1_decrypt_full.csv (all 105 checks correct)
+HElib pilot complete: 06:19:33. Next: cd experiments/scripts && python3 aggregate.py --scenario=helib_pilot
