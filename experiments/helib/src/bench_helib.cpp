@@ -1,6 +1,6 @@
 // bench_helib.cpp
 //
-// Latency harness for HElib 2.2.0 (latency pilot), written to reproduce the
+// Latency harness for HElib v2.3.0 (commit 3e337a6; its version header reports 2.2.0) (latency pilot), written to reproduce the
 // SEAL measurement protocol of experiments/seal/src/bench_seal.cpp, as
 // experiments/openfhe/src/bench_openfhe.cpp does for OpenFHE. CKKS and BGV
 // (HElib has no BFV).

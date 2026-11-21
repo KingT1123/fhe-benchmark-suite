@@ -3068,7 +3068,7 @@ LIBRARY_PILOTS = {
 def aggregate_library_pilot(args):
     """--scenario=helib_pilot | lattigo_pilot reads experiments/results/raw/
     <scenario>/ (experiments/helib/run_helib_pilot.sh, experiments/lattigo/
-    run_lattigo_pilot.sh): HElib 2.2.0 (CKKS, BGV) or Lattigo v5.0.7 (BFV,
+    run_lattigo_pilot.sh): HElib v2.3.0 (commit 3e337a6; its version header reports 2.2.0) (CKKS, BGV) or Lattigo v5.0.7 (BFV,
     BGV, CKKS, with SEAL's exact primes) and SEAL, N=8192, category 1, one
     session. Fail-closed: only cells that
     validate_cell.py accepts, with their correctness checks, enter. Per cell:

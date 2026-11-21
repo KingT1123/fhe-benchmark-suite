@@ -1,4 +1,4 @@
-// helib_probe.cpp -- what HElib 2.2.0 actually builds for a requested
+// helib_probe.cpp -- what HElib v2.3.0 (commit 3e337a6; its version header reports 2.2.0) actually builds for a requested
 // configuration, before any timing (as openfhe/probe/openfhe_probe_v2.cpp for
 // OpenFHE). HElib does not take a list of primes: it takes the ring (m = 2N),
 // the bit size of the ciphertext modulus chain (bits) and the number of

@@ -21,7 +21,7 @@
 \begin{document}
 \maketitle
 
-\noindent\textbf{Purpose.} As agreed (7 and 18 November): one latency pilot for HElib, documenting the security parameters actually used, the operation boundaries and the CKKS precision achieved, before any expansion of scope. HElib~2.2.0, configuration $N{=}8192$, category~1, CKKS and BGV (HElib has no BFV), measured in one session together with SEAL, with the protocol of the OpenFHE pilot. Code: commit \texttt{\hlCommit}; raw data: \texttt{experiments/results/raw/helib\_pilot/}.
+\noindent\textbf{Purpose.} As agreed (7 and 18 November): one latency pilot for HElib, documenting the security parameters actually used, the operation boundaries and the CKKS precision achieved, before any expansion of scope. HElib~v2.3.0 (commit \texttt{3e337a6}; its version header still reports 2.2.0), configuration $N{=}8192$, category~1, CKKS and BGV (HElib has no BFV), measured in one session together with SEAL, with the protocol of the OpenFHE pilot. Code: commit \texttt{\hlCommit}; raw data: \texttt{experiments/results/raw/helib\_pilot/}.
 
 \paragraph{Summary.}
 \begin{itemize}[leftmargin=*, itemsep=2pt]
@@ -75,6 +75,6 @@ Protocol: \hlReps\ measured repetitions after \hlWarm\ warm-up, inner loop \hlIn
 
 \section{Scope and next step}
 
-This is a pilot: one configuration, one session, latency only. Its values describe HElib~2.2.0 under the stated parameters and boundaries; they are not a comparison of the libraries' costs for the same computation. Extending HElib to the grid would require the same probe for every configuration and, for a ratio with SEAL, operations with matching boundaries. The Lattigo pilot follows the same procedure.
+This is a pilot: one configuration, one session, latency only. Its values describe HElib~v2.3.0 under the stated parameters and boundaries; they are not a comparison of the libraries' costs for the same computation. Extending HElib to the grid would require the same probe for every configuration and, for a ratio with SEAL, operations with matching boundaries. The Lattigo pilot follows the same procedure.
 
 \end{document}

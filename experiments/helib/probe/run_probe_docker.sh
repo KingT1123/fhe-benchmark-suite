@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_probe_docker.sh -- records what HElib 2.2.0 builds for each candidate
+# run_probe_docker.sh -- records what HElib v2.3.0 (commit 3e337a6; its version header reports 2.2.0) builds for each candidate
 # (bits, c[, precision]) at N=8192 (m=16384), CKKS and BGV (p = SEAL's t),
 # in the helib-env image. Output: helib/probe/probe_results.csv. No sudo.
 set -euo pipefail

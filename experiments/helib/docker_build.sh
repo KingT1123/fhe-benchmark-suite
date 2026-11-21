@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# docker_build.sh -- compile bench_helib in the helib-env image (HElib 2.2.0,
+# docker_build.sh -- compile bench_helib in the helib-env image (HElib v2.3.0, commit 3e337a6, whose version header reports 2.2.0;
 # NTL and GMP from Ubuntu 24.04) with the SEAL/OpenFHE harness flags: g++
 # 13.3.0, -std=c++17 -O2. HElib is linked statically (libhelib.a, built
 # RelWithDebInfo); NTL's thread pool is not activated, so the binary is
