@@ -1,0 +1,92 @@
+Lattigo pilot: 45 cells, order seed 44968318, governor enforced: 1
+[1/45] 07:11:19 seal_bfv_N8192_cat1_multiply  (CPU 55 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_multiply.csv
+[2/45] 07:11:34 seal_bfv_N8192_cat1_rotate  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_rotate.csv (galois_keygen_ms=5.18351, galois_keys_size_bytes=1638795)
+[3/45] 07:11:35 lattigo_bgv_N8192_cat1_rotate  (CPU 90 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_rotate.csv (all 105 checks correct)
+[4/45] 07:11:36 seal_bfv_N8192_cat1_keygen  (CPU 90 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_keygen.csv
+[5/45] 07:11:43 lattigo_ckks_N8192_cat1_relinearize  (CPU 79 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_relinearize.csv (all 105 checks correct)
+[6/45] 07:11:55 seal_bfv_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_decrypt.csv
+[7/45] 07:11:59 lattigo_ckks_N8192_cat1_rotate  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_rotate.csv (all 105 checks correct)
+[8/45] 07:12:01 lattigo_bfv_N8192_cat1_rotate  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_rotate.csv (all 105 checks correct)
+[9/45] 07:12:02 lattigo_bgv_N8192_cat1_decrypt  (CPU 90 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_decrypt.csv (all 105 checks correct)
+[10/45] 07:12:06 seal_bfv_N8192_cat1_add  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_add.csv
+[11/45] 07:12:11 seal_ckks_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_add.csv
+[12/45] 07:12:19 lattigo_bfv_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_add.csv (all 105 checks correct)
+[13/45] 07:12:26 lattigo_bgv_N8192_cat1_decrypt_full  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_decrypt_full.csv (all 105 checks correct)
+[14/45] 07:12:30 lattigo_bfv_N8192_cat1_relinearize  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_relinearize.csv (all 105 checks correct)
+[15/45] 07:12:46 seal_ckks_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_multiply.csv
+[16/45] 07:12:54 seal_bgv_N8192_cat1_keygen  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_keygen.csv
+[17/45] 07:13:01 lattigo_bgv_N8192_cat1_encrypt  (CPU 82 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_encrypt.csv (all 105 checks correct)
+[18/45] 07:13:05 seal_ckks_N8192_cat1_relinearize  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_relinearize.csv
+[19/45] 07:13:15 lattigo_bfv_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_encrypt.csv (all 105 checks correct)
+[20/45] 07:13:19 lattigo_ckks_N8192_cat1_keygen  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_keygen.csv (all 105 checks correct)
+[21/45] 07:13:21 seal_bgv_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_encrypt.csv
+[22/45] 07:13:25 seal_bfv_N8192_cat1_encrypt  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_encrypt.csv
+[23/45] 07:13:29 lattigo_bgv_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_multiply.csv (all 105 checks correct)
+[24/45] 07:13:36 lattigo_ckks_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_encrypt.csv (all 105 checks correct)
+[25/45] 07:13:40 seal_ckks_N8192_cat1_keygen  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_keygen.csv
+[26/45] 07:13:48 seal_bgv_N8192_cat1_decrypt  (CPU 82 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_decrypt.csv
+[27/45] 07:13:53 lattigo_bgv_N8192_cat1_relinearize  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_relinearize.csv (all 105 checks correct)
+[28/45] 07:14:02 lattigo_ckks_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_add.csv (all 105 checks correct)
+[29/45] 07:14:11 seal_ckks_N8192_cat1_rotate  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_rotate.csv (galois_keygen_ms=5.33422, galois_keys_size_bytes=1638795)
+[30/45] 07:14:13 lattigo_bfv_N8192_cat1_multiply  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_multiply.csv (all 105 checks correct)
+[31/45] 07:14:26 seal_bgv_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_multiply.csv
+[32/45] 07:14:34 lattigo_bfv_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_decrypt.csv (all 105 checks correct)
+[33/45] 07:14:38 lattigo_bfv_N8192_cat1_decrypt_full  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_decrypt_full.csv (all 105 checks correct)
+[34/45] 07:14:42 seal_ckks_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_decrypt.csv
+[35/45] 07:14:47 seal_ckks_N8192_cat1_encrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_ckks_N8192_cat1_encrypt.csv
+[36/45] 07:14:51 lattigo_bgv_N8192_cat1_keygen  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_keygen.csv (all 105 checks correct)
+[37/45] 07:14:53 lattigo_bgv_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bgv_N8192_cat1_add.csv (all 105 checks correct)
+[38/45] 07:15:00 lattigo_ckks_N8192_cat1_decrypt_full  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_decrypt_full.csv (all 105 checks correct)
+[39/45] 07:15:11 lattigo_bfv_N8192_cat1_keygen  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_bfv_N8192_cat1_keygen.csv (all 105 checks correct)
+[40/45] 07:15:13 seal_bgv_N8192_cat1_add  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_add.csv
+[41/45] 07:15:21 lattigo_ckks_N8192_cat1_decrypt  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_decrypt.csv (all 105 checks correct)
+[42/45] 07:15:27 seal_bgv_N8192_cat1_rotate  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_rotate.csv (galois_keygen_ms=5.48225, galois_keys_size_bytes=1638795)
+[43/45] 07:15:28 seal_bfv_N8192_cat1_relinearize  (CPU 91 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bfv_N8192_cat1_relinearize.csv
+[44/45] 07:15:45 lattigo_ckks_N8192_cat1_multiply  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/lattigo_ckks_N8192_cat1_multiply.csv (all 105 checks correct)
+[45/45] 07:15:54 seal_bgv_N8192_cat1_relinearize  (CPU 92 °C)
+OK: wrote 105 rows to /work/results/raw/lattigo_pilot/seal_bgv_N8192_cat1_relinearize.csv
+Lattigo pilot complete: 07:16:05. Next: cd experiments/scripts && python3 aggregate.py --scenario=lattigo_pilot

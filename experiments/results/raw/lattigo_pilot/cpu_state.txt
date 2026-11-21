@@ -1,0 +1,14 @@
+date: 2026-11-21T07:11:19+01:00
+scenario: lattigo_pilot
+protocol: fail-closed v2 (every cell validated; correctness checks for every library)
+scaling_governor (as found): powersave; enforced performance: yes
+boost: 1
+max boost frequency (amd_pstate_max_freq, kHz): 4936631
+taskset_core: 0
+run_order_seed: 44968318
+cpu:  AMD Ryzen 9 6900HX with Radeon Graphics
+kernel: 7.0.0-43-generic
+code commit: da3806dbc36467e92ad0b39fb67e89d1b601a7b5; uncommitted changes in experiments/{openfhe,seal/src,helib,lattigo,scripts}: 0
+images: seal-env sha256:3d03656e0bf8c2cef53317b2e21c02af8e2e99fb8827a18ad7715d537d6503d3 openfhe-env sha256:903bb39e603c31e2364bf3eb23bf6fb337484a64b2db31408339a99eb8a30cb3 helib-env sha256:53317c291eeefa431e43c8195d5f9fcf694eff038f18f6c8f2863c3a0670849e lattigo-env sha256:2e5ad6aba98414bc7bc2c8e18a27e80b11e3c98e13e96da0fc882714413998f9
+reps: 100 warmup: 5 inner_loop: 10 (keygen, rotate: 1)
+lattigo params: 734a9fbe614889cc (lattigo/probe/lattigo_params.csv)

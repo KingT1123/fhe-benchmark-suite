@@ -24,3 +24,4 @@ timestamp,scenario,run_order_seed,num_cells
 2026-11-05T03:23:25+01:00,energy_validation_e1,223057544,120
 2026-11-05T03:59:35+01:00,energy_validation_e2,1346423303,120
 2026-11-21T05:56:55+01:00,helib_pilot,296410050,30
+2026-11-21T07:11:19+01:00,lattigo_pilot,44968318,45

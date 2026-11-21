@@ -1,0 +1,65 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, array, amsmath, xcolor, enumitem}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+\setlength{\parskip}{4pt}
+\sloppy
+
+% Every number below comes from experiments/lattigo/pilot_tables/ (generated
+% by experiments/lattigo/make_lattigo_pilot_tables.py from aggregate.py
+% --scenario=lattigo_pilot and the recorded parameters).
+\newcommand{\tab}[1]{../../experiments/lattigo/pilot_tables/#1}
+\input{\tab{numbers.tex}}
+
+\title{Lattigo latency pilot\\[2pt]
+\large SEAL's exact primes: parameters, boundaries, CKKS precision and latency}
+\author{Boungo Tr\'esor}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Purpose.} As agreed (7 and 18 November): one latency pilot for Lattigo, documenting the security parameters, the operation boundaries and the CKKS precision, before any expansion of scope. Lattigo~v5.0.7 (Go), configuration $N{=}8192$, category~1, BFV, BGV and CKKS, measured in one session together with SEAL, with the settings of the HElib pilot. Code: commit \texttt{\ltCommit}; raw data: \texttt{experiments/results/raw/lattigo\_pilot/}.
+
+\paragraph{Summary.}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{The session is complete and valid}: \ltCells\ cells (\ltLattigoCells\ Lattigo, \ltSealCells\ SEAL), \ltReps\ measured repetitions each after \ltWarm\ warm-up, all \ltAllChecks\ correctness checks passed (\ltLattigoChecks\ of them Lattigo's); on mains, governor \ltGovernor, boost \ltBoost, \ltDate, \ltStart--\ltEnd.
+  \item \textbf{Same primes as SEAL}: Lattigo accepts an explicit list of primes, so it was given SEAL's own primes (\ltChain\ bits, $\log_2 QP = \ltLogQP$), and the program checks that Lattigo built exactly these. This is the first configuration of the study where two libraries use identical moduli.
+  \item \textbf{\ltExactN\ exact-parameter comparisons} (same primes and an equivalent boundary, a rule fixed before the ratios were computed): Lattigo/SEAL latency \ltRatioDecCkks\ for CKKS decryption, \ltRatioMulMin\ for multiplication (CKKS and BGV), and \ltRatioKsMin--\ltRatioKsMax\ for relinearization and rotation.
+  \item \textbf{CKKS precision}: \ltPrecLatMin--\ltPrecLatMax\ bits for Lattigo, \ltPrecSealMin--\ltPrecSealMax\ for SEAL (same session, same error measure); with the same primes and scale, both libraries reach the same precision except for rotation.
+  \item \textbf{Session conditions}: SEAL's latency agrees with its archived campaign within $\pm$10\% for \ltReproEq\ of \ltReproN\ cells.
+\end{itemize}
+
+\section{Parameters}
+
+The parameters are SEAL's for this grid row, taken from the recorded SEAL moduli (\texttt{security/seal\_moduli.csv}): ciphertext primes \ltChain\ without the last, special prime the last; plaintext modulus $t = \ltPlainMod$ for BFV and BGV; CKKS scale $2^{40}$. Security therefore follows from SEAL's configuration ($\log_2 QP = \ltLogQ$ within the HE standard's bound of 218 for $N{=}8192$ at 128~bits). The remaining differences in the parameters are the distributions: Lattigo samples errors from a discrete Gaussian with $\sigma = \ltSigma$ (SEAL: a centred binomial, $\sigma \approx 3.24$); both use a uniform ternary secret. A probe (\texttt{experiments/lattigo/probe/}) recorded what Lattigo builds and the depth reached with correct results: CKKS \ltDepthCkks\ (the grid's depth), BFV and BGV at least \ltDepthBgv. Lattigo's key switching with one special prime uses one digit per ciphertext prime, as SEAL.
+
+\section{Operation boundaries and the comparison rule}
+
+The program (\texttt{experiments/lattigo/src/main.go}) follows the SEAL protocol: inputs prepared before the timer, a fresh ciphertext for every call, every result checked after the timer. The Go runtime uses one thread, and a garbage collection is forced before each timed region (outside it). The rule, written before the ratios were computed: a ratio is formed when the primes are equal (here, always) and the boundary is equivalent.
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item \textbf{Ratio}: CKKS decryption ($c_0 + c_1 s$ left in NTT form, as SEAL); multiplication for CKKS and BGV (the tensor product); relinearization and rotation in all three schemes (same primes and key-switching structure, one key).
+  \item \textbf{No ratio}: key generation (SEAL's includes generating its primes; Lattigo receives them); BFV and BGV decryption (SEAL also returns to coefficient form and reduces modulo $t$; Lattigo does this in decoding); BFV multiplication (Lattigo's scale-invariant tensoring against SEAL's BEHZ, another algorithm); encryption, addition and decryption with decoding (each library's API cost; encryption also samples different error distributions).
+  \item \textbf{A remaining difference, found after the rule was fixed}: SEAL's out-of-place multiplication and rotation, as called by the SEAL harness, first copy their input ciphertext into the destination and then compute in place; Lattigo writes its result directly. The copy (\ltCopyMB~MB here) is part of SEAL's measured time; it was not timed separately. The classification was kept as fixed.
+\end{itemize}
+
+\section{Results}
+
+Protocol: \ltReps\ measured repetitions after \ltWarm\ warm-up, inner loop \ltInner\ calls (one call for key generation and rotation), randomized order, one process per cell pinned to one core; SEAL cells with the same settings. Mean latency (ms) and, where the rule allows it, the ratio Lattigo/SEAL:
+
+\begin{center}\scriptsize\setlength{\tabcolsep}{4pt}\input{\tab{latency.tex}}\end{center}
+{\footnotesize CKKS precision: $-\log_2$ of the largest normalized error over the repetitions of each operation, range over the operations.}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{Same primes, different costs.} With identical moduli, Lattigo's multiplication took \ltRatioMulMin\ times SEAL's time and its CKKS decryption \ltRatioDecCkks\ times; its key switching took longer: \ltRatioKsCkksMin--\ltRatioKsCkksMax\ times for CKKS, \ltRatioKsBgvMin--\ltRatioKsBgvMax\ for BGV. Part of the multiplication ratio may come from SEAL's copy of its input (above); the rest, and the key-switching difference, reflect the implementations (arithmetic, memory management), which were not analysed.
+  \item \textbf{Outside the ratios}: Lattigo's key generation (\ltLatLattigoCkksKeygen--\ltLatLattigoBgvKeygen~ms) is shorter than SEAL's (about \ltLatSEALCkksKeygen~ms), but SEAL's includes prime generation; Lattigo's BFV multiplication (\ltLatLattigoBfvMultiply~ms) is far slower than its BGV multiplication (\ltLatLattigoBgvMultiply~ms), being another algorithm.
+  \item \textbf{SEAL in this session} agrees with its archived campaign within $\pm$10\% for \ltReproEq\ of \ltReproN\ cells; the others are \ltReproOut. SEAL's CKKS relinearization was \ltReproCkksRelin\ times its campaign value here and \ltReproCkksRelinHelib\ in the HElib pilot, which used the same smaller inner loop; that the inner loop causes it is plausible, not tested.
+\end{itemize}
+
+\section{Scope}
+
+This is a pilot: one configuration, one session, latency only. Its ratios are exact-parameter comparisons for the stated operations and boundaries, between Lattigo~v5.0.7 and SEAL~4.1.2 on this machine; they are not general statements about the libraries.
+
+\end{document}

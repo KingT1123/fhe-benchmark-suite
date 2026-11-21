@@ -1,0 +1,46 @@
+comparison,scheme,operation,reference,compared,ref_mean_ms,new_mean_ms,ratio,diff_ci90_low,diff_ci90_high,margin_pct,verdict
+seal_reproduction,BFV,add,SEAL archived campaign,SEAL this session,0.057591025,0.056987534,0.989521092913349,-0.0010830662951805384,-0.00012391570481945692,10,equivalent_within_margin
+seal_reproduction,BFV,decrypt,SEAL archived campaign,SEAL this session,0.80449074,0.76097189,0.9459050951910273,-0.05161766613421585,-0.03542003386578414,10,equivalent_within_margin
+seal_reproduction,BFV,encrypt,SEAL archived campaign,SEAL this session,2.5483791,2.2935779,0.9000144052350766,-0.2976728803010231,-0.21192951969897722,10,equivalence_not_established
+seal_reproduction,BFV,keygen,SEAL archived campaign,SEAL this session,66.075669,66.133712,1.0008784322713402,-0.19550660904423528,0.311592609044231,10,equivalent_within_margin
+seal_reproduction,BFV,multiply,SEAL archived campaign,SEAL this session,8.6504691,8.1646475,0.9438386988747233,-0.5385558344084016,-0.43308736559160105,10,equivalent_within_margin
+seal_reproduction,BFV,relinearize,SEAL archived campaign,SEAL this session,2.1011471999999998,1.9693178,0.9372583700942039,-0.14592793931933068,-0.11773086068066885,10,equivalent_within_margin
+seal_reproduction,BFV,rotate,SEAL archived campaign,SEAL this session,1.9017414,1.9108299,1.0047790409358497,0.002992491676865071,0.015184508323135039,10,equivalent_within_margin
+seal_reproduction,BGV,add,SEAL archived campaign,SEAL this session,0.057699738,0.062566282,1.0843425666854847,0.0043518468753293545,0.005381241124670646,10,equivalent_within_margin
+seal_reproduction,BGV,decrypt,SEAL archived campaign,SEAL this session,0.52700823,0.5394225500000001,1.0235562165699008,0.01028478529874944,0.01454385470125074,10,equivalent_within_margin
+seal_reproduction,BGV,encrypt,SEAL archived campaign,SEAL this session,3.4213682,3.2331118,0.944976281710925,-0.20720818581326558,-0.16930461418673395,10,equivalent_within_margin
+seal_reproduction,BGV,keygen,SEAL archived campaign,SEAL this session,66.481094,66.398383,0.9987558718573434,-0.3460464273576748,0.1806244273576682,10,equivalent_within_margin
+seal_reproduction,BGV,multiply,SEAL archived campaign,SEAL this session,0.4454177,0.45541992,1.0224558206824739,0.008444706840415376,0.011559733159584525,10,equivalent_within_margin
+seal_reproduction,BGV,relinearize,SEAL archived campaign,SEAL this session,2.4190173,2.303618,0.9522949670512898,-0.12234247317782818,-0.10845612682217179,10,equivalent_within_margin
+seal_reproduction,BGV,rotate,SEAL archived campaign,SEAL this session,2.2673799,2.331384,1.0282282205994682,0.04467848194476898,0.08332971805523104,10,equivalent_within_margin
+seal_reproduction,CKKS,add,SEAL archived campaign,SEAL this session,0.058538171,0.059228973,1.0118008811720476,-0.00018031356852205146,0.0015619175685220462,10,equivalent_within_margin
+seal_reproduction,CKKS,decrypt,SEAL archived campaign,SEAL this session,0.14863115,0.14798832,0.9956749981413723,-0.0012784011102283676,-7.258889771598635e-06,10,equivalent_within_margin
+seal_reproduction,CKKS,encrypt,SEAL archived campaign,SEAL this session,2.9753109,2.8390133,0.954190467960844,-0.14961137145796427,-0.12298382854203622,10,equivalent_within_margin
+seal_reproduction,CKKS,keygen,SEAL archived campaign,SEAL this session,65.289162,64.361016,0.9857840724008681,-1.242106270241965,-0.6141857297580313,10,equivalent_within_margin
+seal_reproduction,CKKS,multiply,SEAL archived campaign,SEAL this session,0.45126305,0.45220156,1.0020797404086152,-0.0012140266579369775,0.0030910466579369845,10,equivalent_within_margin
+seal_reproduction,CKKS,relinearize,SEAL archived campaign,SEAL this session,2.1785712,1.9434058,0.8920552149041537,-0.24855410605200215,-0.22177669394799757,10,equivalence_not_established
+seal_reproduction,CKKS,rotate,SEAL archived campaign,SEAL this session,1.9000145,1.9542073,1.0285223086455393,0.046550947239956515,0.06183465276004357,10,equivalent_within_margin
+lattigo_and_seal,BFV,add,SEAL this session (add),Lattigo this session,0.056987534,0.0557366,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BFV,decrypt,SEAL this session (decrypt),Lattigo this session,0.76097189,0.070540605,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BFV,decrypt_full,SEAL this session (decrypt),Lattigo this session,0.76097189,0.519846891,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BFV,encrypt,SEAL this session (encrypt),Lattigo this session,2.2935779,2.563685124,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BFV,keygen,SEAL this session (keygen),Lattigo this session,66.133712,14.10181335,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BFV,multiply,SEAL this session (multiply),Lattigo this session,8.1646475,5.739100826,,,,,no ratio: boundary differs (same primes)
+lattigo_vs_seal_exact,BFV,relinearize,SEAL this session,Lattigo this session,1.9693178,2.494491856,1.2666781643876879,0.5180453368052773,0.5323027751947222,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_vs_seal_exact,BFV,rotate,SEAL this session,Lattigo this session,1.9108299,2.49788959,1.307227603043055,0.581526268068191,0.5925931119318095,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_and_seal,BGV,add,SEAL this session (add),Lattigo this session,0.062566282,0.056284327,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BGV,decrypt,SEAL this session (decrypt),Lattigo this session,0.5394225500000001,0.069113096,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BGV,decrypt_full,SEAL this session (decrypt),Lattigo this session,0.5394225500000001,0.508685357,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BGV,encrypt,SEAL this session (encrypt),Lattigo this session,3.2331118,2.554086878,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,BGV,keygen,SEAL this session (keygen),Lattigo this session,66.398383,14.05970792,,,,,no ratio: boundary differs (same primes)
+lattigo_vs_seal_exact,BGV,multiply,SEAL this session,Lattigo this session,0.45541992,0.156107902,0.3427779399724105,-0.3005475299851741,-0.2980765060148258,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_vs_seal_exact,BGV,relinearize,SEAL this session,Lattigo this session,2.303618,2.50450889,1.087206685309804,0.1964367235392082,0.2053450564607912,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_vs_seal_exact,BGV,rotate,SEAL this session,Lattigo this session,2.331384,2.47199187,1.060310901164287,0.13339568892267303,0.14782005107732735,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_and_seal,CKKS,add,SEAL this session (add),Lattigo this session,0.059228973,0.059279978,,,,,no ratio: boundary differs (same primes)
+lattigo_vs_seal_exact,CKKS,decrypt,SEAL this session,Lattigo this session,0.14798832,0.073432625,0.49620554514031917,-0.07530403137306857,-0.07380735862693144,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_and_seal,CKKS,decrypt_full,SEAL this session (decrypt),Lattigo this session,0.14798832,5.118273248,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,CKKS,encrypt,SEAL this session (encrypt),Lattigo this session,2.8390133,2.560521402,,,,,no ratio: boundary differs (same primes)
+lattigo_and_seal,CKKS,keygen,SEAL this session (keygen),Lattigo this session,64.361016,9.97956824,,,,,no ratio: boundary differs (same primes)
+lattigo_vs_seal_exact,CKKS,multiply,SEAL this session,Lattigo this session,0.45220156,0.155608028,0.3441120990383138,-0.2984605114885296,-0.2947265525114704,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_vs_seal_exact,CKKS,relinearize,SEAL this session,Lattigo this session,1.9434058,2.56716804,1.3209634549819702,0.6195976495201304,0.6279268304798692,,"exact-parameter comparison (same primes, same boundary)"
+lattigo_vs_seal_exact,CKKS,rotate,SEAL this session,Lattigo this session,1.9542073,2.52256593,1.290838454037092,0.5578512014451863,0.5788660585548134,,"exact-parameter comparison (same primes, same boundary)"

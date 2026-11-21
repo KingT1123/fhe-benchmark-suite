@@ -3043,10 +3043,34 @@ def aggregate_heprofiler_validation(args):
     print(f"heprofiler_validation: {len(seal)} SEAL depths, {len(helib)} HElib depths "
           f"({sum(1 for r in helib if r['heprofiler_code_ms'] != '')} with HEProfiler's code on this laptop)")
 
-def aggregate_helib_pilot(args):
-    """--scenario=helib_pilot reads experiments/results/raw/helib_pilot/
-    (experiments/helib/run_helib_pilot.sh): HElib 2.2.0 and SEAL, CKKS and
-    BGV, N=8192, category 1, one session. Fail-closed: only cells that
+# Exact-parameter comparisons of the Lattigo pilot (fixed BEFORE the pilot's
+# results were computed, 21 Nov 2026): Lattigo runs with SEAL's exact primes,
+# so a ratio is formed where the operation boundary is also SEAL's:
+#   CKKS decrypt (c0 + c1*s, NTT form, as SEAL); BFV/BGV decrypt: no (SEAL
+#   also returns to coefficient form and reduces mod t);
+#   multiply CKKS and BGV (tensor product); BFV: no (scale-invariant
+#   tensoring vs SEAL's BEHZ: another algorithm);
+#   relinearize and rotate, all schemes (same primes, one special prime, one
+#   digit per prime, one key-switching key);
+#   keygen: no (SEAL's includes prime generation, Lattigo receives the primes);
+#   encrypt, add, decrypt_full: API costs, no ratio.
+LATTIGO_EXACT_RATIO = {("CKKS", "decrypt"), ("CKKS", "multiply"), ("BGV", "multiply"),
+                       ("BFV", "relinearize"), ("BGV", "relinearize"), ("CKKS", "relinearize"),
+                       ("BFV", "rotate"), ("BGV", "rotate"), ("CKKS", "rotate")}
+LIBRARY_PILOTS = {
+    "helib_pilot": {"library": "HElib", "exact": set(),
+                    "no_ratio": "no ratio: different boundaries and parameters"},
+    "lattigo_pilot": {"library": "Lattigo", "exact": LATTIGO_EXACT_RATIO,
+                      "no_ratio": "no ratio: boundary differs (same primes)"},
+}
+
+
+def aggregate_library_pilot(args):
+    """--scenario=helib_pilot | lattigo_pilot reads experiments/results/raw/
+    <scenario>/ (experiments/helib/run_helib_pilot.sh, experiments/lattigo/
+    run_lattigo_pilot.sh): HElib 2.2.0 (CKKS, BGV) or Lattigo v5.0.7 (BFV,
+    BGV, CKKS, with SEAL's exact primes) and SEAL, N=8192, category 1, one
+    session. Fail-closed: only cells that
     validate_cell.py accepts, with their correctness checks, enter. Per cell:
     the latency statistics of every scenario (aggregate_latency_file) and the
     number of correct repetitions; for CKKS, the error of the results
@@ -3057,13 +3081,20 @@ def aggregate_helib_pilot(args):
                          (seal_standard.csv, seal_composite.csv), TOST +/-10%:
                          are the session's conditions those of the campaign?
                          (This session: inner loop 10, the campaign's larger.)
-      helib_and_seal     the two libraries' means side by side, NO ratio:
-                         none of HElib's operation boundaries is SEAL's, and
-                         HElib's parameters are its own (helib/probe/).
-    Outputs: results/final/helib_pilot.csv, helib_pilot_comparisons.csv."""
+      helib_and_seal / lattigo_and_seal  the two libraries' means side by
+                         side, NO ratio: HElib -- none of its boundaries is
+                         SEAL's and its parameters are its own; Lattigo -- the
+                         operations outside LATTIGO_EXACT_RATIO;
+      lattigo_vs_seal_exact  Lattigo pilot only: ratio Lattigo/SEAL of the
+                         means, with the Welch 90% CI of the difference, for
+                         the operations of LATTIGO_EXACT_RATIO (same primes,
+                         same boundary): exact-parameter comparisons.
+    Outputs: results/final/<scenario>.csv, <scenario>_comparisons.csv."""
+    cfg = LIBRARY_PILOTS[args.scenario]
+    LIB = cfg["library"]
     from validate_cell import validate
-    raw_dir = args.raw_dir or "../results/raw/helib_pilot"
-    out_path = args.out or "../results/final/helib_pilot.csv"
+    raw_dir = args.raw_dir or f"../results/raw/{args.scenario}"
+    out_path = args.out or f"../results/final/{args.scenario}.csv"
     state = open(os.path.join(raw_dir, "cpu_state.txt")).read()
     m_r = re.search(r"reps:\s*(\d+)\s+warmup:\s*(\d+)", state)
     n_reps, n_warm = int(m_r.group(1)), int(m_r.group(2))
@@ -3086,7 +3117,7 @@ def aggregate_helib_pilot(args):
         good = sum(r["correctness"] == "correct" for r in c)
         rows.append({**base, "metric": "correct_repetitions", "n": len(c), "mean": good,
                      "flag": "" if good == len(c) else "CORRECTNESS_FAILURE"})
-        ecol = "norm_error" if c and "norm_error" in c[0] else "error"   # HElib / SEAL check files
+        ecol = "norm_error" if c and "norm_error" in c[0] else "error"   # HElib, Lattigo / SEAL check files
         if summary["scheme"] == "CKKS" and c and ecol in c[0]:
             e = [float(r[ecol]) for r in c]
             rows.append({**base, "metric": "ckks_norm_error", "n": len(e), "mean": statistics.mean(e),
@@ -3120,13 +3151,22 @@ def aggregate_helib_pilot(args):
                           "ratio": x["mean_ms"] / float(a["mean"]), "diff_ci90_low": t["ci_low"],
                           "diff_ci90_high": t["ci_high"], "margin_pct": 10, "verdict": t["verdict"]})
     for (lib, sch, op), x in sorted(stats.items()):
-        if lib == "HElib":
+        if lib == LIB:
             sop = {"decrypt_full": "decrypt", "add_inplace": "add"}.get(op, op)
             sv = stats.get(("SEAL", sch, sop))
-            comps.append({"comparison": "helib_and_seal", "scheme": sch, "operation": op,
-                          "reference": "SEAL this session (" + sop + ")", "compared": "HElib this session",
+            if (sch, op) in cfg["exact"] and sv:
+                t = tost_equivalence(*msd(sv), *msd(x), 0.10)
+                comps.append({"comparison": "lattigo_vs_seal_exact", "scheme": sch, "operation": op,
+                              "reference": "SEAL this session", "compared": LIB + " this session",
+                              "ref_mean_ms": sv["mean_ms"], "new_mean_ms": x["mean_ms"],
+                              "ratio": x["mean_ms"] / sv["mean_ms"], "diff_ci90_low": t["ci_low"],
+                              "diff_ci90_high": t["ci_high"],
+                              "verdict": "exact-parameter comparison (same primes, same boundary)"})
+                continue
+            comps.append({"comparison": LIB.lower() + "_and_seal", "scheme": sch, "operation": op,
+                          "reference": "SEAL this session (" + sop + ")", "compared": LIB + " this session",
                           "ref_mean_ms": sv["mean_ms"] if sv else "", "new_mean_ms": x["mean_ms"],
-                          "verdict": "no ratio: different boundaries and parameters"})
+                          "verdict": cfg["no_ratio"]})
     cf = ["comparison", "scheme", "operation", "reference", "compared", "ref_mean_ms", "new_mean_ms", "ratio",
           "diff_ci90_low", "diff_ci90_high", "margin_pct", "verdict"]
     with open(out_path[:-4] + "_comparisons.csv", "w", newline="") as fh:
@@ -3134,7 +3174,7 @@ def aggregate_helib_pilot(args):
         w.writeheader()
         for r in comps:
             w.writerow({k: r.get(k, "") for k in cf})
-    print(f"helib_pilot: {len(stats)} valid cells, {len(excluded)} excluded -> {out_path}")
+    print(f"{args.scenario}: {len(stats)} valid cells, {len(excluded)} excluded -> {out_path}")
     for tag, why in excluded:
         print(f"EXCLUDED: {tag}: {why}")
 
@@ -3146,7 +3186,7 @@ def main():
                               "composite", "composite_controls", "composite_checks", "size", "noise_trace",
                               "ckks_error", "config_metadata", "pilot", "validation", "openfhe_standard",
                               "energy_validation", "energy_campaign", "heprofiler_validation",
-                              "helib_pilot"])
+                              "helib_pilot", "lattigo_pilot"])
     ap.add_argument("--raw-dir", default=None)
     ap.add_argument("--log-dir", default=None)
     ap.add_argument("--out", default=None)
@@ -3160,8 +3200,8 @@ def main():
         aggregate_pilot(args)
         return
 
-    if args.scenario == "helib_pilot":
-        aggregate_helib_pilot(args)
+    if args.scenario in LIBRARY_PILOTS:
+        aggregate_library_pilot(args)
         return
 
     if args.scenario == "validation":
